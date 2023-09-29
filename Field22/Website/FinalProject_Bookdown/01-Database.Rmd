@@ -1,0 +1,134 @@
+# My database structure
+
+## Overview
+The first step in preparing my data to be used as the final project of Reproducible Data Science 2023 was to create a database in R using RSQLite. The following code is an edited version of the code I used in Assignment 4.
+
+## Introduction to my data
+### My thesis
+All the data used in this project comes from my 2022 field experiment, conducted at both Utah Lake and the Great Salt Lake. For my thesis, I am studying whether changes in the seeding density or functional diversity of my native seed mixes alter their biotic resistance (their ability to prevent invasive plants from entering the study area).
+
+There are two leading theories about biotic resistance. Some ecologists believe that native plants that are most similar to the invasive plants of interest (in my case, *Phragmites australis*) will do the best at resisting the invader due to limiting similarity. In my case, this would mean that grasses do the best at resisting *Phragmites* growth. Other scientists believe that native plants that use the most resources and fill the most niche space will do the best at resisting invasives due to niche complementarity. In my case, this would be annual forbs because they grow the fastest and pre-empt the most light due to their large leaves. 
+
+### My treatments
+I conducted a full factorial experiment examining two levels of density (high and low) and five functional groups (grasses, bulrushes, rushes, annual forbs, and perennial forbs). On a bi-weekly basis, I collected canopy cover data within each plot to determine whether any of my treatments were particularly successful to preventing *Phragmites* and other invasives from entering. 
+
+### My tables 
+For this project, I will be using two tables. Although I had three tables in my Assignment 4, I will not be incorporating any biomass data into my analyses. 
+
+My first table is called "cover". This table includes all the canopy cover estimates from my bi-weekly surveys.
+
+The second table is called "functional group". This data keeps track of which functional groups are represented by each of my 10 seed mixes.
+
+```{r image, fig.cap= "Database structure diagram", fig.align='center', out.width='100%'}
+knitr::include_graphics("Feldman_database_structure_updated.png")
+```
+
+## Creating the database
+### Getting started
+The first step in creating a database is to install and load the `DBI` package. 
+
+```{r package, eval=FALSE} 
+library(DBI)
+```
+
+Now we are ready to create the database and link it to SQL. 
+
+```{r database, eval=FALSE}
+field_db <- dbConnect(RSQLite::SQLite(),
+                      "field.db")
+```
+
+### Cover
+Now we can make the "cover" table. As stated above, this table has all the data related to my canopy cover surveys.
+
+The first step is to create the table. We will add the data to the table later. The columns in this table will include plot_id (an individual identifier of each plot made up of 1-3 characters), seed_mix (a tag to reference the seed mix used in the plot), density (either high 'H' or low 'L'), block (a number 1-6, referring to the replicate number), date, and the cover estimate of several species. Plot_id is the primary key. 
+
+For this chapter, solely for the purpose of saving time and space, I will only be showing columns for 5 species of interest. When analyzing and visualizing my data, I will include the full list of species observed in my plots. 
+
+Below is the RSQLite code to create the "cover" table. 
+
+```{r cover-table, eval=FALSE}
+#create all tables and enforce relationships
+dbExecute(field_db, "CREATE TABLE cover (
+          plot_id varchar(3) NOT NULL,
+          seed_mix varchar(2) NOT NULL,
+          density char(1) NOT NULL,
+          block char(1) NOT NULL,
+          date text,
+          PHAU_cover varchar(2),
+          DISP_cover varchar(2),
+          EUOC_cover varchar(2),
+          SCAM_cover varchar(2),
+          BICE_cover varchar(2),
+          PRIMARY KEY (plot_id)
+          );")
+```
+
+### Functional groups
+
+Now, we can make the "functional group" table. This table relates the functional groups of interest in my research to each of the 10 seed mixes used in my experiment. 
+
+This table includes a group id (an individual marker for each functional group in the table), seed mix (referring to the seed mix I planted in my research), and the group (the functional group related to the seed mix). The group id is the primary key for this table. The seed mix is a foreign key that references the column "seed_mix" in the cover table. 
+
+```{r group-table, eval = FALSE}
+dbExecute(field_db, "CREATE TABLE functional_group (
+          group_id char(1) NOT NULL,
+          seed_mix varchar(2) NOT NULL,
+          grp varchar(20),
+          PRIMARY KEY (group_id)
+          FOREIGN KEY (seed_mix) REFERENCES cover(seed_mix)
+          );")
+```
+
+## Import data
+
+The next step is to input the data into the tables we just created. Let's start with the cover table. The first step is to import the csv of my data. 
+
+```{r import, eval = FALSE}
+cover <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/fb_sql.csv")
+```
+
+The csv includes all the data I want in my table except for the individual plot_id. Let's make that now.
+
+```{r id, eval = FALSE}
+cover$plot_id <- 1:nrow(cover)
+```
+
+Next we can join this new column tos the csv data and change all the names of the columns so that they match the names of the columns in the SQL table.
+
+```{r names, eval = FALSE}
+cover <- cover[,c("plot_id", "Group", "Density", "Block", 
+                  "Date", "PHAU", "DISP", "EUOC", "SCAM", "BICE")]
+names(cover)[2:10] <- c("seed_mix", "density", "block", "date", 
+                       "PHAU_cover", "DISP_cover", "EUOC_cover", 
+                       "SCAM_cover", "BICE_cover")
+```
+
+Now we can put all the data into the table!
+
+```{r write, eval = FALSE}
+
+dbWriteTable(field_db, "cover", cover, append = TRUE)
+```
+
+Finally, we can check that it all worked by making a query.
+
+```{r query, eval = FALSE}
+
+dbGetQuery(field_db, "SELECT * FROM cover LIMIT 10;")
+```
+
+Now let's do it all again for the functional group table.
+
+```{r fg, eval = FALSE}
+
+functional_group <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/functional_group.csv")
+
+functional_group$group_id <- 1:nrow(functional_group)
+
+functional_group <- functional_group[,c("group_id", "seed_mix", "grp")]
+
+dbWriteTable(field_db, "functional_group", functional_group, append = TRUE)
+
+dbGetQuery(field_db, "SELECT * FROM functional_group LIMIT 10;")
+```

@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.jpg
+*.docx
+*.RHistory
+.Rproj.user/
+Figures/

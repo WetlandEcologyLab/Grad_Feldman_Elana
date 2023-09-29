@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.jpg
+*.docx
+*.RHistory
+*.xlsx
+.Rproj.user/
+Preliminary_graphs/

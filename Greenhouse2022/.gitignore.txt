@@ -1,0 +1,7 @@
+*.jpg
+*.docx
+*.Rhistory
+/.Rproj.user/
+*.png
+Examples from Jes/
+Graphs/

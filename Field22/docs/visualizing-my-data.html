@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Visualizing my data | A Minimal Book Example</title>
+  <meta name="description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Visualizing my data | A Minimal Book Example" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Visualizing my data | A Minimal Book Example" />
+  
+  <meta name="twitter:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  
+
+<meta name="author" content="John Doe" />
+
+
+<meta name="date" content="2023-04-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="cleaning-my-data.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="my-database-structure.html"><a href="my-database-structure.html"><i class="fa fa-check"></i><b>2</b> My database structure</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="my-database-structure.html"><a href="my-database-structure.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="my-database-structure.html"><a href="my-database-structure.html#introduction-to-my-data"><i class="fa fa-check"></i><b>2.2</b> Introduction to my data</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="my-database-structure.html"><a href="my-database-structure.html#my-thesis"><i class="fa fa-check"></i><b>2.2.1</b> My thesis</a></li>
+<li class="chapter" data-level="2.2.2" data-path="my-database-structure.html"><a href="my-database-structure.html#my-treatments"><i class="fa fa-check"></i><b>2.2.2</b> My treatments</a></li>
+<li class="chapter" data-level="2.2.3" data-path="my-database-structure.html"><a href="my-database-structure.html#my-tables"><i class="fa fa-check"></i><b>2.2.3</b> My tables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="my-database-structure.html"><a href="my-database-structure.html#creating-the-database"><i class="fa fa-check"></i><b>2.3</b> Creating the database</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="my-database-structure.html"><a href="my-database-structure.html#getting-started"><i class="fa fa-check"></i><b>2.3.1</b> Getting started</a></li>
+<li class="chapter" data-level="2.3.2" data-path="my-database-structure.html"><a href="my-database-structure.html#cover"><i class="fa fa-check"></i><b>2.3.2</b> Cover</a></li>
+<li class="chapter" data-level="2.3.3" data-path="my-database-structure.html"><a href="my-database-structure.html#functional-groups"><i class="fa fa-check"></i><b>2.3.3</b> Functional groups</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="my-database-structure.html"><a href="my-database-structure.html#import-data"><i class="fa fa-check"></i><b>2.4</b> Import data</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning my data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#overview-of-the-chapter"><i class="fa fa-check"></i><b>3.1</b> Overview of the Chapter</a></li>
+<li class="chapter" data-level="3.2" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#importing-the-data"><i class="fa fa-check"></i><b>3.2</b> Importing the data</a></li>
+<li class="chapter" data-level="3.3" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#cleaning-the-data"><i class="fa fa-check"></i><b>3.3</b> Cleaning the data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html"><i class="fa fa-check"></i><b>4</b> Visualizing my data</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#overview-of-chapter"><i class="fa fa-check"></i><b>4.1</b> Overview of Chapter</a></li>
+<li class="chapter" data-level="4.2" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#organizing-the-data"><i class="fa fa-check"></i><b>4.2</b> Organizing the data</a></li>
+<li class="chapter" data-level="4.3" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#graphing-the-data"><i class="fa fa-check"></i><b>4.3</b> Graphing the data</a></li>
+<li class="chapter" data-level="4.4" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#combine"><i class="fa fa-check"></i><b>4.4</b> Combine</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Minimal Book Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="visualizing-my-data" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Visualizing my data<a href="visualizing-my-data.html#visualizing-my-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="overview-of-chapter" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Overview of Chapter<a href="visualizing-my-data.html#overview-of-chapter" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Now that my data is clean, I can start to make graphs to find the story! For my thesis, I am interested in seeing differences in invasive plant cover as a result of the seed mix used in the plot. To do this, I will make a graph that includes invasive and native cover by seed mix.</p>
+</div>
+<div id="organizing-the-data" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Organizing the data<a href="visualizing-my-data.html#organizing-the-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Currently, I have one column for each species seen in the field. However, I want to graph the total cover for all native and invasive plants seen in the plots. But how do I know which ones are native? To start, I need to change my data from wide format to long format and make a new column that identifies which species is native and which is invasive. Plus, I only need to know this information for the last sampling date.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="visualizing-my-data.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load packages</span></span>
+<span id="cb32-2"><a href="visualizing-my-data.html#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb32-3"><a href="visualizing-my-data.html#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb32-4"><a href="visualizing-my-data.html#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="visualizing-my-data.html#cb32-5" aria-hidden="true" tabindex="-1"></a>graph_data <span class="ot">&lt;-</span>fb <span class="sc">%&gt;%</span></span>
+<span id="cb32-6"><a href="visualizing-my-data.html#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Block, Plot, Group, Density, Date, PHAU, Cheno, Typha, </span>
+<span id="cb32-7"><a href="visualizing-my-data.html#cb32-7" aria-hidden="true" tabindex="-1"></a>         BOMA, DISP, EUMA, SYCI, LEFA, SCAC, BICE, BIFR, EUOC, MUAS, SCAM, RUMA,</span>
+<span id="cb32-8"><a href="visualizing-my-data.html#cb32-8" aria-hidden="true" tabindex="-1"></a>         RUST, Unk_Bulrush, SARU, Tamarisk) <span class="sc">%&gt;%</span>  <span class="co">#remove unnecessary columns</span></span>
+<span id="cb32-9"><a href="visualizing-my-data.html#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Date <span class="sc">==</span> <span class="st">&quot;2022-09-16&quot;</span>) <span class="sc">%&gt;%</span>  <span class="co">#only the last sampling date</span></span>
+<span id="cb32-10"><a href="visualizing-my-data.html#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb32-11"><a href="visualizing-my-data.html#cb32-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">24</span>, </span>
+<span id="cb32-12"><a href="visualizing-my-data.html#cb32-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;SPP&quot;</span>,</span>
+<span id="cb32-13"><a href="visualizing-my-data.html#cb32-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;Percent_Cover&quot;</span></span>
+<span id="cb32-14"><a href="visualizing-my-data.html#cb32-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> <span class="co">#pivot so that all species names are in one column</span></span>
+<span id="cb32-15"><a href="visualizing-my-data.html#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Status =</span> </span>
+<span id="cb32-16"><a href="visualizing-my-data.html#cb32-16" aria-hidden="true" tabindex="-1"></a>                dplyr<span class="sc">::</span><span class="fu">if_else</span>(</span>
+<span id="cb32-17"><a href="visualizing-my-data.html#cb32-17" aria-hidden="true" tabindex="-1"></a>                  SPP <span class="sc">%in%</span></span>
+<span id="cb32-18"><a href="visualizing-my-data.html#cb32-18" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">c</span>(<span class="st">&quot;PHAU&quot;</span>, <span class="st">&quot;Typha&quot;</span>, <span class="st">&quot;RUST&quot;</span>, <span class="st">&quot;Tamarisk&quot;</span>), </span>
+<span id="cb32-19"><a href="visualizing-my-data.html#cb32-19" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;Invasive&quot;</span>, <span class="st">&quot;Native&quot;</span>)) <span class="sc">%&gt;%</span>  <span class="co">#make a new column for species status</span></span>
+<span id="cb32-20"><a href="visualizing-my-data.html#cb32-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Block, Plot, Status) <span class="sc">%&gt;%</span> <span class="co">#group by the plot and species status</span></span>
+<span id="cb32-21"><a href="visualizing-my-data.html#cb32-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">PC =</span> <span class="fu">sum</span>(Percent_Cover, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="co">#calculate totals</span></span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;Block&#39;, &#39;Plot&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="visualizing-my-data.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check out the results</span></span>
+<span id="cb34-2"><a href="visualizing-my-data.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(graph_data)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 4
+## # Groups:   Block, Plot [3]
+##   Block Plot  Status      PC
+##   &lt;int&gt; &lt;fct&gt; &lt;chr&gt;    &lt;dbl&gt;
+## 1     1 1H    Invasive  0.05
+## 2     1 1H    Native    0.1 
+## 3     1 1L    Invasive  0.15
+## 4     1 1L    Native    0.1 
+## 5     1 2H    Invasive  0.05
+## 6     1 2H    Native    0.2</code></pre>
+<p>This all looks good! Now we have summed values of all the native and invasive cover for each plot for the last sampling date. Let’s go ahead and graph!</p>
+</div>
+<div id="graphing-the-data" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Graphing the data<a href="visualizing-my-data.html#graphing-the-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Now, let’s graph up the values we calculated for invasive and native cover at each plot. For the first order of business, I want to replace all the names of the plots from my research codes to codes that will make sense to a wider audience.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="visualizing-my-data.html#cb36-1" aria-hidden="true" tabindex="-1"></a>graph_data <span class="ot">&lt;-</span> graph_data <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="visualizing-my-data.html#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Plot =</span> <span class="fu">case_when</span>(</span>
+<span id="cb36-3"><a href="visualizing-my-data.html#cb36-3" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;1H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Perennial forbs (high)&quot;</span>,</span>
+<span id="cb36-4"><a href="visualizing-my-data.html#cb36-4" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;1L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Perennial forbs (low)&quot;</span>,</span>
+<span id="cb36-5"><a href="visualizing-my-data.html#cb36-5" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;2H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Rushes (high)&quot;</span>,</span>
+<span id="cb36-6"><a href="visualizing-my-data.html#cb36-6" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;2L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Rushes (low)&quot;</span>,</span>
+<span id="cb36-7"><a href="visualizing-my-data.html#cb36-7" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;3H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Grasses (high)&quot;</span>,</span>
+<span id="cb36-8"><a href="visualizing-my-data.html#cb36-8" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;3L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Grasses (low)&quot;</span>,</span>
+<span id="cb36-9"><a href="visualizing-my-data.html#cb36-9" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;4H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bulrushes (high)&quot;</span>,</span>
+<span id="cb36-10"><a href="visualizing-my-data.html#cb36-10" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;4L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bulrushes (low)&quot;</span>,</span>
+<span id="cb36-11"><a href="visualizing-my-data.html#cb36-11" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;5H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Annual forbs (high)&quot;</span>,</span>
+<span id="cb36-12"><a href="visualizing-my-data.html#cb36-12" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;5L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Annual forbs (low)&quot;</span>,</span>
+<span id="cb36-13"><a href="visualizing-my-data.html#cb36-13" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;C&quot;</span> <span class="sc">~</span> <span class="st">&quot;Control&quot;</span>,</span>
+<span id="cb36-14"><a href="visualizing-my-data.html#cb36-14" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;PROBLEM&quot;</span></span>
+<span id="cb36-15"><a href="visualizing-my-data.html#cb36-15" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb36-16"><a href="visualizing-my-data.html#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-17"><a href="visualizing-my-data.html#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="co">#Double check</span></span>
+<span id="cb36-18"><a href="visualizing-my-data.html#cb36-18" aria-hidden="true" tabindex="-1"></a>graph_data <span class="sc">%&gt;%</span> </span>
+<span id="cb36-19"><a href="visualizing-my-data.html#cb36-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Plot) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-20"><a href="visualizing-my-data.html#cb36-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tally</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 11 × 2
+##    Plot                       n
+##    &lt;chr&gt;                  &lt;int&gt;
+##  1 Annual forbs (high)       12
+##  2 Annual forbs (low)        12
+##  3 Bulrushes (high)          12
+##  4 Bulrushes (low)           12
+##  5 Control                   12
+##  6 Grasses (high)            12
+##  7 Grasses (low)             12
+##  8 Perennial forbs (high)    12
+##  9 Perennial forbs (low)     12
+## 10 Rushes (high)             12
+## 11 Rushes (low)              12</code></pre>
+<p>After double checking our data, nothing came up as a “PROBLEM” so all our calculations look good!</p>
+<p>Now we can finally graph it. Let’s use points with error bars, color coded depending on whether the value is for native or invasive species.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="visualizing-my-data.html#cb38-1" aria-hidden="true" tabindex="-1"></a>fb_plot <span class="ot">&lt;-</span> graph_data <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="visualizing-my-data.html#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Plot =</span> <span class="fu">factor</span>(Plot, <span class="co">#set the order I want</span></span>
+<span id="cb38-3"><a href="visualizing-my-data.html#cb38-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Annual forbs (high)&quot;</span>, </span>
+<span id="cb38-4"><a href="visualizing-my-data.html#cb38-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Annual forbs (low)&quot;</span>, <span class="st">&quot;Perennial forbs (high)&quot;</span>,</span>
+<span id="cb38-5"><a href="visualizing-my-data.html#cb38-5" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Perennial forbs (low)&quot;</span>, <span class="st">&quot;Rushes (high)&quot;</span>,</span>
+<span id="cb38-6"><a href="visualizing-my-data.html#cb38-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Rushes (low)&quot;</span>, <span class="st">&quot;Grasses (high)&quot;</span>, </span>
+<span id="cb38-7"><a href="visualizing-my-data.html#cb38-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Grasses (low)&quot;</span>, <span class="st">&quot;Bulrushes (high)&quot;</span>,</span>
+<span id="cb38-8"><a href="visualizing-my-data.html#cb38-8" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Bulrushes (low)&quot;</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-9"><a href="visualizing-my-data.html#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Plot, <span class="at">y =</span> PC, <span class="at">color =</span> Status)) <span class="sc">+</span> <span class="co">#x is plot, y is cover</span></span>
+<span id="cb38-10"><a href="visualizing-my-data.html#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> Status), <span class="co">#calculate means of the total cover</span></span>
+<span id="cb38-11"><a href="visualizing-my-data.html#cb38-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb38-12"><a href="visualizing-my-data.html#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> Status, <span class="at">width =</span> <span class="dv">0</span>), <span class="co">#calculate error bars</span></span>
+<span id="cb38-13"><a href="visualizing-my-data.html#cb38-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">fun.data =</span> mean_se, <span class="at">geom =</span> <span class="st">&quot;errorbar&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb38-14"><a href="visualizing-my-data.html#cb38-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Functional Group&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Cover (%)&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Farmington Bay&quot;</span>) <span class="sc">+</span> <span class="co">#labels</span></span>
+<span id="cb38-15"><a href="visualizing-my-data.html#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="fl">0.9</span>)) </span>
+<span id="cb38-16"><a href="visualizing-my-data.html#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-17"><a href="visualizing-my-data.html#cb38-17" aria-hidden="true" tabindex="-1"></a>fb_plot</span></code></pre></div>
+<p><img src="_main_files/figure-html/graph-1.png" width="672" /></p>
+<p>Now we can do it all again with the Utah Lake data.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="visualizing-my-data.html#cb39-1" aria-hidden="true" tabindex="-1"></a>graph_data2 <span class="ot">&lt;-</span> ul<span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="visualizing-my-data.html#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Block, Plot, Group, Density, Date, PHAU, BOMA, BICE, CYER, RUMA,</span>
+<span id="cb39-3"><a href="visualizing-my-data.html#cb39-3" aria-hidden="true" tabindex="-1"></a>         Cheno, SCAC, SCPU, SCAM, DISP, RACY, ASIN, ALPR, CYDA, Unk_Bulrush, BY, SYCI,</span>
+<span id="cb39-4"><a href="visualizing-my-data.html#cb39-4" aria-hidden="true" tabindex="-1"></a>         EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) <span class="sc">%&gt;%</span></span>
+<span id="cb39-5"><a href="visualizing-my-data.html#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Date <span class="sc">==</span> <span class="st">&quot;2022-09-16&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-6"><a href="visualizing-my-data.html#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb39-7"><a href="visualizing-my-data.html#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">30</span>, </span>
+<span id="cb39-8"><a href="visualizing-my-data.html#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;SPP&quot;</span>,</span>
+<span id="cb39-9"><a href="visualizing-my-data.html#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;Percent_Cover&quot;</span></span>
+<span id="cb39-10"><a href="visualizing-my-data.html#cb39-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-11"><a href="visualizing-my-data.html#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Status =</span> </span>
+<span id="cb39-12"><a href="visualizing-my-data.html#cb39-12" aria-hidden="true" tabindex="-1"></a>                  dplyr<span class="sc">::</span><span class="fu">if_else</span>(</span>
+<span id="cb39-13"><a href="visualizing-my-data.html#cb39-13" aria-hidden="true" tabindex="-1"></a>                    SPP <span class="sc">%in%</span></span>
+<span id="cb39-14"><a href="visualizing-my-data.html#cb39-14" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">c</span>(<span class="st">&quot;PHAU&quot;</span>, <span class="st">&quot;TYPHA&quot;</span>, <span class="st">&quot;RUST&quot;</span>, <span class="st">&quot;Tamarisk&quot;</span>, <span class="st">&quot;ALPR&quot;</span>, <span class="st">&quot;CYDA&quot;</span>, <span class="st">&quot;BY&quot;</span>, </span>
+<span id="cb39-15"><a href="visualizing-my-data.html#cb39-15" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;BASC&quot;</span>, <span class="st">&quot;LASE&quot;</span>), </span>
+<span id="cb39-16"><a href="visualizing-my-data.html#cb39-16" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;Invasive&quot;</span>, <span class="st">&quot;Native&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-17"><a href="visualizing-my-data.html#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Block, Plot, Status) <span class="sc">%&gt;%</span></span>
+<span id="cb39-18"><a href="visualizing-my-data.html#cb39-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">PC =</span> <span class="fu">sum</span>(Percent_Cover, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;Block&#39;, &#39;Plot&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="visualizing-my-data.html#cb41-1" aria-hidden="true" tabindex="-1"></a>graph_data2 <span class="ot">&lt;-</span> graph_data2 <span class="sc">%&gt;%</span> </span>
+<span id="cb41-2"><a href="visualizing-my-data.html#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Plot =</span> <span class="fu">case_when</span>(</span>
+<span id="cb41-3"><a href="visualizing-my-data.html#cb41-3" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;1H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Perennial forbs (high)&quot;</span>,</span>
+<span id="cb41-4"><a href="visualizing-my-data.html#cb41-4" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;1L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Perennial forbs (low)&quot;</span>,</span>
+<span id="cb41-5"><a href="visualizing-my-data.html#cb41-5" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;2H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Rushes (high)&quot;</span>,</span>
+<span id="cb41-6"><a href="visualizing-my-data.html#cb41-6" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;2L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Rushes (low)&quot;</span>,</span>
+<span id="cb41-7"><a href="visualizing-my-data.html#cb41-7" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;3H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Grasses (high)&quot;</span>,</span>
+<span id="cb41-8"><a href="visualizing-my-data.html#cb41-8" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;3L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Grasses (low)&quot;</span>,</span>
+<span id="cb41-9"><a href="visualizing-my-data.html#cb41-9" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;4H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bulrushes (high)&quot;</span>,</span>
+<span id="cb41-10"><a href="visualizing-my-data.html#cb41-10" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;4L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bulrushes (low)&quot;</span>,</span>
+<span id="cb41-11"><a href="visualizing-my-data.html#cb41-11" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;5H&quot;</span> <span class="sc">~</span> <span class="st">&quot;Annual forbs (high)&quot;</span>,</span>
+<span id="cb41-12"><a href="visualizing-my-data.html#cb41-12" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;5L&quot;</span> <span class="sc">~</span> <span class="st">&quot;Annual forbs (low)&quot;</span>,</span>
+<span id="cb41-13"><a href="visualizing-my-data.html#cb41-13" aria-hidden="true" tabindex="-1"></a>    Plot <span class="sc">==</span> <span class="st">&quot;C&quot;</span> <span class="sc">~</span> <span class="st">&quot;Control&quot;</span>,</span>
+<span id="cb41-14"><a href="visualizing-my-data.html#cb41-14" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;PROBLEM&quot;</span></span>
+<span id="cb41-15"><a href="visualizing-my-data.html#cb41-15" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb41-16"><a href="visualizing-my-data.html#cb41-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-17"><a href="visualizing-my-data.html#cb41-17" aria-hidden="true" tabindex="-1"></a>ul_plot <span class="ot">&lt;-</span> graph_data2 <span class="sc">%&gt;%</span></span>
+<span id="cb41-18"><a href="visualizing-my-data.html#cb41-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Plot =</span> <span class="fu">factor</span>(Plot, <span class="co">#set the order I want</span></span>
+<span id="cb41-19"><a href="visualizing-my-data.html#cb41-19" aria-hidden="true" tabindex="-1"></a>                       <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Annual forbs (high)&quot;</span>, </span>
+<span id="cb41-20"><a href="visualizing-my-data.html#cb41-20" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Annual forbs (low)&quot;</span>, <span class="st">&quot;Perennial forbs (high)&quot;</span>,</span>
+<span id="cb41-21"><a href="visualizing-my-data.html#cb41-21" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Perennial forbs (low)&quot;</span>, <span class="st">&quot;Rushes (high)&quot;</span>,</span>
+<span id="cb41-22"><a href="visualizing-my-data.html#cb41-22" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Rushes (low)&quot;</span>, <span class="st">&quot;Grasses (high)&quot;</span>, </span>
+<span id="cb41-23"><a href="visualizing-my-data.html#cb41-23" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Grasses (low)&quot;</span>, <span class="st">&quot;Bulrushes (high)&quot;</span>,</span>
+<span id="cb41-24"><a href="visualizing-my-data.html#cb41-24" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;Bulrushes (low)&quot;</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-25"><a href="visualizing-my-data.html#cb41-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Plot, <span class="at">y =</span> PC, <span class="at">color =</span> Status)) <span class="sc">+</span> <span class="co">#x is plot, y is cover</span></span>
+<span id="cb41-26"><a href="visualizing-my-data.html#cb41-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> Status), <span class="co">#calculate means of the total cover</span></span>
+<span id="cb41-27"><a href="visualizing-my-data.html#cb41-27" aria-hidden="true" tabindex="-1"></a>               <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb41-28"><a href="visualizing-my-data.html#cb41-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> Status, <span class="at">width =</span> <span class="dv">0</span>), <span class="co">#calculate error bars</span></span>
+<span id="cb41-29"><a href="visualizing-my-data.html#cb41-29" aria-hidden="true" tabindex="-1"></a>               <span class="at">fun.data =</span> mean_se, <span class="at">geom =</span> <span class="st">&quot;errorbar&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb41-30"><a href="visualizing-my-data.html#cb41-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Functional Group&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Cover (%)&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Utah Lake&quot;</span>) <span class="sc">+</span> <span class="co">#labels</span></span>
+<span id="cb41-31"><a href="visualizing-my-data.html#cb41-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="fl">0.9</span>)) </span>
+<span id="cb41-32"><a href="visualizing-my-data.html#cb41-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-33"><a href="visualizing-my-data.html#cb41-33" aria-hidden="true" tabindex="-1"></a>ul_plot</span></code></pre></div>
+<p><img src="_main_files/figure-html/utah%20lake-1.png" width="672" /></p>
+</div>
+<div id="combine" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Combine<a href="visualizing-my-data.html#combine" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>For my final output, I would like these two graphs side by side. Let’s use patchwork to combine them.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="visualizing-my-data.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb42-2"><a href="visualizing-my-data.html#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="visualizing-my-data.html#cb42-3" aria-hidden="true" tabindex="-1"></a>fb_plot <span class="sc">+</span> ul_plot</span></code></pre></div>
+<p><img src="_main_files/figure-html/grid-1.png" width="672" /></p>
+<p>They look great!</p>
+<p>Unfortunately, there do not appear to be any differences in native or invasive biomass as a result of seed mix. A generalized linear mixed model shows that the only significant difference is between the bulrushes and annual forbs at the Farmington Bay plots, but none of my plots are significantly different from the controls. Oh well, I guess that is how field work goes. Hopefully I will get more exciting results after my second year of monitoring!</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="cleaning-my-data.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/03-Visualization.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

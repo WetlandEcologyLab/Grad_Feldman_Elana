@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Cleaning my data | A Minimal Book Example</title>
+  <meta name="description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Cleaning my data | A Minimal Book Example" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Cleaning my data | A Minimal Book Example" />
+  
+  <meta name="twitter:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  
+
+<meta name="author" content="John Doe" />
+
+
+<meta name="date" content="2023-04-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="my-database-structure.html"/>
+<link rel="next" href="visualizing-my-data.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="my-database-structure.html"><a href="my-database-structure.html"><i class="fa fa-check"></i><b>2</b> My database structure</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="my-database-structure.html"><a href="my-database-structure.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="my-database-structure.html"><a href="my-database-structure.html#introduction-to-my-data"><i class="fa fa-check"></i><b>2.2</b> Introduction to my data</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="my-database-structure.html"><a href="my-database-structure.html#my-thesis"><i class="fa fa-check"></i><b>2.2.1</b> My thesis</a></li>
+<li class="chapter" data-level="2.2.2" data-path="my-database-structure.html"><a href="my-database-structure.html#my-treatments"><i class="fa fa-check"></i><b>2.2.2</b> My treatments</a></li>
+<li class="chapter" data-level="2.2.3" data-path="my-database-structure.html"><a href="my-database-structure.html#my-tables"><i class="fa fa-check"></i><b>2.2.3</b> My tables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="my-database-structure.html"><a href="my-database-structure.html#creating-the-database"><i class="fa fa-check"></i><b>2.3</b> Creating the database</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="my-database-structure.html"><a href="my-database-structure.html#getting-started"><i class="fa fa-check"></i><b>2.3.1</b> Getting started</a></li>
+<li class="chapter" data-level="2.3.2" data-path="my-database-structure.html"><a href="my-database-structure.html#cover"><i class="fa fa-check"></i><b>2.3.2</b> Cover</a></li>
+<li class="chapter" data-level="2.3.3" data-path="my-database-structure.html"><a href="my-database-structure.html#functional-groups"><i class="fa fa-check"></i><b>2.3.3</b> Functional groups</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="my-database-structure.html"><a href="my-database-structure.html#import-data"><i class="fa fa-check"></i><b>2.4</b> Import data</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning my data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#overview-of-the-chapter"><i class="fa fa-check"></i><b>3.1</b> Overview of the Chapter</a></li>
+<li class="chapter" data-level="3.2" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#importing-the-data"><i class="fa fa-check"></i><b>3.2</b> Importing the data</a></li>
+<li class="chapter" data-level="3.3" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#cleaning-the-data"><i class="fa fa-check"></i><b>3.3</b> Cleaning the data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html"><i class="fa fa-check"></i><b>4</b> Visualizing my data</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#overview-of-chapter"><i class="fa fa-check"></i><b>4.1</b> Overview of Chapter</a></li>
+<li class="chapter" data-level="4.2" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#organizing-the-data"><i class="fa fa-check"></i><b>4.2</b> Organizing the data</a></li>
+<li class="chapter" data-level="4.3" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#graphing-the-data"><i class="fa fa-check"></i><b>4.3</b> Graphing the data</a></li>
+<li class="chapter" data-level="4.4" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#combine"><i class="fa fa-check"></i><b>4.4</b> Combine</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Minimal Book Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="cleaning-my-data" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Cleaning my data<a href="cleaning-my-data.html#cleaning-my-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="overview-of-the-chapter" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Overview of the Chapter<a href="cleaning-my-data.html#overview-of-the-chapter" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The first step was to clean all my data. The values collected in this experiment were percent cover of each species present in my 1m plot. Although the data are technically in cover classes (&lt;1, 1-10, 10-20, 20-30, 30-40, 40-50, 50-60, 60-70, 70-80, 80-90, &gt;99), data were written down as a single number meant to represent the lower value of the cover class (&lt;1, 10, 20, 30, 40, 50, 60, 70, 80, 90, &gt;99). For my data analyses, I will use the mid-point of the cover classes (5, 15, 25, 35, 45, 55, 65, 75, 85, 95). I intend to use the beta distribution for my analyses, and therefore need to nudge my upper and lower bounds into values between 0 and 1 (&lt;1 -&gt; 0.005, &gt;99 -&gt; .999).</p>
+</div>
+<div id="importing-the-data" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Importing the data<a href="cleaning-my-data.html#importing-the-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>I have two different spreadsheets, each representing one of my field sites. Both will be cleaned in the same way, but first I need to import the data and load all my packages.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="cleaning-my-data.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Load packages</span></span>
+<span id="cb14-2"><a href="cleaning-my-data.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
+## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
+## ✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+## ✔ readr   2.1.2      ✔ forcats 0.5.2 
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="cleaning-my-data.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate) <span class="co">#my version of tidyverse does not seem to include lubridate</span></span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     date, intersect, setdiff, union</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="cleaning-my-data.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Import data</span></span>
+<span id="cb18-2"><a href="cleaning-my-data.html#cb18-2" aria-hidden="true" tabindex="-1"></a>fb <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;../../Cleaned-Data/clean_fb.csv&quot;</span>)</span>
+<span id="cb18-3"><a href="cleaning-my-data.html#cb18-3" aria-hidden="true" tabindex="-1"></a>ul <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;../../Cleaned-Data/clean_ul.csv&quot;</span>)</span></code></pre></div>
+</div>
+<div id="cleaning-the-data" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Cleaning the data<a href="cleaning-my-data.html#cleaning-the-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>To begin, I will start by working with <code>fb</code>, which is all my data from Farmington Bay. One of the columns in my table is Date, which is the date of sampling.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="cleaning-my-data.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(fb<span class="sc">$</span>Date)</span></code></pre></div>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<p>R is reading my date column as a character string! I need to fix this using lubridate so that R understands that my dates are dates.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="cleaning-my-data.html#cb21-1" aria-hidden="true" tabindex="-1"></a>fb<span class="sc">$</span>Date <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">mdy</span>(fb<span class="sc">$</span>Date)</span>
+<span id="cb21-2"><a href="cleaning-my-data.html#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="cleaning-my-data.html#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(fb<span class="sc">$</span>Date)</span></code></pre></div>
+<pre><code>## [1] &quot;Date&quot;</code></pre>
+<p>Now I can move on to fixing my column names. When I <code>glimpse</code> my column names, I can see that not all of them make sense.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="cleaning-my-data.html#cb23-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(fb)</span></code></pre></div>
+<pre><code>## Rows: 330
+## Columns: 31
+## $ Block...FB    &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,…
+## $ Plot          &lt;chr&gt; &quot;5H&quot;, &quot;1L&quot;, &quot;2L&quot;, &quot;4L&quot;, &quot;3L&quot;, &quot;4H&quot;, &quot;5L&quot;, &quot;C&quot;, &quot;1H&quot;, &quot;2H…
+## $ Group         &lt;chr&gt; &quot;5&quot;, &quot;1&quot;, &quot;2&quot;, &quot;4&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;C&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;…
+## $ Density       &lt;chr&gt; &quot;H&quot;, &quot;L&quot;, &quot;L&quot;, &quot;L&quot;, &quot;L&quot;, &quot;H&quot;, &quot;L&quot;, &quot;C&quot;, &quot;H&quot;, &quot;H&quot;, &quot;H&quot;, &quot;…
+## $ Date          &lt;date&gt; 2022-07-27, 2022-07-27, 2022-07-27, 2022-07-27, 2022-07…
+## $ Total.Cover   &lt;chr&gt; &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;1&quot;, &quot;0&quot;, &quot;1&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;1&quot;, &quot;…
+## $ PHAU          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&lt;1&quot;, &quot;&quot;, &quot;&quot;…
+## $ Cheno         &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ Typha         &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ BOMA          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;1&quot;, &quot;&quot;, &quot;1&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;1&quot;, &quot;&quot;, &quot;&quot;, &quot;…
+## $ DISP          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ EUMA          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ SYCI          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ LEFA          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ SCAC          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ BICE          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ BIFR          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ EUOC          &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ MUAS          &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ SCAM          &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ RUMA          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ RUST          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ Unk_Forb      &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ Unk_Grass     &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ Unk_Rush      &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&lt;1&quot;, &quot;&quot;, &quot;&quot;…
+## $ SARU          &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ Tamarisk      &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ Notes         &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ Measurement.1 &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ Measurement.2 &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ Measurement.3 &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…</code></pre>
+<p>My first column name is coming up as Block…FB. This column name does not follow the conventions we learned in class and it too complicated to type. I will change it to simply say Block. I also need to change the column Unk_Rush to be called Unk_Bulrush</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="cleaning-my-data.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fb)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">&quot;Block&quot;</span></span>
+<span id="cb25-2"><a href="cleaning-my-data.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fb)[<span class="dv">25</span>] <span class="ot">&lt;-</span> <span class="st">&quot;Unk_Bulrush&quot;</span></span></code></pre></div>
+<p>The most difficult part of cleaning my data is making sure all the cover values have been entered properly. Let’s start by looking at the values in a random column.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="cleaning-my-data.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(fb<span class="sc">$</span>BOMA)</span></code></pre></div>
+<pre><code>## [1] &quot;&quot;   &quot;1&quot;  &quot;&lt;1&quot; &quot;10&quot; &quot;20&quot;</code></pre>
+<p>We have a couple of problems here. First of all, the values are all being read as characters instead of numbers. This is because of my values that reads “&lt;1”. My first step will be to replace this value with a trace value that can be used in statistical analyses (typically one half of the smallest recorded value). After replacing that value, I will be able to change all these values into numeric values so they are no longer characters. This will also help to change my “” values to NA values. Next, my larger values were entered into the spreadsheet as percentages (10 = 10%, 20 = 20%). To perform my statistical analyses, these will need to be changes into proportions (10 -&gt; .1, 20 -&gt; .2). Finally, I want all my values to be on the mid-point of their cover class, not the bottom. Therefore, everything needs to increase by 0.05 (.1 -&gt; .15, .2 -&gt; .25).</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="cleaning-my-data.html#cb28-1" aria-hidden="true" tabindex="-1"></a>fb <span class="ot">&lt;-</span> fb <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="cleaning-my-data.html#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total.Cover =</span> <span class="fu">case_when</span>(</span>
+<span id="cb28-3"><a href="cleaning-my-data.html#cb28-3" aria-hidden="true" tabindex="-1"></a>  Total.Cover <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, <span class="co">#change all the &lt;1 to the trace value of 0.005</span></span>
+<span id="cb28-4"><a href="cleaning-my-data.html#cb28-4" aria-hidden="true" tabindex="-1"></a>  Total.Cover <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, <span class="co">#change the 1s to 0.05 (because too small to work below)</span></span>
+<span id="cb28-5"><a href="cleaning-my-data.html#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#all other numbers can stay as they are but numeric</span></span>
+<span id="cb28-6"><a href="cleaning-my-data.html#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#but add 5 so they are at the mid-point of the cover class</span></span>
+<span id="cb28-7"><a href="cleaning-my-data.html#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#and then divide them by 100 so they are proportions</span></span>
+<span id="cb28-8"><a href="cleaning-my-data.html#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(Total.Cover) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span></span>
+<span id="cb28-9"><a href="cleaning-my-data.html#cb28-9" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div>
+<pre><code>## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion</code></pre>
+<p>Now I just need to repeat this for all the columns between Total.Cover and Tamarisk. I originally tried to do this through a loop so I wouldn’t need to copy and paste for each column, but unfortunately I could not get the loop to run in time. That can be a future project for me!</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="cleaning-my-data.html#cb30-1" aria-hidden="true" tabindex="-1"></a>fb <span class="ot">&lt;-</span> fb <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="cleaning-my-data.html#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PHAU =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-3"><a href="cleaning-my-data.html#cb30-3" aria-hidden="true" tabindex="-1"></a>          PHAU <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-4"><a href="cleaning-my-data.html#cb30-4" aria-hidden="true" tabindex="-1"></a>          PHAU <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-5"><a href="cleaning-my-data.html#cb30-5" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(PHAU) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span> ),</span>
+<span id="cb30-6"><a href="cleaning-my-data.html#cb30-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">Cheno =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-7"><a href="cleaning-my-data.html#cb30-7" aria-hidden="true" tabindex="-1"></a>          Cheno <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-8"><a href="cleaning-my-data.html#cb30-8" aria-hidden="true" tabindex="-1"></a>          Cheno <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-9"><a href="cleaning-my-data.html#cb30-9" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(Cheno) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-10"><a href="cleaning-my-data.html#cb30-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">Typha =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-11"><a href="cleaning-my-data.html#cb30-11" aria-hidden="true" tabindex="-1"></a>          Typha <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-12"><a href="cleaning-my-data.html#cb30-12" aria-hidden="true" tabindex="-1"></a>          Typha <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-13"><a href="cleaning-my-data.html#cb30-13" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(Typha) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-14"><a href="cleaning-my-data.html#cb30-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">BOMA =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-15"><a href="cleaning-my-data.html#cb30-15" aria-hidden="true" tabindex="-1"></a>          BOMA <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-16"><a href="cleaning-my-data.html#cb30-16" aria-hidden="true" tabindex="-1"></a>          BOMA <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-17"><a href="cleaning-my-data.html#cb30-17" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(BOMA) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-18"><a href="cleaning-my-data.html#cb30-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">DISP =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-19"><a href="cleaning-my-data.html#cb30-19" aria-hidden="true" tabindex="-1"></a>          DISP <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-20"><a href="cleaning-my-data.html#cb30-20" aria-hidden="true" tabindex="-1"></a>          DISP <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-21"><a href="cleaning-my-data.html#cb30-21" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(DISP) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-22"><a href="cleaning-my-data.html#cb30-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">EUMA =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-23"><a href="cleaning-my-data.html#cb30-23" aria-hidden="true" tabindex="-1"></a>          EUMA <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-24"><a href="cleaning-my-data.html#cb30-24" aria-hidden="true" tabindex="-1"></a>          EUMA <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-25"><a href="cleaning-my-data.html#cb30-25" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(EUMA) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-26"><a href="cleaning-my-data.html#cb30-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">SYCI =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-27"><a href="cleaning-my-data.html#cb30-27" aria-hidden="true" tabindex="-1"></a>          SYCI <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-28"><a href="cleaning-my-data.html#cb30-28" aria-hidden="true" tabindex="-1"></a>          SYCI <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-29"><a href="cleaning-my-data.html#cb30-29" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(SYCI) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-30"><a href="cleaning-my-data.html#cb30-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">LEFA =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-31"><a href="cleaning-my-data.html#cb30-31" aria-hidden="true" tabindex="-1"></a>          LEFA <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-32"><a href="cleaning-my-data.html#cb30-32" aria-hidden="true" tabindex="-1"></a>          LEFA <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-33"><a href="cleaning-my-data.html#cb30-33" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(LEFA) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-34"><a href="cleaning-my-data.html#cb30-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">SCAC =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-35"><a href="cleaning-my-data.html#cb30-35" aria-hidden="true" tabindex="-1"></a>          SCAC <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-36"><a href="cleaning-my-data.html#cb30-36" aria-hidden="true" tabindex="-1"></a>          SCAC <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-37"><a href="cleaning-my-data.html#cb30-37" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(SCAC) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-38"><a href="cleaning-my-data.html#cb30-38" aria-hidden="true" tabindex="-1"></a>        <span class="at">BICE =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-39"><a href="cleaning-my-data.html#cb30-39" aria-hidden="true" tabindex="-1"></a>          BICE <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-40"><a href="cleaning-my-data.html#cb30-40" aria-hidden="true" tabindex="-1"></a>          BICE <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-41"><a href="cleaning-my-data.html#cb30-41" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(BICE) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-42"><a href="cleaning-my-data.html#cb30-42" aria-hidden="true" tabindex="-1"></a>        <span class="at">BIFR =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-43"><a href="cleaning-my-data.html#cb30-43" aria-hidden="true" tabindex="-1"></a>          BIFR <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-44"><a href="cleaning-my-data.html#cb30-44" aria-hidden="true" tabindex="-1"></a>          BIFR <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-45"><a href="cleaning-my-data.html#cb30-45" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(BIFR) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-46"><a href="cleaning-my-data.html#cb30-46" aria-hidden="true" tabindex="-1"></a>        <span class="at">EUOC =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-47"><a href="cleaning-my-data.html#cb30-47" aria-hidden="true" tabindex="-1"></a>          EUOC <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-48"><a href="cleaning-my-data.html#cb30-48" aria-hidden="true" tabindex="-1"></a>          EUOC <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-49"><a href="cleaning-my-data.html#cb30-49" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(EUOC) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-50"><a href="cleaning-my-data.html#cb30-50" aria-hidden="true" tabindex="-1"></a>        <span class="at">MUAS =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-51"><a href="cleaning-my-data.html#cb30-51" aria-hidden="true" tabindex="-1"></a>          MUAS <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-52"><a href="cleaning-my-data.html#cb30-52" aria-hidden="true" tabindex="-1"></a>          MUAS <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-53"><a href="cleaning-my-data.html#cb30-53" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(MUAS) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-54"><a href="cleaning-my-data.html#cb30-54" aria-hidden="true" tabindex="-1"></a>        <span class="at">SCAM =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-55"><a href="cleaning-my-data.html#cb30-55" aria-hidden="true" tabindex="-1"></a>          SCAM <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-56"><a href="cleaning-my-data.html#cb30-56" aria-hidden="true" tabindex="-1"></a>          SCAM <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-57"><a href="cleaning-my-data.html#cb30-57" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(SCAM) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-58"><a href="cleaning-my-data.html#cb30-58" aria-hidden="true" tabindex="-1"></a>        <span class="at">RUMA =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-59"><a href="cleaning-my-data.html#cb30-59" aria-hidden="true" tabindex="-1"></a>          RUMA <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-60"><a href="cleaning-my-data.html#cb30-60" aria-hidden="true" tabindex="-1"></a>          RUMA <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-61"><a href="cleaning-my-data.html#cb30-61" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(RUMA) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-62"><a href="cleaning-my-data.html#cb30-62" aria-hidden="true" tabindex="-1"></a>        <span class="at">RUST =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-63"><a href="cleaning-my-data.html#cb30-63" aria-hidden="true" tabindex="-1"></a>          RUST <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-64"><a href="cleaning-my-data.html#cb30-64" aria-hidden="true" tabindex="-1"></a>          RUST <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-65"><a href="cleaning-my-data.html#cb30-65" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(RUST) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-66"><a href="cleaning-my-data.html#cb30-66" aria-hidden="true" tabindex="-1"></a>        <span class="at">Unk_Forb =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-67"><a href="cleaning-my-data.html#cb30-67" aria-hidden="true" tabindex="-1"></a>          Unk_Forb <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-68"><a href="cleaning-my-data.html#cb30-68" aria-hidden="true" tabindex="-1"></a>          Unk_Forb <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-69"><a href="cleaning-my-data.html#cb30-69" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(Unk_Forb) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-70"><a href="cleaning-my-data.html#cb30-70" aria-hidden="true" tabindex="-1"></a>        <span class="at">Unk_Grass =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-71"><a href="cleaning-my-data.html#cb30-71" aria-hidden="true" tabindex="-1"></a>          Unk_Grass <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-72"><a href="cleaning-my-data.html#cb30-72" aria-hidden="true" tabindex="-1"></a>          Unk_Grass <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-73"><a href="cleaning-my-data.html#cb30-73" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(Unk_Grass) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-74"><a href="cleaning-my-data.html#cb30-74" aria-hidden="true" tabindex="-1"></a>        <span class="at">Unk_Bulrush =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-75"><a href="cleaning-my-data.html#cb30-75" aria-hidden="true" tabindex="-1"></a>          Unk_Bulrush <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-76"><a href="cleaning-my-data.html#cb30-76" aria-hidden="true" tabindex="-1"></a>          Unk_Bulrush <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-77"><a href="cleaning-my-data.html#cb30-77" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(Unk_Bulrush) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-78"><a href="cleaning-my-data.html#cb30-78" aria-hidden="true" tabindex="-1"></a>        <span class="at">SARU =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-79"><a href="cleaning-my-data.html#cb30-79" aria-hidden="true" tabindex="-1"></a>          SARU <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-80"><a href="cleaning-my-data.html#cb30-80" aria-hidden="true" tabindex="-1"></a>          SARU <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-81"><a href="cleaning-my-data.html#cb30-81" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(SARU) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>),</span>
+<span id="cb30-82"><a href="cleaning-my-data.html#cb30-82" aria-hidden="true" tabindex="-1"></a>        <span class="at">Tamarisk =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-83"><a href="cleaning-my-data.html#cb30-83" aria-hidden="true" tabindex="-1"></a>          Tamarisk <span class="sc">==</span> <span class="st">&quot;&lt;1&quot;</span> <span class="sc">~</span> <span class="fl">0.005</span>, </span>
+<span id="cb30-84"><a href="cleaning-my-data.html#cb30-84" aria-hidden="true" tabindex="-1"></a>          Tamarisk <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> <span class="fl">0.05</span>, </span>
+<span id="cb30-85"><a href="cleaning-my-data.html#cb30-85" aria-hidden="true" tabindex="-1"></a>          <span class="cn">TRUE</span> <span class="sc">~</span> (<span class="fu">as.numeric</span>(Tamarisk) <span class="sc">+</span> <span class="dv">5</span>)<span class="sc">/</span><span class="dv">100</span>)</span>
+<span id="cb30-86"><a href="cleaning-my-data.html#cb30-86" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<pre><code>## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion</code></pre>
+<p>Now we can go in and do the same to the <code>ul</code> spreadsheet.</p>
+<p>Once we are done, the next step is visualizing our data!</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="my-database-structure.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="visualizing-my-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/02-Cleaning.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

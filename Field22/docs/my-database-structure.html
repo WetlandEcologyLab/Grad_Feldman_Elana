@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 My database structure | A Minimal Book Example</title>
+  <meta name="description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 My database structure | A Minimal Book Example" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 My database structure | A Minimal Book Example" />
+  
+  <meta name="twitter:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  
+
+<meta name="author" content="John Doe" />
+
+
+<meta name="date" content="2023-04-27" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="cleaning-my-data.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="my-database-structure.html"><a href="my-database-structure.html"><i class="fa fa-check"></i><b>2</b> My database structure</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="my-database-structure.html"><a href="my-database-structure.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="my-database-structure.html"><a href="my-database-structure.html#introduction-to-my-data"><i class="fa fa-check"></i><b>2.2</b> Introduction to my data</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="my-database-structure.html"><a href="my-database-structure.html#my-thesis"><i class="fa fa-check"></i><b>2.2.1</b> My thesis</a></li>
+<li class="chapter" data-level="2.2.2" data-path="my-database-structure.html"><a href="my-database-structure.html#my-treatments"><i class="fa fa-check"></i><b>2.2.2</b> My treatments</a></li>
+<li class="chapter" data-level="2.2.3" data-path="my-database-structure.html"><a href="my-database-structure.html#my-tables"><i class="fa fa-check"></i><b>2.2.3</b> My tables</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="my-database-structure.html"><a href="my-database-structure.html#creating-the-database"><i class="fa fa-check"></i><b>2.3</b> Creating the database</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="my-database-structure.html"><a href="my-database-structure.html#getting-started"><i class="fa fa-check"></i><b>2.3.1</b> Getting started</a></li>
+<li class="chapter" data-level="2.3.2" data-path="my-database-structure.html"><a href="my-database-structure.html#cover"><i class="fa fa-check"></i><b>2.3.2</b> Cover</a></li>
+<li class="chapter" data-level="2.3.3" data-path="my-database-structure.html"><a href="my-database-structure.html#functional-groups"><i class="fa fa-check"></i><b>2.3.3</b> Functional groups</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="my-database-structure.html"><a href="my-database-structure.html#import-data"><i class="fa fa-check"></i><b>2.4</b> Import data</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning my data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#overview-of-the-chapter"><i class="fa fa-check"></i><b>3.1</b> Overview of the Chapter</a></li>
+<li class="chapter" data-level="3.2" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#importing-the-data"><i class="fa fa-check"></i><b>3.2</b> Importing the data</a></li>
+<li class="chapter" data-level="3.3" data-path="cleaning-my-data.html"><a href="cleaning-my-data.html#cleaning-the-data"><i class="fa fa-check"></i><b>3.3</b> Cleaning the data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html"><i class="fa fa-check"></i><b>4</b> Visualizing my data</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#overview-of-chapter"><i class="fa fa-check"></i><b>4.1</b> Overview of Chapter</a></li>
+<li class="chapter" data-level="4.2" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#organizing-the-data"><i class="fa fa-check"></i><b>4.2</b> Organizing the data</a></li>
+<li class="chapter" data-level="4.3" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#graphing-the-data"><i class="fa fa-check"></i><b>4.3</b> Graphing the data</a></li>
+<li class="chapter" data-level="4.4" data-path="visualizing-my-data.html"><a href="visualizing-my-data.html#combine"><i class="fa fa-check"></i><b>4.4</b> Combine</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Minimal Book Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="my-database-structure" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> My database structure<a href="my-database-structure.html#my-database-structure" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="overview" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Overview<a href="my-database-structure.html#overview" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The first step in preparing my data to be used as the final project of Reproducible Data Science 2023 was to create a database in R using RSQLite. The following code is an edited version of the code I used in Assignment 4.</p>
+</div>
+<div id="introduction-to-my-data" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Introduction to my data<a href="my-database-structure.html#introduction-to-my-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="my-thesis" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> My thesis<a href="my-database-structure.html#my-thesis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>All the data used in this project comes from my 2022 field experiment, conducted at both Utah Lake and the Great Salt Lake. For my thesis, I am studying whether changes in the seeding density or functional diversity of my native seed mixes alter their biotic resistance (their ability to prevent invasive plants from entering the study area).</p>
+<p>There are two leading theories about biotic resistance. Some ecologists believe that native plants that are most similar to the invasive plants of interest (in my case, <em>Phragmites australis</em>) will do the best at resisting the invader due to limiting similarity. In my case, this would mean that grasses do the best at resisting <em>Phragmites</em> growth. Other scientists believe that native plants that use the most resources and fill the most niche space will do the best at resisting invasives due to niche complementarity. In my case, this would be annual forbs because they grow the fastest and pre-empt the most light due to their large leaves.</p>
+</div>
+<div id="my-treatments" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> My treatments<a href="my-database-structure.html#my-treatments" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>I conducted a full factorial experiment examining two levels of density (high and low) and five functional groups (grasses, bulrushes, rushes, annual forbs, and perennial forbs). On a bi-weekly basis, I collected canopy cover data within each plot to determine whether any of my treatments were particularly successful to preventing <em>Phragmites</em> and other invasives from entering.</p>
+</div>
+<div id="my-tables" class="section level3 hasAnchor" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> My tables<a href="my-database-structure.html#my-tables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For this project, I will be using two tables. Although I had three tables in my Assignment 4, I will not be incorporating any biomass data into my analyses.</p>
+<p>My first table is called “cover”. This table includes all the canopy cover estimates from my bi-weekly surveys.</p>
+<p>The second table is called “functional group”. This data keeps track of which functional groups are represented by each of my 10 seed mixes.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="my-database-structure.html#cb3-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">&quot;Feldman_database_structure_updated.png&quot;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:image"></span>
+<img src="Feldman_database_structure_updated.png" alt="Database structure diagram" width="100%" />
+<p class="caption">
+Figure 2.1: Database structure diagram
+</p>
+</div>
+</div>
+</div>
+<div id="creating-the-database" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Creating the database<a href="my-database-structure.html#creating-the-database" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="getting-started" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Getting started<a href="my-database-structure.html#getting-started" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The first step in creating a database is to install and load the <code>DBI</code> package.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="my-database-structure.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI)</span></code></pre></div>
+<p>Now we are ready to create the database and link it to SQL.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="my-database-structure.html#cb5-1" aria-hidden="true" tabindex="-1"></a>field_db <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(RSQLite<span class="sc">::</span><span class="fu">SQLite</span>(),</span>
+<span id="cb5-2"><a href="my-database-structure.html#cb5-2" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;field.db&quot;</span>)</span></code></pre></div>
+</div>
+<div id="cover" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Cover<a href="my-database-structure.html#cover" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Now we can make the “cover” table. As stated above, this table has all the data related to my canopy cover surveys.</p>
+<p>The first step is to create the table. We will add the data to the table later. The columns in this table will include plot_id (an individual identifier of each plot made up of 1-3 characters), seed_mix (a tag to reference the seed mix used in the plot), density (either high ‘H’ or low ‘L’), block (a number 1-6, referring to the replicate number), date, and the cover estimate of several species. Plot_id is the primary key.</p>
+<p>For this chapter, solely for the purpose of saving time and space, I will only be showing columns for 5 species of interest. When analyzing and visualizing my data, I will include the full list of species observed in my plots.</p>
+<p>Below is the RSQLite code to create the “cover” table.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="my-database-structure.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create all tables and enforce relationships</span></span>
+<span id="cb6-2"><a href="my-database-structure.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dbExecute</span>(field_db, <span class="st">&quot;CREATE TABLE cover (</span></span>
+<span id="cb6-3"><a href="my-database-structure.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">          plot_id varchar(3) NOT NULL,</span></span>
+<span id="cb6-4"><a href="my-database-structure.html#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">          seed_mix varchar(2) NOT NULL,</span></span>
+<span id="cb6-5"><a href="my-database-structure.html#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">          density char(1) NOT NULL,</span></span>
+<span id="cb6-6"><a href="my-database-structure.html#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">          block char(1) NOT NULL,</span></span>
+<span id="cb6-7"><a href="my-database-structure.html#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">          date text,</span></span>
+<span id="cb6-8"><a href="my-database-structure.html#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">          PHAU_cover varchar(2),</span></span>
+<span id="cb6-9"><a href="my-database-structure.html#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">          DISP_cover varchar(2),</span></span>
+<span id="cb6-10"><a href="my-database-structure.html#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="st">          EUOC_cover varchar(2),</span></span>
+<span id="cb6-11"><a href="my-database-structure.html#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="st">          SCAM_cover varchar(2),</span></span>
+<span id="cb6-12"><a href="my-database-structure.html#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="st">          BICE_cover varchar(2),</span></span>
+<span id="cb6-13"><a href="my-database-structure.html#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="st">          PRIMARY KEY (plot_id)</span></span>
+<span id="cb6-14"><a href="my-database-structure.html#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="st">          );&quot;</span>)</span></code></pre></div>
+</div>
+<div id="functional-groups" class="section level3 hasAnchor" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span> Functional groups<a href="my-database-structure.html#functional-groups" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Now, we can make the “functional group” table. This table relates the functional groups of interest in my research to each of the 10 seed mixes used in my experiment.</p>
+<p>This table includes a group id (an individual marker for each functional group in the table), seed mix (referring to the seed mix I planted in my research), and the group (the functional group related to the seed mix). The group id is the primary key for this table. The seed mix is a foreign key that references the column “seed_mix” in the cover table.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="my-database-structure.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbExecute</span>(field_db, <span class="st">&quot;CREATE TABLE functional_group (</span></span>
+<span id="cb7-2"><a href="my-database-structure.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="st">          group_id char(1) NOT NULL,</span></span>
+<span id="cb7-3"><a href="my-database-structure.html#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">          seed_mix varchar(2) NOT NULL,</span></span>
+<span id="cb7-4"><a href="my-database-structure.html#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">          grp varchar(20),</span></span>
+<span id="cb7-5"><a href="my-database-structure.html#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">          PRIMARY KEY (group_id)</span></span>
+<span id="cb7-6"><a href="my-database-structure.html#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="st">          FOREIGN KEY (seed_mix) REFERENCES cover(seed_mix)</span></span>
+<span id="cb7-7"><a href="my-database-structure.html#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="st">          );&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="import-data" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Import data<a href="my-database-structure.html#import-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The next step is to input the data into the tables we just created. Let’s start with the cover table. The first step is to import the csv of my data.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="my-database-structure.html#cb8-1" aria-hidden="true" tabindex="-1"></a>cover <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/fb_sql.csv&quot;</span>)</span></code></pre></div>
+<p>The csv includes all the data I want in my table except for the individual plot_id. Let’s make that now.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="my-database-structure.html#cb9-1" aria-hidden="true" tabindex="-1"></a>cover<span class="sc">$</span>plot_id <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cover)</span></code></pre></div>
+<p>Next we can join this new column tos the csv data and change all the names of the columns so that they match the names of the columns in the SQL table.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="my-database-structure.html#cb10-1" aria-hidden="true" tabindex="-1"></a>cover <span class="ot">&lt;-</span> cover[,<span class="fu">c</span>(<span class="st">&quot;plot_id&quot;</span>, <span class="st">&quot;Group&quot;</span>, <span class="st">&quot;Density&quot;</span>, <span class="st">&quot;Block&quot;</span>, </span>
+<span id="cb10-2"><a href="my-database-structure.html#cb10-2" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;Date&quot;</span>, <span class="st">&quot;PHAU&quot;</span>, <span class="st">&quot;DISP&quot;</span>, <span class="st">&quot;EUOC&quot;</span>, <span class="st">&quot;SCAM&quot;</span>, <span class="st">&quot;BICE&quot;</span>)]</span>
+<span id="cb10-3"><a href="my-database-structure.html#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cover)[<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;seed_mix&quot;</span>, <span class="st">&quot;density&quot;</span>, <span class="st">&quot;block&quot;</span>, <span class="st">&quot;date&quot;</span>, </span>
+<span id="cb10-4"><a href="my-database-structure.html#cb10-4" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;PHAU_cover&quot;</span>, <span class="st">&quot;DISP_cover&quot;</span>, <span class="st">&quot;EUOC_cover&quot;</span>, </span>
+<span id="cb10-5"><a href="my-database-structure.html#cb10-5" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;SCAM_cover&quot;</span>, <span class="st">&quot;BICE_cover&quot;</span>)</span></code></pre></div>
+<p>Now we can put all the data into the table!</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="my-database-structure.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbWriteTable</span>(field_db, <span class="st">&quot;cover&quot;</span>, cover, <span class="at">append =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Finally, we can check that it all worked by making a query.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="my-database-structure.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(field_db, <span class="st">&quot;SELECT * FROM cover LIMIT 10;&quot;</span>)</span></code></pre></div>
+<p>Now let’s do it all again for the functional group table.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="my-database-structure.html#cb13-1" aria-hidden="true" tabindex="-1"></a>functional_group <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/functional_group.csv&quot;</span>)</span>
+<span id="cb13-2"><a href="my-database-structure.html#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="my-database-structure.html#cb13-3" aria-hidden="true" tabindex="-1"></a>functional_group<span class="sc">$</span>group_id <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(functional_group)</span>
+<span id="cb13-4"><a href="my-database-structure.html#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="my-database-structure.html#cb13-5" aria-hidden="true" tabindex="-1"></a>functional_group <span class="ot">&lt;-</span> functional_group[,<span class="fu">c</span>(<span class="st">&quot;group_id&quot;</span>, <span class="st">&quot;seed_mix&quot;</span>, <span class="st">&quot;grp&quot;</span>)]</span>
+<span id="cb13-6"><a href="my-database-structure.html#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="my-database-structure.html#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dbWriteTable</span>(field_db, <span class="st">&quot;functional_group&quot;</span>, functional_group, <span class="at">append =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-8"><a href="my-database-structure.html#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="my-database-structure.html#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(field_db, <span class="st">&quot;SELECT * FROM functional_group LIMIT 10;&quot;</span>)</span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="cleaning-my-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/01-Database.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

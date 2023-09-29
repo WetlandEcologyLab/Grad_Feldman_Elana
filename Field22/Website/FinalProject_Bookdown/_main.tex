@@ -1,0 +1,863 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{book}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage{booktabs}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={A Minimal Book Example},
+  pdfauthor={John Doe},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{A Minimal Book Example}
+\author{John Doe}
+\date{2023-04-27}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+\hypertarget{about}{%
+\chapter{About}\label{about}}
+
+This is the final project for Reproducible Data Science 2023.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bookdown}\SpecialCharTok{::}\FunctionTok{render\_book}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bookdown}\SpecialCharTok{::}\FunctionTok{serve\_book}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{my-database-structure}{%
+\chapter{My database structure}\label{my-database-structure}}
+
+\hypertarget{overview}{%
+\section{Overview}\label{overview}}
+
+The first step in preparing my data to be used as the final project of Reproducible Data Science 2023 was to create a database in R using RSQLite. The following code is an edited version of the code I used in Assignment 4.
+
+\hypertarget{introduction-to-my-data}{%
+\section{Introduction to my data}\label{introduction-to-my-data}}
+
+\hypertarget{my-thesis}{%
+\subsection{My thesis}\label{my-thesis}}
+
+All the data used in this project comes from my 2022 field experiment, conducted at both Utah Lake and the Great Salt Lake. For my thesis, I am studying whether changes in the seeding density or functional diversity of my native seed mixes alter their biotic resistance (their ability to prevent invasive plants from entering the study area).
+
+There are two leading theories about biotic resistance. Some ecologists believe that native plants that are most similar to the invasive plants of interest (in my case, \emph{Phragmites australis}) will do the best at resisting the invader due to limiting similarity. In my case, this would mean that grasses do the best at resisting \emph{Phragmites} growth. Other scientists believe that native plants that use the most resources and fill the most niche space will do the best at resisting invasives due to niche complementarity. In my case, this would be annual forbs because they grow the fastest and pre-empt the most light due to their large leaves.
+
+\hypertarget{my-treatments}{%
+\subsection{My treatments}\label{my-treatments}}
+
+I conducted a full factorial experiment examining two levels of density (high and low) and five functional groups (grasses, bulrushes, rushes, annual forbs, and perennial forbs). On a bi-weekly basis, I collected canopy cover data within each plot to determine whether any of my treatments were particularly successful to preventing \emph{Phragmites} and other invasives from entering.
+
+\hypertarget{my-tables}{%
+\subsection{My tables}\label{my-tables}}
+
+For this project, I will be using two tables. Although I had three tables in my Assignment 4, I will not be incorporating any biomass data into my analyses.
+
+My first table is called ``cover''. This table includes all the canopy cover estimates from my bi-weekly surveys.
+
+The second table is called ``functional group''. This data keeps track of which functional groups are represented by each of my 10 seed mixes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{include\_graphics}\NormalTok{(}\StringTok{"Feldman\_database\_structure\_updated.png"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{Feldman_database_structure_updated} 
+
+}
+
+\caption{Database structure diagram}\label{fig:image}
+\end{figure}
+
+\hypertarget{creating-the-database}{%
+\section{Creating the database}\label{creating-the-database}}
+
+\hypertarget{getting-started}{%
+\subsection{Getting started}\label{getting-started}}
+
+The first step in creating a database is to install and load the \texttt{DBI} package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(DBI)}
+\end{Highlighting}
+\end{Shaded}
+
+Now we are ready to create the database and link it to SQL.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{field\_db }\OtherTok{\textless{}{-}} \FunctionTok{dbConnect}\NormalTok{(RSQLite}\SpecialCharTok{::}\FunctionTok{SQLite}\NormalTok{(),}
+                      \StringTok{"field.db"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{cover}{%
+\subsection{Cover}\label{cover}}
+
+Now we can make the ``cover'' table. As stated above, this table has all the data related to my canopy cover surveys.
+
+The first step is to create the table. We will add the data to the table later. The columns in this table will include plot\_id (an individual identifier of each plot made up of 1-3 characters), seed\_mix (a tag to reference the seed mix used in the plot), density (either high `H' or low `L'), block (a number 1-6, referring to the replicate number), date, and the cover estimate of several species. Plot\_id is the primary key.
+
+For this chapter, solely for the purpose of saving time and space, I will only be showing columns for 5 species of interest. When analyzing and visualizing my data, I will include the full list of species observed in my plots.
+
+Below is the RSQLite code to create the ``cover'' table.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#create all tables and enforce relationships}
+\FunctionTok{dbExecute}\NormalTok{(field\_db, }\StringTok{"CREATE TABLE cover (}
+\StringTok{          plot\_id varchar(3) NOT NULL,}
+\StringTok{          seed\_mix varchar(2) NOT NULL,}
+\StringTok{          density char(1) NOT NULL,}
+\StringTok{          block char(1) NOT NULL,}
+\StringTok{          date text,}
+\StringTok{          PHAU\_cover varchar(2),}
+\StringTok{          DISP\_cover varchar(2),}
+\StringTok{          EUOC\_cover varchar(2),}
+\StringTok{          SCAM\_cover varchar(2),}
+\StringTok{          BICE\_cover varchar(2),}
+\StringTok{          PRIMARY KEY (plot\_id)}
+\StringTok{          );"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{functional-groups}{%
+\subsection{Functional groups}\label{functional-groups}}
+
+Now, we can make the ``functional group'' table. This table relates the functional groups of interest in my research to each of the 10 seed mixes used in my experiment.
+
+This table includes a group id (an individual marker for each functional group in the table), seed mix (referring to the seed mix I planted in my research), and the group (the functional group related to the seed mix). The group id is the primary key for this table. The seed mix is a foreign key that references the column ``seed\_mix'' in the cover table.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dbExecute}\NormalTok{(field\_db, }\StringTok{"CREATE TABLE functional\_group (}
+\StringTok{          group\_id char(1) NOT NULL,}
+\StringTok{          seed\_mix varchar(2) NOT NULL,}
+\StringTok{          grp varchar(20),}
+\StringTok{          PRIMARY KEY (group\_id)}
+\StringTok{          FOREIGN KEY (seed\_mix) REFERENCES cover(seed\_mix)}
+\StringTok{          );"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{import-data}{%
+\section{Import data}\label{import-data}}
+
+The next step is to input the data into the tables we just created. Let's start with the cover table. The first step is to import the csv of my data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cover }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/elanafeldman/Documents/USUClasses/Thesis\_Code/Field22/fb\_sql.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The csv includes all the data I want in my table except for the individual plot\_id. Let's make that now.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cover}\SpecialCharTok{$}\NormalTok{plot\_id }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(cover)}
+\end{Highlighting}
+\end{Shaded}
+
+Next we can join this new column tos the csv data and change all the names of the columns so that they match the names of the columns in the SQL table.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cover }\OtherTok{\textless{}{-}}\NormalTok{ cover[,}\FunctionTok{c}\NormalTok{(}\StringTok{"plot\_id"}\NormalTok{, }\StringTok{"Group"}\NormalTok{, }\StringTok{"Density"}\NormalTok{, }\StringTok{"Block"}\NormalTok{, }
+                  \StringTok{"Date"}\NormalTok{, }\StringTok{"PHAU"}\NormalTok{, }\StringTok{"DISP"}\NormalTok{, }\StringTok{"EUOC"}\NormalTok{, }\StringTok{"SCAM"}\NormalTok{, }\StringTok{"BICE"}\NormalTok{)]}
+\FunctionTok{names}\NormalTok{(cover)[}\DecValTok{2}\SpecialCharTok{:}\DecValTok{10}\NormalTok{] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"seed\_mix"}\NormalTok{, }\StringTok{"density"}\NormalTok{, }\StringTok{"block"}\NormalTok{, }\StringTok{"date"}\NormalTok{, }
+                       \StringTok{"PHAU\_cover"}\NormalTok{, }\StringTok{"DISP\_cover"}\NormalTok{, }\StringTok{"EUOC\_cover"}\NormalTok{, }
+                       \StringTok{"SCAM\_cover"}\NormalTok{, }\StringTok{"BICE\_cover"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Now we can put all the data into the table!
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dbWriteTable}\NormalTok{(field\_db, }\StringTok{"cover"}\NormalTok{, cover, }\AttributeTok{append =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Finally, we can check that it all worked by making a query.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dbGetQuery}\NormalTok{(field\_db, }\StringTok{"SELECT * FROM cover LIMIT 10;"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Now let's do it all again for the functional group table.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{functional\_group }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"/Users/elanafeldman/Documents/USUClasses/Thesis\_Code/Field22/functional\_group.csv"}\NormalTok{)}
+
+\NormalTok{functional\_group}\SpecialCharTok{$}\NormalTok{group\_id }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(functional\_group)}
+
+\NormalTok{functional\_group }\OtherTok{\textless{}{-}}\NormalTok{ functional\_group[,}\FunctionTok{c}\NormalTok{(}\StringTok{"group\_id"}\NormalTok{, }\StringTok{"seed\_mix"}\NormalTok{, }\StringTok{"grp"}\NormalTok{)]}
+
+\FunctionTok{dbWriteTable}\NormalTok{(field\_db, }\StringTok{"functional\_group"}\NormalTok{, functional\_group, }\AttributeTok{append =} \ConstantTok{TRUE}\NormalTok{)}
+
+\FunctionTok{dbGetQuery}\NormalTok{(field\_db, }\StringTok{"SELECT * FROM functional\_group LIMIT 10;"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{cleaning-my-data}{%
+\chapter{Cleaning my data}\label{cleaning-my-data}}
+
+\hypertarget{overview-of-the-chapter}{%
+\section{Overview of the Chapter}\label{overview-of-the-chapter}}
+
+The first step was to clean all my data. The values collected in this experiment were percent cover of each species present in my 1m plot. Although the data are technically in cover classes (\textless1, 1-10, 10-20, 20-30, 30-40, 40-50, 50-60, 60-70, 70-80, 80-90, \textgreater99), data were written down as a single number meant to represent the lower value of the cover class (\textless1, 10, 20, 30, 40, 50, 60, 70, 80, 90, \textgreater99). For my data analyses, I will use the mid-point of the cover classes (5, 15, 25, 35, 45, 55, 65, 75, 85, 95). I intend to use the beta distribution for my analyses, and therefore need to nudge my upper and lower bounds into values between 0 and 1 (\textless1 -\textgreater{} 0.005, \textgreater99 -\textgreater{} .999).
+
+\hypertarget{importing-the-data}{%
+\section{Importing the data}\label{importing-the-data}}
+
+I have two different spreadsheets, each representing one of my field sites. Both will be cleaned in the same way, but first I need to import the data and load all my packages.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Load packages}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching packages --------------------------------------- tidyverse 1.3.2 --
+## v ggplot2 3.3.6      v purrr   0.3.4 
+## v tibble  3.1.8      v dplyr   1.0.10
+## v tidyr   1.2.1      v stringr 1.4.1 
+## v readr   2.1.2      v forcats 0.5.2 
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lubridate) }\CommentTok{\#my version of tidyverse does not seem to include lubridate}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'lubridate'
+## 
+## The following objects are masked from 'package:base':
+## 
+##     date, intersect, setdiff, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Import data}
+\NormalTok{fb }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"../../Cleaned{-}Data/clean\_fb.csv"}\NormalTok{)}
+\NormalTok{ul }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"../../Cleaned{-}Data/clean\_ul.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{cleaning-the-data}{%
+\section{Cleaning the data}\label{cleaning-the-data}}
+
+To begin, I will start by working with \texttt{fb}, which is all my data from Farmington Bay. One of the columns in my table is Date, which is the date of sampling.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{class}\NormalTok{(fb}\SpecialCharTok{$}\NormalTok{Date)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "character"
+\end{verbatim}
+
+R is reading my date column as a character string! I need to fix this using lubridate so that R understands that my dates are dates.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fb}\SpecialCharTok{$}\NormalTok{Date }\OtherTok{\textless{}{-}}\NormalTok{ lubridate}\SpecialCharTok{::}\FunctionTok{mdy}\NormalTok{(fb}\SpecialCharTok{$}\NormalTok{Date)}
+
+\FunctionTok{class}\NormalTok{(fb}\SpecialCharTok{$}\NormalTok{Date)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Date"
+\end{verbatim}
+
+Now I can move on to fixing my column names. When I \texttt{glimpse} my column names, I can see that not all of them make sense.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{glimpse}\NormalTok{(fb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 330
+## Columns: 31
+## $ Block...FB    <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,~
+## $ Plot          <chr> "5H", "1L", "2L", "4L", "3L", "4H", "5L", "C", "1H", "2H~
+## $ Group         <chr> "5", "1", "2", "4", "3", "4", "5", "C", "1", "2", "3", "~
+## $ Density       <chr> "H", "L", "L", "L", "L", "H", "L", "C", "H", "H", "H", "~
+## $ Date          <date> 2022-07-27, 2022-07-27, 2022-07-27, 2022-07-27, 2022-07~
+## $ Total.Cover   <chr> "0", "0", "0", "1", "0", "1", "0", "0", "0", "0", "1", "~
+## $ PHAU          <chr> "", "", "", "", "", "", "", "", "", "", "", "<1", "", ""~
+## $ Cheno         <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ Typha         <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ BOMA          <chr> "", "", "", "1", "", "1", "", "", "", "", "1", "", "", "~
+## $ DISP          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ EUMA          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ SYCI          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ LEFA          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ SCAC          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ BICE          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ BIFR          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ EUOC          <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ MUAS          <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ SCAM          <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ RUMA          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ RUST          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ Unk_Forb      <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ Unk_Grass     <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ Unk_Rush      <chr> "", "", "", "", "", "", "", "", "", "", "", "<1", "", ""~
+## $ SARU          <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ Tamarisk      <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ Notes         <chr> "", "", "", "", "", "", "", "", "", "", "", "", "", "", ~
+## $ Measurement.1 <int> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,~
+## $ Measurement.2 <int> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,~
+## $ Measurement.3 <int> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,~
+\end{verbatim}
+
+My first column name is coming up as Block\ldots FB. This column name does not follow the conventions we learned in class and it too complicated to type. I will change it to simply say Block. I also need to change the column Unk\_Rush to be called Unk\_Bulrush
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{names}\NormalTok{(fb)[}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}} \StringTok{"Block"}
+\FunctionTok{names}\NormalTok{(fb)[}\DecValTok{25}\NormalTok{] }\OtherTok{\textless{}{-}} \StringTok{"Unk\_Bulrush"}
+\end{Highlighting}
+\end{Shaded}
+
+The most difficult part of cleaning my data is making sure all the cover values have been entered properly. Let's start by looking at the values in a random column.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{unique}\NormalTok{(fb}\SpecialCharTok{$}\NormalTok{BOMA)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] ""   "1"  "<1" "10" "20"
+\end{verbatim}
+
+We have a couple of problems here. First of all, the values are all being read as characters instead of numbers. This is because of my values that reads ``\textless1''. My first step will be to replace this value with a trace value that can be used in statistical analyses (typically one half of the smallest recorded value). After replacing that value, I will be able to change all these values into numeric values so they are no longer characters. This will also help to change my ``\,'' values to NA values. Next, my larger values were entered into the spreadsheet as percentages (10 = 10\%, 20 = 20\%). To perform my statistical analyses, these will need to be changes into proportions (10 -\textgreater{} .1, 20 -\textgreater{} .2). Finally, I want all my values to be on the mid-point of their cover class, not the bottom. Therefore, everything needs to increase by 0.05 (.1 -\textgreater{} .15, .2 -\textgreater{} .25).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fb }\OtherTok{\textless{}{-}}\NormalTok{ fb }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Total.Cover =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{  Total.Cover }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }\CommentTok{\#change all the \textless{}1 to the trace value of 0.005}
+\NormalTok{  Total.Cover }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }\CommentTok{\#change the 1s to 0.05 (because too small to work below)}
+  \CommentTok{\#all other numbers can stay as they are but numeric}
+  \CommentTok{\#but add 5 so they are at the mid{-}point of the cover class}
+  \CommentTok{\#and then divide them by 100 so they are proportions}
+  \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(Total.Cover) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}
+\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+\end{verbatim}
+
+Now I just need to repeat this for all the columns between Total.Cover and Tamarisk. I originally tried to do this through a loop so I wouldn't need to copy and paste for each column, but unfortunately I could not get the loop to run in time. That can be a future project for me!
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fb }\OtherTok{\textless{}{-}}\NormalTok{ fb }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{PHAU =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          PHAU }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          PHAU }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(PHAU) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{ ),}
+         \AttributeTok{Cheno =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          Cheno }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          Cheno }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(Cheno) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{Typha =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          Typha }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          Typha }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(Typha) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{BOMA =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          BOMA }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          BOMA }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(BOMA) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{DISP =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          DISP }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          DISP }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(DISP) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{EUMA =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          EUMA }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          EUMA }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(EUMA) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{SYCI =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          SYCI }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          SYCI }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(SYCI) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{LEFA =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          LEFA }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          LEFA }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(LEFA) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{SCAC =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          SCAC }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          SCAC }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(SCAC) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{BICE =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          BICE }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          BICE }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(BICE) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{BIFR =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          BIFR }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          BIFR }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(BIFR) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{EUOC =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          EUOC }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          EUOC }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(EUOC) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{MUAS =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          MUAS }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          MUAS }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(MUAS) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{SCAM =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          SCAM }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          SCAM }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(SCAM) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{RUMA =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          RUMA }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          RUMA }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(RUMA) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{RUST =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          RUST }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          RUST }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(RUST) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{Unk\_Forb =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          Unk\_Forb }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          Unk\_Forb }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(Unk\_Forb) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{Unk\_Grass =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          Unk\_Grass }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          Unk\_Grass }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(Unk\_Grass) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{Unk\_Bulrush =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          Unk\_Bulrush }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          Unk\_Bulrush }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(Unk\_Bulrush) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{SARU =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          SARU }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          SARU }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(SARU) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{),}
+        \AttributeTok{Tamarisk =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{          Tamarisk }\SpecialCharTok{==} \StringTok{"\textless{}1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.005}\NormalTok{, }
+\NormalTok{          Tamarisk }\SpecialCharTok{==} \StringTok{"1"} \SpecialCharTok{\textasciitilde{}} \FloatTok{0.05}\NormalTok{, }
+          \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(Tamarisk) }\SpecialCharTok{+} \DecValTok{5}\NormalTok{)}\SpecialCharTok{/}\DecValTok{100}\NormalTok{)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+
+## Warning in eval_tidy(pair$rhs, env = default_env): NAs introduced by coercion
+\end{verbatim}
+
+Now we can go in and do the same to the \texttt{ul} spreadsheet.
+
+Once we are done, the next step is visualizing our data!
+
+\hypertarget{visualizing-my-data}{%
+\chapter{Visualizing my data}\label{visualizing-my-data}}
+
+\hypertarget{overview-of-chapter}{%
+\section{Overview of Chapter}\label{overview-of-chapter}}
+
+Now that my data is clean, I can start to make graphs to find the story! For my thesis, I am interested in seeing differences in invasive plant cover as a result of the seed mix used in the plot. To do this, I will make a graph that includes invasive and native cover by seed mix.
+
+\hypertarget{organizing-the-data}{%
+\section{Organizing the data}\label{organizing-the-data}}
+
+Currently, I have one column for each species seen in the field. However, I want to graph the total cover for all native and invasive plants seen in the plots. But how do I know which ones are native? To start, I need to change my data from wide format to long format and make a new column that identifies which species is native and which is invasive. Plus, I only need to know this information for the last sampling date.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#load packages}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+
+\NormalTok{graph\_data }\OtherTok{\textless{}{-}}\NormalTok{fb }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Block, Plot, Group, Density, Date, PHAU, Cheno, Typha, }
+\NormalTok{         BOMA, DISP, EUMA, SYCI, LEFA, SCAC, BICE, BIFR, EUOC, MUAS, SCAM, RUMA,}
+\NormalTok{         RUST, Unk\_Bulrush, SARU, Tamarisk) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\#remove unnecessary columns}
+  \FunctionTok{filter}\NormalTok{(Date }\SpecialCharTok{==} \StringTok{"2022{-}09{-}16"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\#only the last sampling date}
+  \FunctionTok{pivot\_longer}\NormalTok{(}
+    \AttributeTok{cols =} \DecValTok{6}\SpecialCharTok{:}\DecValTok{24}\NormalTok{, }
+    \AttributeTok{names\_to =} \StringTok{"SPP"}\NormalTok{,}
+    \AttributeTok{values\_to =} \StringTok{"Percent\_Cover"}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\#pivot so that all species names are in one column}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Status =} 
+\NormalTok{                dplyr}\SpecialCharTok{::}\FunctionTok{if\_else}\NormalTok{(}
+\NormalTok{                  SPP }\SpecialCharTok{\%in\%}
+                  \FunctionTok{c}\NormalTok{(}\StringTok{"PHAU"}\NormalTok{, }\StringTok{"Typha"}\NormalTok{, }\StringTok{"RUST"}\NormalTok{, }\StringTok{"Tamarisk"}\NormalTok{), }
+                  \StringTok{"Invasive"}\NormalTok{, }\StringTok{"Native"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\#make a new column for species status}
+  \FunctionTok{group\_by}\NormalTok{(Block, Plot, Status) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\#group by the plot and species status}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{PC =} \FunctionTok{sum}\NormalTok{(Percent\_Cover, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)) }\CommentTok{\#calculate totals}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Block', 'Plot'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Check out the results}
+\FunctionTok{head}\NormalTok{(graph\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 4
+## # Groups:   Block, Plot [3]
+##   Block Plot  Status      PC
+##   <int> <fct> <chr>    <dbl>
+## 1     1 1H    Invasive  0.05
+## 2     1 1H    Native    0.1 
+## 3     1 1L    Invasive  0.15
+## 4     1 1L    Native    0.1 
+## 5     1 2H    Invasive  0.05
+## 6     1 2H    Native    0.2
+\end{verbatim}
+
+This all looks good! Now we have summed values of all the native and invasive cover for each plot for the last sampling date. Let's go ahead and graph!
+
+\hypertarget{graphing-the-data}{%
+\section{Graphing the data}\label{graphing-the-data}}
+
+Now, let's graph up the values we calculated for invasive and native cover at each plot. For the first order of business, I want to replace all the names of the plots from my research codes to codes that will make sense to a wider audience.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph\_data }\OtherTok{\textless{}{-}}\NormalTok{ graph\_data }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Plot =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"1H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Perennial forbs (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"1L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Perennial forbs (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"2H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Rushes (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"2L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Rushes (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"3H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Grasses (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"3L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Grasses (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"4H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Bulrushes (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"4L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Bulrushes (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"5H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Annual forbs (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"5L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Annual forbs (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"C"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Control"}\NormalTok{,}
+    \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{"PROBLEM"}
+\NormalTok{  ))}
+
+\CommentTok{\#Double check}
+\NormalTok{graph\_data }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Plot) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{tally}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 11 x 2
+##    Plot                       n
+##    <chr>                  <int>
+##  1 Annual forbs (high)       12
+##  2 Annual forbs (low)        12
+##  3 Bulrushes (high)          12
+##  4 Bulrushes (low)           12
+##  5 Control                   12
+##  6 Grasses (high)            12
+##  7 Grasses (low)             12
+##  8 Perennial forbs (high)    12
+##  9 Perennial forbs (low)     12
+## 10 Rushes (high)             12
+## 11 Rushes (low)              12
+\end{verbatim}
+
+After double checking our data, nothing came up as a ``PROBLEM'' so all our calculations look good!
+
+Now we can finally graph it. Let's use points with error bars, color coded depending on whether the value is for native or invasive species.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fb\_plot }\OtherTok{\textless{}{-}}\NormalTok{ graph\_data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Plot =} \FunctionTok{factor}\NormalTok{(Plot, }\CommentTok{\#set the order I want}
+                       \AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"Annual forbs (high)"}\NormalTok{, }
+                                  \StringTok{"Annual forbs (low)"}\NormalTok{, }\StringTok{"Perennial forbs (high)"}\NormalTok{,}
+                                  \StringTok{"Perennial forbs (low)"}\NormalTok{, }\StringTok{"Rushes (high)"}\NormalTok{,}
+                                  \StringTok{"Rushes (low)"}\NormalTok{, }\StringTok{"Grasses (high)"}\NormalTok{, }
+                                  \StringTok{"Grasses (low)"}\NormalTok{, }\StringTok{"Bulrushes (high)"}\NormalTok{,}
+                                  \StringTok{"Bulrushes (low)"}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Plot, }\AttributeTok{y =}\NormalTok{ PC, }\AttributeTok{color =}\NormalTok{ Status)) }\SpecialCharTok{+} \CommentTok{\#x is plot, y is cover}
+  \FunctionTok{stat\_summary}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{group =}\NormalTok{ Status), }\CommentTok{\#calculate means of the total cover}
+               \AttributeTok{fun =}\NormalTok{ mean, }\AttributeTok{geom =} \StringTok{"point"}\NormalTok{, }\AttributeTok{size =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{stat\_summary}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{group =}\NormalTok{ Status, }\AttributeTok{width =} \DecValTok{0}\NormalTok{), }\CommentTok{\#calculate error bars}
+               \AttributeTok{fun.data =}\NormalTok{ mean\_se, }\AttributeTok{geom =} \StringTok{"errorbar"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Functional Group"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Cover (\%)"}\NormalTok{, }\AttributeTok{title =} \StringTok{"Farmington Bay"}\NormalTok{) }\SpecialCharTok{+} \CommentTok{\#labels}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.9}\NormalTok{)) }
+
+\NormalTok{fb\_plot}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{_main_files/figure-latex/graph-1.pdf}
+
+Now we can do it all again with the Utah Lake data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph\_data2 }\OtherTok{\textless{}{-}}\NormalTok{ ul}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Block, Plot, Group, Density, Date, PHAU, BOMA, BICE, CYER, RUMA,}
+\NormalTok{         Cheno, SCAC, SCPU, SCAM, DISP, RACY, ASIN, ALPR, CYDA, Unk\_Bulrush, BY, SYCI,}
+\NormalTok{         EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Date }\SpecialCharTok{==} \StringTok{"2022{-}09{-}16"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pivot\_longer}\NormalTok{(}
+    \AttributeTok{cols =} \DecValTok{6}\SpecialCharTok{:}\DecValTok{30}\NormalTok{, }
+    \AttributeTok{names\_to =} \StringTok{"SPP"}\NormalTok{,}
+    \AttributeTok{values\_to =} \StringTok{"Percent\_Cover"}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Status =} 
+\NormalTok{                  dplyr}\SpecialCharTok{::}\FunctionTok{if\_else}\NormalTok{(}
+\NormalTok{                    SPP }\SpecialCharTok{\%in\%}
+                      \FunctionTok{c}\NormalTok{(}\StringTok{"PHAU"}\NormalTok{, }\StringTok{"TYPHA"}\NormalTok{, }\StringTok{"RUST"}\NormalTok{, }\StringTok{"Tamarisk"}\NormalTok{, }\StringTok{"ALPR"}\NormalTok{, }\StringTok{"CYDA"}\NormalTok{, }\StringTok{"BY"}\NormalTok{, }
+                        \StringTok{"BASC"}\NormalTok{, }\StringTok{"LASE"}\NormalTok{), }
+                    \StringTok{"Invasive"}\NormalTok{, }\StringTok{"Native"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Block, Plot, Status) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{PC =} \FunctionTok{sum}\NormalTok{(Percent\_Cover, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Block', 'Plot'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph\_data2 }\OtherTok{\textless{}{-}}\NormalTok{ graph\_data2 }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Plot =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"1H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Perennial forbs (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"1L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Perennial forbs (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"2H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Rushes (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"2L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Rushes (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"3H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Grasses (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"3L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Grasses (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"4H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Bulrushes (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"4L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Bulrushes (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"5H"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Annual forbs (high)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"5L"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Annual forbs (low)"}\NormalTok{,}
+\NormalTok{    Plot }\SpecialCharTok{==} \StringTok{"C"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Control"}\NormalTok{,}
+    \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{"PROBLEM"}
+\NormalTok{  ))}
+
+\NormalTok{ul\_plot }\OtherTok{\textless{}{-}}\NormalTok{ graph\_data2 }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Plot =} \FunctionTok{factor}\NormalTok{(Plot, }\CommentTok{\#set the order I want}
+                       \AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Control"}\NormalTok{, }\StringTok{"Annual forbs (high)"}\NormalTok{, }
+                                  \StringTok{"Annual forbs (low)"}\NormalTok{, }\StringTok{"Perennial forbs (high)"}\NormalTok{,}
+                                  \StringTok{"Perennial forbs (low)"}\NormalTok{, }\StringTok{"Rushes (high)"}\NormalTok{,}
+                                  \StringTok{"Rushes (low)"}\NormalTok{, }\StringTok{"Grasses (high)"}\NormalTok{, }
+                                  \StringTok{"Grasses (low)"}\NormalTok{, }\StringTok{"Bulrushes (high)"}\NormalTok{,}
+                                  \StringTok{"Bulrushes (low)"}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Plot, }\AttributeTok{y =}\NormalTok{ PC, }\AttributeTok{color =}\NormalTok{ Status)) }\SpecialCharTok{+} \CommentTok{\#x is plot, y is cover}
+  \FunctionTok{stat\_summary}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{group =}\NormalTok{ Status), }\CommentTok{\#calculate means of the total cover}
+               \AttributeTok{fun =}\NormalTok{ mean, }\AttributeTok{geom =} \StringTok{"point"}\NormalTok{, }\AttributeTok{size =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{stat\_summary}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{group =}\NormalTok{ Status, }\AttributeTok{width =} \DecValTok{0}\NormalTok{), }\CommentTok{\#calculate error bars}
+               \AttributeTok{fun.data =}\NormalTok{ mean\_se, }\AttributeTok{geom =} \StringTok{"errorbar"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Functional Group"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Cover (\%)"}\NormalTok{, }\AttributeTok{title =} \StringTok{"Utah Lake"}\NormalTok{) }\SpecialCharTok{+} \CommentTok{\#labels}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{0.9}\NormalTok{)) }
+
+\NormalTok{ul\_plot}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{_main_files/figure-latex/utah lake-1.pdf}
+
+\hypertarget{combine}{%
+\section{Combine}\label{combine}}
+
+For my final output, I would like these two graphs side by side. Let's use patchwork to combine them.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(patchwork)}
+
+\NormalTok{fb\_plot }\SpecialCharTok{+}\NormalTok{ ul\_plot}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{_main_files/figure-latex/grid-1.pdf}
+
+They look great!
+
+Unfortunately, there do not appear to be any differences in native or invasive biomass as a result of seed mix. A generalized linear mixed model shows that the only significant difference is between the bulrushes and annual forbs at the Farmington Bay plots, but none of my plots are significantly different from the controls. Oh well, I guess that is how field work goes. Hopefully I will get more exciting results after my second year of monitoring!
+
+  \bibliography{book.bib,packages.bib}
+
+\end{document}
