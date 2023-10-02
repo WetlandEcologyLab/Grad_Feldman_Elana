@@ -80,13 +80,13 @@ mdf$gd <- factor(mdf$Group:mdf$Density)
 mdf.m3 <- glmmTMB(Native.Cover ~ gd #* for interaction
                   + (1|Block),
                   data = mdf,
-                  family = gaussian, #because cover
+                  family = beta_family, #because cover
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
 summary(mdf.m3) #don't use this summary
-simulateResiduals(mdf.m3, plot = T)  #fine!
+simulateResiduals(mdf.m3, plot = T)  #pretty good!
 plotResiduals(mdf.m3, form= mdf$gd)
 
 emmeans(mdf.m3, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
@@ -832,3 +832,212 @@ mdf2 %>%
   stat_summary(aes(group = Plot, width = 0), #calculate error bars
                fun.data = mean_se, geom = "errorbar", size = .5) 
 
+# 2023 ####
+fb23$Group <- as.factor(fb23$Group)
+fb23$Density <- as.factor(fb23$Density)
+
+#only need the last date
+mdf <- fb23 %>%
+  filter(Date == "2023-09-11") %>%
+  dplyr::select(Block, Group, Density, Date, Invasive.Cover, Native.Cover)
+
+useData <- filter(mdf, Density != "C") #to make the plotResiduals work
+useData$Group <- factor(useData$Group)
+useData$Density <- factor(useData$Density)
+
+##FB Native ####
+mdf.m1 <- glmmTMB(Native.Cover ~ Group * Density #* for interaction
+                  + (1|Block),
+                  data = useData,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m1) #don't use this summary
+simulateResiduals(mdf.m1, plot = T) #not good but better than log normal
+plotResiduals(mdf.m1, form= useData$Density) #fine
+
+emmip(mdf.m1, Group~Density, CIs = T) #nothing looks significant
+car::Anova(mdf.m1) #nothing significant
+#no effect of the presence of natives
+
+##FB Invasive trt vs ctl ####
+mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
+mdf.m2 <- glmmTMB(Invasive.Cover ~ gd #* for interaction
+                  + (1|Block),
+                  data = mdf,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m2) #don't use this summary 
+simulateResiduals(mdf.m2, plot = T) #pretty good! 
+plotResiduals(mdf.m2, form= mdf$gd)
+
+emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #nothing significant
+#nothing different from the control
+
+##FB native trt vs ctl ####
+mdf$gd <- factor(mdf$Group:mdf$Density)
+mdf.m3 <- glmmTMB(log(Native.Cover) ~ gd #* for interaction
+                  + (1|Block),
+                  data = mdf,
+                  family = gaussian, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m3) #don't use this summary
+simulateResiduals(mdf.m3, plot = T)  #log normal much better
+plotResiduals(mdf.m3, form= mdf$gd)
+
+emmeans(mdf.m3, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
+#no significant differences between treatment and control 
+
+##FB Invasive ####
+mdf.m4 <- glmmTMB(Invasive.Cover ~ Group * Density #* for interaction
+                  + (1|Block),
+                  data = useData,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m4)
+simulateResiduals(mdf.m4, plot = T)  #great!
+plotResiduals(mdf.m4, form= useData$Density) 
+
+
+emmip(mdf.m4, Group~Density, CIs = T)
+car::Anova(mdf.m4) #nothing significant
+
+# Modeling only seeded species ####
+
+##2023 ####
+
+### Annual forbs ####
+fb23_af <- fb23 %>% 
+  filter(Date == "2023-09-11") %>% 
+  dplyr::select(Block:Density, RUMA) %>% 
+  rowwise() %>% 
+  mutate(cover_af = sum(RUMA))
+
+####trts####
+useData <- filter(fb23_af, Density != "C") #to make the plotResiduals work
+useData$Group <- factor(useData$Group)
+useData$Density <- factor(useData$Density)
+
+mdf.m1 <- glmmTMB(cover_af ~ Group * Density #* for interaction
+                  + (1|Block),
+                  data = useData,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m1) #don't use this summary
+simulateResiduals(mdf.m1, plot = T)  #terrible both ways
+plotResiduals(mdf.m1, form= useData$Density) 
+
+#cant get to fit, don't use
+
+####Dunnetts####
+fb23_af$gd <- factor(fb23_af$Group:fb23_af$Density) #compares every combination of treatment and control
+mdf.m2 <- glmmTMB(cover_af ~ gd #* for interaction
+                  + (1|Block),
+                  data = fb23_af,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m2) #don't use this summary 
+simulateResiduals(mdf.m2, plot = T) #terrible both ways
+plotResiduals(mdf.m2, form= fb23_af$gd) 
+#cant get to fit, don't use
+
+### Bulrushes ####
+fb23_b <- fb23 %>% 
+  filter(Date == "2023-09-11") %>% 
+  dplyr::select(Block:Density, BOMA, SCAC, SCAM) %>% 
+  rowwise() %>% 
+  mutate(cover_b = sum(BOMA, SCAC, SCAM))
+
+####trts####
+useData <- filter(fb23_b, Density != "C") #to make the plotResiduals work
+useData$Group <- factor(useData$Group)
+useData$Density <- factor(useData$Density)
+
+mdf.m1 <- glmmTMB(cover_b ~ Group * Density #* for interaction
+                  + (1|Block),
+                  data = useData,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m1) #don't use this summary
+simulateResiduals(mdf.m1, plot = T)  #bad both ways
+plotResiduals(mdf.m1, form= useData$Density) 
+
+#cannot get to fit, don't use
+
+####Dunnetts####
+fb23_b$gd <- factor(fb23_b$Group:fb23_b$Density) #compares every combination of treatment and control
+mdf.m2 <- glmmTMB(cover_b ~ gd #* for interaction
+                  + (1|Block),
+                  data = fb23_b,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m2) #don't use this summary 
+simulateResiduals(mdf.m2, plot = T) #terrible both ways
+plotResiduals(mdf.m2, form= fb_b$gd) 
+
+#cant get to fit, don't use
+
+## Grasses ####
+fb23_g <- fb23 %>% 
+  filter(Date == "2023-09-11") %>% 
+  dplyr::select(Block:Density, DISP) %>% 
+  rowwise() %>% 
+  mutate(cover_g = sum(DISP))
+
+####trts####
+useData <- filter(fb23_g, Density != "C") #to make the plotResiduals work
+useData$Group <- factor(useData$Group)
+useData$Density <- factor(useData$Density)
+
+mdf.m1 <- glmmTMB(cover_g ~ Group * Density #* for interaction
+                  + (1|Block),
+                  data = useData,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m1) #don't use this summary
+simulateResiduals(mdf.m1, plot = T)  ##bad both ways
+plotResiduals(mdf.m1, form= useData$Density) #still not great
+
+#cannot fit, do not use
+
+####Dunnetts####
+fb23_g$gd <- factor(fb23_g$Group:fb23_g$Density) #compares every combination of treatment and control
+mdf.m2 <- glmmTMB(cover_g ~ gd #* for interaction
+                  + (1|Block),
+                  data = fb23_g,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m2) #don't use this summary 
+simulateResiduals(mdf.m2, plot = T) #terrible both ways 
+plotResiduals(mdf.m2, form= fb23_g$gd) 
+
+#does not fit, do not use

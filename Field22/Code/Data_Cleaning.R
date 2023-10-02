@@ -715,3 +715,48 @@ max(fb23$Invasive.Cover, na.rm = T)
 max(fb23$Native.Cover, na.rm = T)
 
 save(ul, fb, fb23, file = "clean_dfs.RData")
+
+
+# Wells ####
+wells_ul <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/UL_wells.csv")
+wells_fb <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/FB_wells.csv")
+wells_2023 <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/2023_wells.csv")
+
+##Fb####
+#glimpse(wells_fb)
+
+#Fix the names of important column
+names(wells_fb)[11] <- "depth_cm"
+
+#make date a date
+library(lubridate)
+wells_fb$Date <- lubridate::mdy(wells_fb$Date)
+
+#make block a factor
+wells_fb$Block <- as.factor(wells_fb$Block)
+
+##Ul####
+#glimpse(wells_ul)
+
+#Fix the names of important column
+names(wells_ul)[11] <- "depth_cm"
+
+#make date a date
+wells_ul$Date <- lubridate::mdy(wells_ul$Date)
+
+#make block a factor
+wells_ul$Block <- as.factor(wells_ul$Block)
+
+##2023####
+#glimpse(wells_2023)
+
+#Fix the names of important column
+names(wells_2023)[8] <- "depth_cm"
+
+#make date a date
+wells_2023$Date <- lubridate::mdy(wells_2023$Date)
+
+#make block a factor
+wells_2023$Block <- as.factor(wells_2023$Block)
+
+save(wells_ul, wells_fb, wells_2023, file = "wells.RData")
