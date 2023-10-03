@@ -862,23 +862,6 @@ emmip(mdf.m1, Group~Density, CIs = T) #nothing looks significant
 car::Anova(mdf.m1) #nothing significant
 #no effect of the presence of natives
 
-##FB Invasive trt vs ctl ####
-mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(Invasive.Cover ~ gd #* for interaction
-                  + (1|Block),
-                  data = mdf,
-                  family = beta_family, #because cover
-                  control = glmmTMBControl(optimizer = optim, 
-                                           optArgs = list(method="BFGS"))
-)
-
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #pretty good! 
-plotResiduals(mdf.m2, form= mdf$gd)
-
-emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #nothing significant
-#nothing different from the control
-
 ##FB native trt vs ctl ####
 mdf$gd <- factor(mdf$Group:mdf$Density)
 mdf.m3 <- glmmTMB(log(Native.Cover) ~ gd #* for interaction
@@ -913,9 +896,25 @@ plotResiduals(mdf.m4, form= useData$Density)
 emmip(mdf.m4, Group~Density, CIs = T)
 car::Anova(mdf.m4) #nothing significant
 
-# Modeling only seeded species ####
 
-##2023 ####
+##FB Invasive trt vs ctl ####
+mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
+mdf.m2 <- glmmTMB(Invasive.Cover ~ gd #* for interaction
+                  + (1|Block),
+                  data = mdf,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m2) #don't use this summary 
+simulateResiduals(mdf.m2, plot = T) #pretty good! 
+plotResiduals(mdf.m2, form= mdf$gd)
+
+emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #nothing significant
+#nothing different from the control
+
+##2023 seeded ####
 
 ### Annual forbs ####
 fb23_af <- fb23 %>% 

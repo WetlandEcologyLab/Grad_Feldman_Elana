@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+*.jpg
+*.docx
+*.Rhistory
+/.Rproj.user/

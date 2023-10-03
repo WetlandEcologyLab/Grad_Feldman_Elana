@@ -34,16 +34,18 @@ graph_data$Density <- factor(graph_data$Density, levels = c("H", "L", "C"),
 
 ((fb_plot <- graph_data %>%
     ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
-    stat_summary(aes(group = Status), #calculate means of the total cover
-                 fun = mean, geom = "point", size = 1) +
-    stat_summary(aes(group = Status, width = 0), #calculate error bars
+    stat_summary(aes(group = interaction(Group, Density, Status)), #calculate means of the total cover
+                 fun = mean, geom = "point", size = 2) +
+    stat_summary(aes(group = interaction(Group, Density, Status)), #calculate means of the total cover
+                 fun = mean, geom = "line") +
+    stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
-    #labs(x = "Functional Group", y = "Final Proportional Cover", title = "(a) Farmington Bay") + #labels
+    labs(x = "Date", y = "Proportional Cover", title = "(a) Farmington Bay") + 
     scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9)) +
-    ylim(0, 0.5) +
-    facet_wrap(~Group)
+    ylim(0, 1) +
+    facet_grid(~Group)
 ))
 
 
@@ -52,7 +54,6 @@ graph_data2 <- ul%>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, BOMA, BICE, CYER, RUMA,
          Cheno, SCAC, SCPU, SCAM, DISP, RACY, ASIN, ALPR, CYDA, Unk_Bulrush, BY, SYCI,
          EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) %>%
-  filter(Date == "2022-09-16") %>% 
   pivot_longer(
     cols = 6:30, 
     names_to = "SPP",
@@ -68,54 +69,38 @@ graph_data2 <- ul%>%
     SPP %in% c("SYCI", "BICE", "RUMA") & Group == 5 ~ "Seeded",
     TRUE ~ "Native"
   ))%>% 
-  group_by(Block, Plot, Status) %>%
+  group_by(Block, Date, Density, Group, Status) %>%
   summarise(PC = sum(Percent_Cover, na.rm = TRUE))
 
-graph_data2 <- graph_data2 %>% 
-  mutate(Plot = case_when(
-    Plot == "1H" ~ "Perennial forbs (high)",
-    Plot == "1L" ~ "Perennial forbs (low)",
-    Plot == "2H" ~ "Rushes (high)",
-    Plot == "2L" ~ "Rushes (low)",
-    Plot == "3H" ~ "Grasses (high)",
-    Plot == "3L" ~ "Grasses (low)",
-    Plot == "4H" ~ "Bulrushes (high)",
-    Plot == "4L" ~ "Bulrushes (low)",
-    Plot == "5H" ~ "Annual forbs (high)",
-    Plot == "5L" ~ "Annual forbs (low)",
-    Plot == "C" ~ "Control",
-    TRUE ~ "PROBLEM"
-  ))
+graph_data2$Group <- factor(graph_data2$Group, levels = c(5, 4, 3, 2, 1, 10),
+                           labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
+                                      "Perennial forb", "Control"))
+graph_data2$Density <- factor(graph_data2$Density, levels = c("H", "L", "C"),
+                             labels = c("High", "Low", "Control"))
 
 ((ul_plot <- graph_data2 %>%
-    mutate(Plot = factor(Plot, #set the order I want
-                         levels = c("Annual forbs (high)", 
-                                    "Annual forbs (low)", "Perennial forbs (high)",
-                                    "Perennial forbs (low)", "Rushes (high)",
-                                    "Rushes (low)", "Grasses (high)", 
-                                    "Grasses (low)", "Bulrushes (high)",
-                                    "Bulrushes (low)", "Control"))) %>% 
-    ggplot(aes(x = Plot, y = PC, color = Status, shape= Status)) + #x is plot, y is cover
-    stat_summary(aes(group = Status), #calculate means of the total cover
-                 fun = mean, geom = "point", size = 1) +
-    stat_summary(aes(group = Status, width = 0), #calculate error bars
+    ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
+    stat_summary(aes(group = interaction(Group, Density, Status)), #calculate means of the total cover
+                 fun = mean, geom = "point", size = 2) +
+    stat_summary(aes(group = interaction(Group, Density, Status)), #calculate means of the total cover
+                 fun = mean, geom = "line") +
+    stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
-    labs(x = "Functional Group", y = "", title = "(b) Utah Lake") + #labels
-    scale_color_manual(labels = c('Invasive', 'Native', "Seeded"), values = c("red3",  "darkblue" , "grey1" )) +
+    labs(x = "Date", y = "Proportional Cover", title = "(b) Utah Lake") + 
+    scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9)) +
-    ylim(0, 1)
-  
+    ylim(0, 1) +
+    facet_grid(~Group)
 ))
 
-fb_plot + ul_plot + plot_layout(guides = "collect")
+fb_plot / ul_plot + plot_layout(guides = "collect")
 ggsave("native_seeded_invasive_cover.jpeg")
 
 ##2023 FB ####
 graph_data23 <-fb23 %>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, Typha, 
                 BOMA, DISP, SCAC, SCAM, RUMA, RUST) %>%  #remove unnecessary columns
-  filter(Date == "2023-09-11") %>%  #only the last sampling date
   pivot_longer(
     cols = 6:13, 
     names_to = "SPP",
@@ -128,43 +113,29 @@ graph_data23 <-fb23 %>%
     SPP %in% c("RUMA") & Group == 5 ~ "Seeded",
     TRUE ~ "Native"
   ))%>%  #make a new column for species status
-  group_by(Block, Plot, Status) %>% #group by the plot and species status
+  group_by(Block, Density, Group, Date, Status) %>% #group by the plot and species status
   summarise(PC = sum(Percent_Cover, na.rm = TRUE)) #calculate totals
 
-graph_data23 <- graph_data23 %>%#change the names so they make sense
-  mutate(Plot = case_when(
-    Plot == "1H" ~ "Perennial forbs (high)",
-    Plot == "1L" ~ "Perennial forbs (low)",
-    Plot == "2H" ~ "Rushes (high)",
-    Plot == "2L" ~ "Rushes (low)",
-    Plot == "3H" ~ "Grasses (high)",
-    Plot == "3L" ~ "Grasses (low)",
-    Plot == "4H" ~ "Bulrushes (high)",
-    Plot == "4L" ~ "Bulrushes (low)",
-    Plot == "5H" ~ "Annual forbs (high)",
-    Plot == "5L" ~ "Annual forbs (low)",
-    Plot == "C" ~ "Control",
-    TRUE ~ "PROBLEM"
-  ))
+graph_data23$Group <- factor(graph_data23$Group, levels = c(5, 4, 3, 2, 1, 10),
+                            labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
+                                       "Perennial forb", "Control"))
+graph_data23$Density <- factor(graph_data23$Density, levels = c("H", "L", "C"),
+                              labels = c("High", "Low", "Control"))
 
 ((fb23_plot <- graph_data23 %>%
-    mutate(Plot = factor(Plot, #set the order I want
-                         levels = c("Annual forbs (high)", 
-                                    "Annual forbs (low)", "Perennial forbs (high)",
-                                    "Perennial forbs (low)", "Rushes (high)",
-                                    "Rushes (low)", "Grasses (high)", 
-                                    "Grasses (low)", "Bulrushes (high)",
-                                    "Bulrushes (low)", "Control"))) %>% 
-    ggplot(aes(x = Plot, y = PC, color = Status, shape = Status)) + #x is plot, y is cover
-    stat_summary(aes(group = Status), #calculate means of the total cover
-                 fun = mean, geom = "point", size = 1) +
-    stat_summary(aes(group = Status, width = 0), #calculate error bars
+    ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
+    stat_summary(aes(group = interaction(Group, Density, Status)), #calculate means of the total cover
+                 fun = mean, geom = "point", size = 2) +
+    stat_summary(aes(group = interaction(Group, Density, Status)), #calculate means of the total cover
+                 fun = mean, geom = "line") +
+    stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
-    labs(x = "Functional Group", y = "Final Proportional Cover") + #labels
-    scale_color_manual(labels = c('Invasive', 'Native', "Seeded"), values = c("red3",  "darkblue" , "grey1" )) +
+    labs(x = "Date", y = "Proportional Cover") + 
+    scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9)) +
-    ylim(0, 1)
+    ylim(0, 0.3) +
+    facet_wrap(~Group)
 ))
 
 ggsave("invasive_native_2023.jpeg")
