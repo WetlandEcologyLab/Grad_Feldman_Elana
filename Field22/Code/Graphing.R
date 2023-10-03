@@ -10,7 +10,6 @@ graph_data <-fb %>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, Cheno, Typha, 
          BOMA, DISP, EUMA, SYCI, LEFA, SCAC, BICE, BIFR, EUOC, MUAS, SCAM, RUMA,
          RUST, Unk_Bulrush, SARU, Tamarisk) %>%  #remove unnecessary columns
-  filter(Date == "2022-09-16") %>%  #only the last sampling date
   pivot_longer(
     cols = 6:24, 
     names_to = "SPP",
@@ -24,44 +23,29 @@ graph_data <-fb %>%
     SPP %in% c("SYCI", "BICE", "BIFR", "RUMA") & Group == 5 ~ "Seeded",
     TRUE ~ "Native"
   ))%>%  #make a new column for species status
-  group_by(Block, Plot, Status) %>% #group by the plot and species status
+  group_by(Block, Group, Density, Date, Status) %>% #group by the plot and species status
   summarise(PC = sum(Percent_Cover, na.rm = TRUE)) #calculate totals
 
-graph_data <- graph_data %>%#change the names so they make sense
-  mutate(Plot = case_when(
-    Plot == "1H" ~ "Perennial forbs (high)",
-    Plot == "1L" ~ "Perennial forbs (low)",
-    Plot == "2H" ~ "Rushes (high)",
-    Plot == "2L" ~ "Rushes (low)",
-    Plot == "3H" ~ "Grasses (high)",
-    Plot == "3L" ~ "Grasses (low)",
-    Plot == "4H" ~ "Bulrushes (high)",
-    Plot == "4L" ~ "Bulrushes (low)",
-    Plot == "5H" ~ "Annual forbs (high)",
-    Plot == "5L" ~ "Annual forbs (low)",
-    Plot == "C" ~ "Control",
-    TRUE ~ "PROBLEM"
-  ))
+graph_data$Group <- factor(graph_data$Group, levels = c(5, 4, 3, 2, 1, 10),
+                    labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
+                               "Perennial forb", "Control"))
+graph_data$Density <- factor(graph_data$Density, levels = c("H", "L", "C"),
+                      labels = c("High", "Low", "Control"))
 
 ((fb_plot <- graph_data %>%
-  mutate(Plot = factor(Plot, #set the order I want
-                       levels = c("Annual forbs (high)", 
-                                  "Annual forbs (low)", "Perennial forbs (high)",
-                                  "Perennial forbs (low)", "Rushes (high)",
-                                  "Rushes (low)", "Grasses (high)", 
-                                  "Grasses (low)", "Bulrushes (high)",
-                                  "Bulrushes (low)", "Control"))) %>% 
-  ggplot(aes(x = Plot, y = PC, color = Status, shape = Status)) + #x is plot, y is cover
-  stat_summary(aes(group = Status), #calculate means of the total cover
-               fun = mean, geom = "point", size = 1) +
-  stat_summary(aes(group = Status, width = 0), #calculate error bars
-               fun.data = mean_se, geom = "errorbar", size = .5) +
-  labs(x = "Functional Group", y = "Final Proportional Cover", title = "(a) Farmington Bay") + #labels
-  scale_color_manual(labels = c('Invasive', 'Native', "Seeded"), values = c("red3",  "darkblue" , "grey1" )) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-        plot.title = element_text(size = 9)) +
-    ylim(0, 1)
+    ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
+    stat_summary(aes(group = Status), #calculate means of the total cover
+                 fun = mean, geom = "point", size = 1) +
+    stat_summary(aes(group = Status, width = 0), #calculate error bars
+                 fun.data = mean_se, geom = "errorbar", size = .5) +
+    #labs(x = "Functional Group", y = "Final Proportional Cover", title = "(a) Farmington Bay") + #labels
+    scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+          plot.title = element_text(size = 9)) +
+    ylim(0, 0.5) +
+    facet_wrap(~Group)
 ))
+
 
 ## UL####
 graph_data2 <- ul%>%
