@@ -1,12 +1,13 @@
-Raw_Data: all the raw data used for this experiment - also on my Google drive
-Cleaned_Data: all the cleaned data that went into the analysis - also on my Google drive
-Examples from Jes: some examples of graphing code that Jes gave me early on in my analysis process
-Graphs: all the graph outputs from this analysis
-Code: all the code used for analysis in R 
-main_dfs.RData: all the cleaned dataframes I use in my analysis, called in the beginning of each R script
-Greenhouse2022.Rproj: the R project that holds all my code for this analysis
+Most the code related to the first greenhouse experiment in Chapter 1 of my thesis. All code related to the process error model of growth rate is in the folder Process_Error_Model. 
 
-Notes on cleaned data:
--most of the cleaning is in the R script called DataCleaning.R
+Raw-Data - Copy of the original data collected for this experiment; another copy is also on my Google Drive
+Cleaned-Data - includes all the cleaned data to be used for analysis; another copy is also on my Google Drive
+Graphs  - includes all figures I have created in R
+Code - all the code used for my analyses of this data in R
+main_dfs.RData - data object that includes all the dataframes needed for analysis; always loaded in the beginning of my R scripts
+Greenhouse2022.Rproj - The R project that uses all my R scripts in the Code folder
+
+Overview of data cleaning process:
 -u (for unknown) and x (for not relevant) were changed to NAs
 -Tub column was split into Species, Density, and Phrag_Presence columns
+-More forms of cleaning were completed in the DataCleaning.R file: values were changed to mid-points, 0s for cover estimates were nudged to a trace value, column names were fixed 

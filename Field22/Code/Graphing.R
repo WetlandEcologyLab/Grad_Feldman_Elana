@@ -43,7 +43,8 @@ graph_data$Density <- factor(graph_data$Density, levels = c("H", "L", "C"),
     labs(x = "Date", y = "Proportional Cover", title = "(a) Farmington Bay") + 
     scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-          plot.title = element_text(size = 9)) +
+          plot.title = element_text(size = 9),
+          strip.text.x = element_text(size = 6)) +
     ylim(0, 1) +
     facet_grid(~Group)
 ))
@@ -89,7 +90,8 @@ graph_data2$Density <- factor(graph_data2$Density, levels = c("H", "L", "C"),
     labs(x = "Date", y = "Proportional Cover", title = "(b) Utah Lake") + 
     scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-          plot.title = element_text(size = 9)) +
+          plot.title = element_text(size = 9),
+          strip.text.x = element_text(size = 6)) +
     ylim(0, 1) +
     facet_grid(~Group)
 ))
@@ -241,7 +243,7 @@ ul_stack <- ul2 %>%
                                'SCAC',
                                'SCAM',
                                'SYCI'))+
-  labs(x = "Native seeding density", y = "", 
+  labs(x = "Native Seeding Density", y = "Relative Abundance", 
        fill = "Species", title = "(b) Utah Lake") +
   theme(plot.title = element_text(size = 9),
         legend.position = "none")
@@ -286,7 +288,7 @@ fb232 %>%
                                'RUMA',
                                'SCAC',
                                'SCAM'))+
-  labs(x = "Native seeding density", y  = "Relative Abundance", 
+  labs(x = "Native Seeding Density", y  = "Relative Abundance", 
        fill = "Species") +
   theme(plot.title = element_text(size = 9),
         legend.position = "right")
@@ -317,7 +319,7 @@ fb_di2 <- dplyr::select(fb_di2, -c(ID, Group, Density))
 div <- diversity(fb_di2, "shannon")
 fb_di$shannon <- div
 
-#Plot ####
+#Plot
 #change order of phrag presence and also labels
 fb_di$Group <- factor(fb_di$Group, levels = c(5, 4, 3, 2, 1, 10),
                                    labels = c("Annual Forb", "Bulrush", "Grass", "Rush",  
@@ -331,7 +333,7 @@ fb_di$Density <- factor(fb_di$Density, levels = c("L", "H", "C"),
                  fun = mean, geom = "point", size = 2) +
   stat_summary(aes(group = interaction(Density, Group), width = 0),
                  fun.data = mean_se, geom = "errorbar") +
-  labs(y = "Mean Shannon Diversity Index", x = "Seed mix", title = "(a) Farmington Bay") +
+  labs(y = "Mean Shannon Diversity Index", x = "Seed Mix", title = "(a) Farmington Bay") +
   scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         plot.title = element_text(size = 9),
@@ -361,7 +363,7 @@ ul_di2 <- dplyr::select(ul_di2, -c(ID, Group, Density))
 div <- diversity(ul_di2, "shannon")
 ul_di$shannon <- div
 
-#Plot ####
+#Plot
 #change order of phrag presence and also labels
 ul_di$Group <- factor(ul_di$Group, levels = c(5, 4, 3, 2, 1, 10),
                       labels = c("Annual Forb", "Bulrush", "Grass", "Rush",  
@@ -375,7 +377,7 @@ ul_di$Density <- factor(ul_di$Density, levels = c("L", "H", "C"),
                fun = mean, geom = "point", size = 2) +
   stat_summary(aes(group = interaction(Density, Group), width = 0),
                fun.data = mean_se, geom = "errorbar") +
-  labs(y = "", x = "Seed mix", title = "(b) Utah Lake") +
+  labs(y = "", x = "Seed Mix", title = "(b) Utah Lake") +
   scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         plot.title = element_text(size = 9)) +
@@ -408,7 +410,7 @@ fb23_di2 <- dplyr::select(fb23_di2, -c(ID, Group, Density))
 div <- diversity(fb23_di2, "shannon")
 fb23_di$shannon <- div
 
-#Plot ####
+#Plot
 #change order of phrag presence and also labels
 fb23_di$Group <- factor(fb23_di$Group, levels = c(5, 4, 3, 2, 1, 10),
                         labels = c("Annual Forb", "Bulrush", "Grass", "Rush",  
@@ -422,7 +424,7 @@ fb23_di %>%
                  fun = mean, geom = "point", size = 2) +
     stat_summary(aes(group = interaction(Density, Group), width = 0),
                  fun.data = mean_se, geom = "errorbar") +
-    labs(y = "Mean Shannon Diversity Index", x = "Seed mix") +
+    labs(y = "Mean Shannon Diversity Index", x = "Seed Mix") +
     scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
@@ -630,23 +632,91 @@ cor.test(fb23_flag$Native.Cover, fb23_flag$Count,
 
 # Wells ####
 load("wells.RData")
+
+cp <- c("cadetblue4", "cornflowerblue", "deepskyblue", "deepskyblue4", "cyan3", "darkblue")
 ##FB ####
-wells_fb %>% 
+a <- wells_fb %>% 
   ggplot(aes(x = Date, y = depth_cm, color = Block))+
   geom_point()+
-  geom_line()
+  geom_line() +
+  labs(x = "Date", y = "Water Depth (cm)", title = "(b) Farmington Bay 2022") +
+  ylim(-100, 30) +
+  theme(plot.title = element_text(size = 9)) +
+  scale_color_manual(values = cp)
 
 ##ul ####
-wells_ul %>% 
+b <- wells_ul %>% 
   ggplot(aes(x = Date, y = depth_cm, color = Block))+
   geom_point()+
-  geom_line()
+  geom_line()+
+  labs(x = "Date", y = "Water Depth (cm)", title = "(a) Utah Lake 2022")+
+  ylim(-100, 30)+
+  theme(plot.title = element_text(size = 9)) +
+  scale_color_manual(values = cp)
 
 ##2023 ####
-wells_2023 %>% 
+c <- wells_2023 %>% 
   ggplot(aes(x = Date, y = depth_cm, color = Block))+
   geom_point()+
-  geom_line()
+  geom_line()+
+  labs(x = "Date", y = "Water Depth (cm)", title = "(c) Farmington Bay 2023")+
+  ylim(-100, 30)+
+  theme(plot.title = element_text(size = 9)) +
+  scale_color_manual(values = cp)
+
+b/a/c + plot_layout(guides = "collect")
+ggsave("wells.jpeg")
+
+# RUMA Spread ####
+##Year 1 ####
+fb$Group <- factor(fb$Group, levels = c(5, 4, 3, 2, 1, 10),
+                   labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
+                              "Perennial forb", "Control"))
+fb$Density <- factor(fb$Density, levels = c("H", "L", "C"),
+                     labels = c("High", "Low", "Control"))
+fb23$Group <- factor(fb23$Group, levels = c(5, 4, 3, 2, 1, 10),
+                     labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
+                                "Perennial forb", "Control"))
+fb23$Density <- factor(fb23$Density, levels = c("H", "L", "C"),
+                       labels = c("High", "Low", "Control"))
+a <- fb %>% 
+  ggplot(aes(x = Date, y = RUMA, color = Density)) +
+  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
+               fun = mean, geom = "point", size = 2) +
+  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
+               fun = mean, geom = "line") +
+  stat_summary(aes(group = interaction(Group, Density), width = 0), #calculate error bars
+               fun.data = mean_se, geom = "errorbar", size = .5) +
+  facet_grid(~Group) +
+  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+        plot.title = element_text(size = 9),
+        axis.title.y = ggtext::element_markdown(),
+        strip.text.x = element_text(size = 6)) +
+  labs(x = "Date", y = "*Rumex maritimus* Cover", title = "(a) 2022 Growing Season") +
+  coord_cartesian(ylim = c(0, .2))
 
 
+##Year 2 ####
+
+b <- fb23 %>% 
+  ggplot(aes(x = Date, y = RUMA, color = Density)) +
+  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
+               fun = mean, geom = "point", size = 2) +
+  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
+               fun = mean, geom = "line") +
+  stat_summary(aes(group = interaction(Group, Density), width = 0), #calculate error bars
+               fun.data = mean_se, geom = "errorbar", size = .5) +
+  facet_grid(~Group) +
+  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+        plot.title = element_text(size = 9),
+        axis.title.y = ggtext::element_markdown(),
+        strip.text.x = element_text(size = 6)) +
+  labs(x = "Date", y = "*Rumex maritimus* Cover", title = "(b) 2023 Growing Season")+
+  coord_cartesian(ylim = c(0, .2))
+
+a / b + plot_layout(guides = "collect")
+#you can see how RUMA spread into all the other parts, and also how it senesced and then regrew
+ggsave("RUMA_both_years.jpeg")
 
