@@ -47,9 +47,26 @@ car::Anova(mdf.m1) #no interaction but at least one group different from another
 
 emmip(mdf.m1, Group~Density, CIs = T, type = "response") #shows on the level of the response
 
-emmeans(mdf.m1, pairwise~Group) #not significant when adjusted for the tukey test
+emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey') #not significant when adjusted for the tukey test
 emmeans(mdf.m1, pairwise~Group, adjust = "none") #a more liberal test shows what we expected above with the groups
 #there is some suggestion that there might be some differences but the study fails to support these differences - suggestion without support
+
+##FB native trt vs ctl ####
+mdf$gd <- factor(mdf$Group:mdf$Density)
+mdf.m3 <- glmmTMB(Native.Cover ~ gd #* for interaction
+                  + (1|Block),
+                  data = mdf,
+                  family = beta_family, #because cover
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m3) #don't use this summary
+simulateResiduals(mdf.m3, plot = T)  #pretty good!
+plotResiduals(mdf.m3, form= mdf$gd)
+
+emmeans(mdf.m3, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
+#no significant differences between treatment and control 
 
 ##FB Invasive trt vs ctl ####
 mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
@@ -74,23 +91,6 @@ emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference g
 #4L is the largest mean and 10C is pretty small, so that's why they are different
 
 #so nothing is different from the control so doesn't necessarily seem like any differences are related to treatment
-
-##FB native trt vs ctl ####
-mdf$gd <- factor(mdf$Group:mdf$Density)
-mdf.m3 <- glmmTMB(Native.Cover ~ gd #* for interaction
-                  + (1|Block),
-                  data = mdf,
-                  family = beta_family, #because cover
-                  control = glmmTMBControl(optimizer = optim, 
-                                           optArgs = list(method="BFGS"))
-)
-
-summary(mdf.m3) #don't use this summary
-simulateResiduals(mdf.m3, plot = T)  #pretty good!
-plotResiduals(mdf.m3, form= mdf$gd)
-
-emmeans(mdf.m3, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
-#no significant differences between treatment and control 
 
 ##FB Invasive ####
 mdf.m4 <- glmmTMB(Invasive.Cover ~ Group * Density #* for interaction
@@ -139,7 +139,7 @@ mix <- ggplot(data = data4a, aes(x = Group, y = response)) +
   theme(axis.title.y = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 45, hjust = 0.9),
         plot.title = element_text(size = 9)) +
-  coord_cartesian(ylim = c(0, 0.15))
+  coord_cartesian(ylim = c(0, 1))
 
 emm4b <- emmeans(mdf.m4, pairwise~Density, type = "response", adjust = 'tukey')
 data4b <- multcomp::cld(emm4b, alpha = 0.1, Letters = letters)
@@ -161,7 +161,7 @@ density <- ggplot(data = data4b, aes(x = Density, y = response, color= Density))
   theme(axis.title.y = ggtext::element_markdown(),
         legend.position = "blank",
         plot.title = element_text(size = 9))+
-  coord_cartesian(ylim = c(0, 0.1))
+  coord_cartesian(ylim = c(0, 1))
 
 
 mix + density + plot_layout(width = c(2, 1))
@@ -438,7 +438,7 @@ ggplot(data = data1a, aes(x = Group, y = response)) +
             hjust = 0.05) +
   theme(axis.title.y = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 45, hjust = 0.9)) +
-  coord_cartesian(ylim = c(0, .15))
+  coord_cartesian(ylim = c(0, 1))
 
 ggsave("model_means_bulrush_fb.jpeg")
 
@@ -460,8 +460,36 @@ plotResiduals(mdf.m2, form= fb_b$gd)
 emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") 
 #the only one significantly higher than the control is 4H and 4L!!!
 
+emm2a <- emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") 
+data2a <- multcomp::cld(emm2a, alpha = 0.1, Letters = letters)
 
-## Grasses ####
+data2a$gd <- factor(data2a$gd,
+                       levels = c("5:H", "5:L", "4:H", "4:L", 
+                                  "3:H", "3:L", "2:H", "2:L", 
+                                  "1:H", "1:L", "10:C"),
+                       labels = c("Annual Forb High", "Annual Forb Low", 
+                                  "Bulrush High", "Bulrush Low",
+                                  "Grass High", "Grass Low",
+                                  "Rush High", "Rush Low", 
+                                  "Perennial Forb High", "Perennial Forb Low",
+                                  "Control"))
+
+ggplot(data = data2a, aes(x = gd, y = response)) +
+  geom_point(size=2) +
+  geom_errorbar(aes(ymin = (response - SE),
+                    ymax = (response+SE)),
+                width=0, size=0.5) +
+  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Bulrush Cover") +
+  geom_text(aes(label = .group,  y = response),
+            color = "black",
+            hjust = 0.05) +
+  theme(axis.title.y = ggtext::element_markdown(),
+        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
+  coord_cartesian(ylim = c(0, 1))
+
+ggsave("dunnetts_fb_bulrush.jpeg")
+
+### Grasses ####
 fb_g <- fb %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, MUAS, DISP) %>% 
@@ -512,19 +540,20 @@ data1a$Density <- factor(data1a$Density,
                          labels = c("Low", "High"))
 
 ggplot(data = data1a, aes(x = Group, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=3)) +
+  geom_point(size=2, position = position_jitter(seed=5)) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5,
-                position = position_jitter(seed=3)) +
+                position = position_jitter(seed=5)) +
   labs(x="Seed Mix", y = "Model Predicted <br> Proportional Grass Cover") +
   geom_text(aes(label = .group,  y = response),
             color = "black",
-            position = position_jitter(seed=3),
-            hjust = 0.05) +
+            position = position_jitter(seed=5),
+            vjust = -1, hjust = 1) +
   scale_color_manual(values = c("darkblue", "red3")) +
   theme(axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 45, hjust = 0.9))
+        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
+  coord_cartesian(ylim = c(0,1))
 
 ggsave("model_means_grass_fb.jpeg")
 
@@ -680,11 +709,11 @@ ggplot(data = data1a, aes(x = Group, y = response)) +
             hjust = 0.05) +
   theme(axis.title.y = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 45, hjust = 0.9)) +
-  coord_cartesian(ylim = c(0, 0.4))
+  coord_cartesian(ylim = c(0, 1))
 
 ggsave("model_means_perennial_ul.jpeg")
 
-s####Dunnetts####
+####Dunnetts####
 ul_pf$gd <- factor(ul_pf$Group:ul_pf$Density) #compares every combination of treatment and control
 mdf.m2 <- glmmTMB(cover_pf ~ gd #* for interaction
                   + (1|Block),
@@ -756,7 +785,7 @@ ggplot(data = data1a, aes(x = Group, y = response)) +
             hjust = 0.05) +
   theme(axis.title.y = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 45, hjust = 0.9)) +
-  coord_cartesian(ylim = c(0, 0.25))
+  coord_cartesian(ylim = c(0, 1))
 
 ggsave("model_means_bulrush_ul.jpeg")
 
@@ -778,7 +807,7 @@ plotResiduals(mdf.m2, form= ul_b$gd)
 emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") 
 #no significant differences
 
-## Grasses ####
+### Grasses ####
 ul_g <- ul %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, DISP) %>% 

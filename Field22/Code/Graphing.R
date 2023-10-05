@@ -46,7 +46,7 @@ graph_data$Density <- factor(graph_data$Density, levels = c("H", "L", "C"),
           plot.title = element_text(size = 9),
           strip.text.x = element_text(size = 6)) +
     ylim(0, 1) +
-    facet_grid(~Group)
+    facet_wrap(~Group)
 ))
 
 
@@ -93,7 +93,7 @@ graph_data2$Density <- factor(graph_data2$Density, levels = c("H", "L", "C"),
           plot.title = element_text(size = 9),
           strip.text.x = element_text(size = 6)) +
     ylim(0, 1) +
-    facet_grid(~Group)
+    facet_wrap(~Group)
 ))
 
 fb_plot / ul_plot + plot_layout(guides = "collect")
@@ -136,7 +136,7 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c("H", "L", "C"),
     scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9)) +
-    ylim(0, 0.3) +
+    ylim(0,1) +
     facet_wrap(~Group)
 ))
 
@@ -428,7 +428,7 @@ fb23_di %>%
     scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
-          legend.position = "blank") +
+          legend.position = "right") +
     ylim(0, 2.5)
 
 ggsave("diversity_index_23.jpeg")
@@ -483,6 +483,9 @@ cor.test(fb_flag$Typha, fb_flag$avg_meas,
 #r(328) = 0.53, p < 2.2e16
 #good positive, very significant
 
+summary(lm(Typha ~ avg_meas, fb_flag))
+#not great R2
+
 fb_flag <- fb %>% 
   dplyr::select(Plot, PHAU, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
   group_by(Plot, Date) %>% 
@@ -493,6 +496,8 @@ cor.test(fb_flag$PHAU, fb_flag$avg_meas,
          method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
 #r(328) = 0.16, p = 0.002
 #weak positive, significant
+summary(lm(PHAU ~ avg_meas, fb_flag))
+#terrible R2
 
 fb_flag <- fb %>% 
   dplyr::select(Plot, DISP, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
@@ -504,6 +509,9 @@ cor.test(fb_flag$DISP, fb_flag$avg_meas,
          method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
 #r(328) = 0.35, p = 6.744e-11
 #okay positive, very significant
+
+summary(lm(DISP ~ avg_meas, fb_flag))
+#pretty bad R2
 
 ##UL####
 ul_flag <- ul %>% 
@@ -517,6 +525,9 @@ cor.test(ul_flag$PHAU, ul_flag$avg_meas,
 #r(454) = 0.24, p = 2.571e-07
 #weak positive, significant
 
+summary(lm(PHAU ~ avg_meas, ul_flag))
+#pretty bad R2
+
 ul_flag <- ul %>% 
   dplyr::select(Plot, SCAM, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
   group_by(Plot, Date) %>% 
@@ -527,6 +538,8 @@ cor.test(ul_flag$SCAM, ul_flag$avg_meas,
          method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
 #r(454) = 0.32, p = 4.403e-12
 #okay positive, very significant
+summary(lm(SCAM ~ avg_meas, ul_flag))
+#pretty bad R2
 
 ul_flag <- ul %>% 
   dplyr::select(Plot, Cheno, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
@@ -538,6 +551,9 @@ cor.test(ul_flag$Cheno, ul_flag$avg_meas,
          method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
 #r(454) = 0.73, p  < 2.2e-16
 #strong positive, very significant
+
+summary(lm(Cheno ~ avg_meas, ul_flag))
+#actually decent R2
 
 ##2023####
 fb23_flag <- fb23 %>% 
@@ -551,6 +567,9 @@ cor.test(fb23_flag$Typha, fb23_flag$avg_meas,
 #r(328) = 0.07, p = 0.197
 #very weak, not significant
 
+summary(lm(Typha ~ avg_meas, fb23_flag))
+#very bad R2
+
 fb23_flag <- fb23 %>% 
   dplyr::select(Plot, PHAU, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
   group_by(Plot, Date) %>% 
@@ -561,6 +580,9 @@ cor.test(fb23_flag$PHAU, fb23_flag$avg_meas,
          method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
 #r(328) = 0.36, p = 2.665e-11
 #decent positive, very significant
+
+summary(lm(PHAU ~ avg_meas, fb23_flag))
+#not great R2
 
 fb23_flag <- fb23 %>% 
   dplyr::select(Plot, DISP, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
@@ -573,6 +595,9 @@ cor.test(fb23_flag$DISP, fb23_flag$avg_meas,
 #r(328) = 0.05, p = 0.3897
 #weak, not significant
 
+summary(lm(DISP ~ avg_meas, fb23_flag))
+#very bad R2
+
 fb23_flag <- fb23 %>% 
   dplyr::select(Plot, SCAC, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
   group_by(Plot, Date) %>% 
@@ -583,6 +608,9 @@ cor.test(fb23_flag$SCAC, fb23_flag$avg_meas,
          method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
 #r(328) = 0.1, p = 0.06911
 #weak, significant
+
+summary(lm(SCAC ~ avg_meas, fb23_flag))
+#very bad R2
 
 #Flags with invasive versus native ####
 ##FB####
@@ -719,4 +747,57 @@ b <- fb23 %>%
 a / b + plot_layout(guides = "collect")
 #you can see how RUMA spread into all the other parts, and also how it senesced and then regrew
 ggsave("RUMA_both_years.jpeg")
+
+# SCAC Spread ####
+##Year 1 ####
+fb$Group <- factor(fb$Group, levels = c(5, 4, 3, 2, 1, 10),
+                   labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
+                              "Perennial forb", "Control"))
+fb$Density <- factor(fb$Density, levels = c("H", "L", "C"),
+                     labels = c("High", "Low", "Control"))
+fb23$Group <- factor(fb23$Group, levels = c(5, 4, 3, 2, 1, 10),
+                     labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
+                                "Perennial forb", "Control"))
+fb23$Density <- factor(fb23$Density, levels = c("H", "L", "C"),
+                       labels = c("High", "Low", "Control"))
+a <- fb %>% 
+  ggplot(aes(x = Date, y = SCAC, color = Density)) +
+  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
+               fun = mean, geom = "point", size = 2) +
+  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
+               fun = mean, geom = "line") +
+  stat_summary(aes(group = interaction(Group, Density), width = 0), #calculate error bars
+               fun.data = mean_se, geom = "errorbar", size = .5) +
+  facet_grid(~Group) +
+  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+        plot.title = element_text(size = 9),
+        axis.title.y = ggtext::element_markdown(),
+        strip.text.x = element_text(size = 6)) +
+  labs(x = "Date", y = "*Schoenoplectus acutus* Cover", title = "(a) 2022 Growing Season") +
+  coord_cartesian(ylim = c(0, .2))
+
+
+##Year 2 ####
+
+b <- fb23 %>% 
+  ggplot(aes(x = Date, y = SCAC, color = Density)) +
+  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
+               fun = mean, geom = "point", size = 2) +
+  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
+               fun = mean, geom = "line") +
+  stat_summary(aes(group = interaction(Group, Density), width = 0), #calculate error bars
+               fun.data = mean_se, geom = "errorbar", size = .5) +
+  facet_grid(~Group) +
+  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+        plot.title = element_text(size = 9),
+        axis.title.y = ggtext::element_markdown(),
+        strip.text.x = element_text(size = 6)) +
+  labs(x = "Date", y = "*Schoenoplectus acutus* Cover", title = "(b) 2023 Growing Season")+
+  coord_cartesian(ylim = c(0, .2))
+
+a / b + plot_layout(guides = "collect")
+#you can see how RUMA spread into all the other parts, and also how it senesced and then regrew
+ggsave("SCAC_both_years.jpeg")
 
