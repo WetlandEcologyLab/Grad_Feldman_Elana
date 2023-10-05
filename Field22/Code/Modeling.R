@@ -427,20 +427,22 @@ data1a$Group <- factor(data1a$Group,
                        labels = c("Annual Forb", "Bulrush", "Grass",
                                   "Rush", "Perennial Forb"))
 
-ggplot(data = data1a, aes(x = Group, y = response)) +
+a <- ggplot(data = data1a, aes(x = Group, y = response)) +
   geom_point(size=2) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Bulrush Cover") +
+  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Bulrush Cover",
+       title = "(a)") +
   geom_text(aes(label = .group,  y = response),
             color = "black",
             hjust = 0.05) +
   theme(axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
+        axis.text.x = element_text(angle = 45, hjust = 0.9),
+        plot.title = element_text(size = 9)) +
   coord_cartesian(ylim = c(0, 1))
 
-ggsave("model_means_bulrush_fb.jpeg")
+#ggsave("model_means_bulrush_fb.jpeg")
 
 ####Dunnetts####
 fb_b$gd <- factor(fb_b$Group:fb_b$Density) #compares every combination of treatment and control
@@ -474,20 +476,25 @@ data2a$gd <- factor(data2a$gd,
                                   "Perennial Forb High", "Perennial Forb Low",
                                   "Control"))
 
-ggplot(data = data2a, aes(x = gd, y = response)) +
+b <- ggplot(data = data2a, aes(x = gd, y = response)) +
   geom_point(size=2) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Bulrush Cover") +
+  labs(x="Seed Mix", y = "",
+       title = "(b)") +
   geom_text(aes(label = .group,  y = response),
             color = "black",
-            hjust = 0.05) +
+            hjust = 0.05, vjust = .1) +
   theme(axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
+        axis.text.x = element_text(angle = 45, hjust = 0.9),
+        plot.title = element_text(size = 9)) +
   coord_cartesian(ylim = c(0, 1))
 
-ggsave("dunnetts_fb_bulrush.jpeg")
+#ggsave("dunnetts_fb_bulrush.jpeg")
+
+a + b +plot_layout(width = c(1, 2))
+ggsave("fb_bulrush_both.jpeg")
 
 ### Grasses ####
 fb_g <- fb %>% 
