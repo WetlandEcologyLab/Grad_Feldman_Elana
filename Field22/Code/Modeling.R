@@ -414,7 +414,7 @@ car::Anova(mdf.m1) #at least one group is significantly different from another
 
 emmip(mdf.m1, Group~Density, CIs = T, type = "response") #shows on the level of the response
 
-emmeans(mdf.m1, pairwise~Group)
+emmeans(mdf.m1, pairwise~Group, type = "response")
 #tukey test shows us a significant difference between Group1/4, Group2/4, Group3/4, and Group4/5
 #So looks like group 4 had a lot more cover than the others groups
 #This is actually really important because that was my bulrush group!!
@@ -529,7 +529,7 @@ car::Anova(mdf.m1) #interaction between group and density!
 emmip(mdf.m1, Group~Density, CIs = T, type = "response") #shows on the level of the response
 #from this, looks like the interaction with group 3 H vs L
 
-emmeans(mdf.m1, pairwise~Group*Density)
+emmeans(mdf.m1, pairwise~Group*Density, type = "response")
 #kind of weird results, only things that are marginally significant
 #2H / 3H, 3H / 4H, 3H / 5H, 3H / 5L - 3H being higher than the others
 #a lot of grass grew in 3H but not 3L, so there's an interaction
@@ -614,7 +614,7 @@ plotResiduals(mdf.m1, form= useData$Density)#fine
 emmip(mdf.m1, Group~Density, CIs = T) 
 car::Anova(mdf.m1) #at least one group significantly different
 
-emmeans(mdf.m1, pairwise~Group)
+emmeans(mdf.m1, pairwise~Group, type = "response")
 #Group1/3, Group3/4, Group3/5 - with three much higher than the others
 #doesn't make sense because isn't my forb group
 #maybe the grass helped the forbs grow somehow?
@@ -694,7 +694,7 @@ car::Anova(mdf.m1) #at least one group significant
 emmip(mdf.m1, Group~Density, CIs = T, type = "response")
 #kind of just looks like everything was 0 except 5H was higher 
 
-emmeans(mdf.m1, pairwise~Group)
+emmeans(mdf.m1, pairwise~Group, type = "response")
 #only between 3/5 - which doesn't make any sense - with 5 higher 
 
 emm1a <- emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey')
@@ -770,7 +770,7 @@ car::Anova(mdf.m1) #at least one group is significantly different from another
 
 emmip(mdf.m1, Group~Density, CIs = T, type = "response") #shows on the level of the response
 
-emmeans(mdf.m1, pairwise~Group)
+emmeans(mdf.m1, pairwise~Group, type = "response")
 #only between 3/4 - with 3 much lower, don't know what that means
 
 emm1a <- emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey')

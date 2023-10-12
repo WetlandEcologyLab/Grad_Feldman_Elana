@@ -193,7 +193,7 @@ fb_stack <- fb2 %>%
                                'SCAM',
                                'SYCI'))+
   labs(x = "", y = "Relative Abundance", 
-       fill = "Species", title = "(a) Farmington Bay") +
+       fill = "Species", title = "(a) Farmington Bay 2022") +
   theme(plot.title = element_text(size = 9))
   
 
@@ -243,13 +243,11 @@ ul_stack <- ul2 %>%
                                'SCAC',
                                'SCAM',
                                'SYCI'))+
-  labs(x = "Native Seeding Density", y = "Relative Abundance", 
-       fill = "Species", title = "(b) Utah Lake") +
+  labs(x = "", y = "Relative Abundance", 
+       fill = "Species", title = "(b) Utah Lake 2022") +
   theme(plot.title = element_text(size = 9),
         legend.position = "none")
 
-fb_stack / ul_stack + plot_layout(guides = "collect")
-ggsave("stacked_species.jpeg")
 
 ##FB2023####
 cp3 <- c("#1F78B4" ,"#B2DF8A", "#FDBF6F" ,"#FF7F00", "#CAB2D6")
@@ -277,7 +275,7 @@ fb232$Group <- factor(fb232$Group, levels = c(5, 4, 3, 2, 1, 10),
 fb232$Density <- factor(fb232$Density, levels = c("H", "L"),
                       labels = c("High", "Low"))
 
-fb232 %>% 
+fb23_stack <- fb232 %>% 
   dplyr::filter(Status == "Seeded") %>% 
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
@@ -289,11 +287,13 @@ fb232 %>%
                                'SCAC',
                                'SCAM'))+
   labs(x = "Native Seeding Density", y  = "Relative Abundance", 
+       title = "(c) Farmington Bay 2023",
        fill = "Species") +
   theme(plot.title = element_text(size = 9),
-        legend.position = "right")
+        legend.position = "none")
 
-ggsave("stacked_species_23.jpeg")
+fb_stack / ul_stack /fb23_stack + plot_layout(guides = "collect")
+ggsave("stacked_species_all.jpeg")
 
 # Diversity index ####
 ##FB####
@@ -333,10 +333,11 @@ fb_di$Density <- factor(fb_di$Density, levels = c("L", "H", "C"),
                  fun = mean, geom = "point", size = 2) +
   stat_summary(aes(group = interaction(Density, Group), width = 0),
                  fun.data = mean_se, geom = "errorbar") +
-  labs(y = "Mean Shannon Diversity Index", x = "Seed Mix", title = "(a) Farmington Bay") +
+  labs(y = "Mean Shannon Diversity Index", x = "Seed Mix", title = "(a) Farmington Bay 2022") +
   scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         plot.title = element_text(size = 9),
+        axis.title = element_text(size = 9),
         legend.position = "blank") +
   ylim(0, 2.5)
 ))
@@ -377,15 +378,15 @@ ul_di$Density <- factor(ul_di$Density, levels = c("L", "H", "C"),
                fun = mean, geom = "point", size = 2) +
   stat_summary(aes(group = interaction(Density, Group), width = 0),
                fun.data = mean_se, geom = "errorbar") +
-  labs(y = "", x = "Seed Mix", title = "(b) Utah Lake") +
+  labs(y = "", x = "Seed Mix", title = "(b) Utah Lake 2022") +
   scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-        plot.title = element_text(size = 9)) +
+        plot.title = element_text(size = 9),
+        axis.title = element_text(size = 9),
+        legend.position = "none") +
   ylim(0, 2.5)
 ))
   
-a + b
-ggsave("diversity_index_both.jpeg")
 
 ## Fb 2023 ####
 #only want the final cover
@@ -418,245 +419,22 @@ fb23_di$Group <- factor(fb23_di$Group, levels = c(5, 4, 3, 2, 1, 10),
 fb23_di$Density <- factor(fb23_di$Density, levels = c("L", "H", "C"),
                         labels = c("Low", "High", "Control"))
 
-fb23_di %>% 
+c <- fb23_di %>% 
     ggplot(aes(x = Group, y = shannon, color = Density)) +
     stat_summary(aes(group = interaction(Density, Group)),
                  fun = mean, geom = "point", size = 2) +
     stat_summary(aes(group = interaction(Density, Group), width = 0),
                  fun.data = mean_se, geom = "errorbar") +
-    labs(y = "Mean Shannon Diversity Index", x = "Seed Mix") +
-    scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
+    labs(y = "Mean Shannon Diversity Index", x = "Seed Mix", title= "(c) Farmington Bay 2023") +
+    scale_color_manual(values = c("darkblue", "red3", "gray1")) + #change legend labels
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
+          axis.title = element_text(size = 9),
           legend.position = "right") +
     ylim(0, 2.5)
 
-ggsave("diversity_index_23.jpeg")
-
-# Flags over time ####
-##FB####
-fb_flag <- fb %>% 
-  dplyr::select(Block, Plot, Group, Density, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  pivot_longer(cols = c(Measurement.1, Measurement.2, Measurement.3), names_to = "Meas_Num", values_to = "Count")
- 
-fb_flag %>%  
-  ggplot(aes(x = Date, y = Count, color = Meas_Num)) +
-  geom_point() +
-  geom_smooth() +
-  facet_wrap(~Plot)
-#it does go up over time, so that's good at least 
-
-##UL####
-ul_flag <- ul %>% 
-  dplyr::select(Block, Plot, Group, Density, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  pivot_longer(cols = c(Measurement.1, Measurement.2, Measurement.3), names_to = "Meas_Num", values_to = "Count")
-
-ul_flag %>%  
-  ggplot(aes(x = Date, y = Count, color = Meas_Num)) +
-  geom_point() +
-  geom_smooth() +
-  facet_wrap(~Plot)
-#goes up and then levels out
-
-##2023####
-fb23_flag <- fb23 %>% 
-  dplyr::select(Block, Plot, Group, Density, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  pivot_longer(cols = c(Measurement.1, Measurement.2, Measurement.3), names_to = "Meas_Num", values_to = "Count")
-
-fb23_flag %>%  
-  ggplot(aes(x = Date, y = Count, color = Meas_Num)) +
-  geom_point() +
-  geom_smooth() +
-  facet_wrap(~Plot)
-#goes up and then seems to come down right after cutting, so that's all correct 
-
-# Flags with different species ####
-##FB####
-fb_flag <- fb %>% 
-  dplyr::select(Plot, Typha, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            Typha = Typha)
-
-cor.test(fb_flag$Typha, fb_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(328) = 0.53, p < 2.2e16
-#good positive, very significant
-
-summary(lm(Typha ~ avg_meas, fb_flag))
-#not great R2
-
-fb_flag <- fb %>% 
-  dplyr::select(Plot, PHAU, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            PHAU = PHAU)
-
-cor.test(fb_flag$PHAU, fb_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(328) = 0.16, p = 0.002
-#weak positive, significant
-summary(lm(PHAU ~ avg_meas, fb_flag))
-#terrible R2
-
-fb_flag <- fb %>% 
-  dplyr::select(Plot, DISP, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            DISP = DISP)
-
-cor.test(fb_flag$DISP, fb_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(328) = 0.35, p = 6.744e-11
-#okay positive, very significant
-
-summary(lm(DISP ~ avg_meas, fb_flag))
-#pretty bad R2
-
-##UL####
-ul_flag <- ul %>% 
-  dplyr::select(Plot, PHAU, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            PHAU = PHAU)
-
-cor.test(ul_flag$PHAU, ul_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(454) = 0.24, p = 2.571e-07
-#weak positive, significant
-
-summary(lm(PHAU ~ avg_meas, ul_flag))
-#pretty bad R2
-
-ul_flag <- ul %>% 
-  dplyr::select(Plot, SCAM, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            SCAM = SCAM)
-
-cor.test(ul_flag$SCAM, ul_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(454) = 0.32, p = 4.403e-12
-#okay positive, very significant
-summary(lm(SCAM ~ avg_meas, ul_flag))
-#pretty bad R2
-
-ul_flag <- ul %>% 
-  dplyr::select(Plot, Cheno, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            Cheno = Cheno)
-
-cor.test(ul_flag$Cheno, ul_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(454) = 0.73, p  < 2.2e-16
-#strong positive, very significant
-
-summary(lm(Cheno ~ avg_meas, ul_flag))
-#actually decent R2
-
-##2023####
-fb23_flag <- fb23 %>% 
-  dplyr::select(Plot, Typha, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            Typha = Typha)
-
-cor.test(fb23_flag$Typha, fb23_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(328) = 0.07, p = 0.197
-#very weak, not significant
-
-summary(lm(Typha ~ avg_meas, fb23_flag))
-#very bad R2
-
-fb23_flag <- fb23 %>% 
-  dplyr::select(Plot, PHAU, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            PHAU = PHAU)
-
-cor.test(fb23_flag$PHAU, fb23_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(328) = 0.36, p = 2.665e-11
-#decent positive, very significant
-
-summary(lm(PHAU ~ avg_meas, fb23_flag))
-#not great R2
-
-fb23_flag <- fb23 %>% 
-  dplyr::select(Plot, DISP, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            DISP = DISP)
-
-cor.test(fb23_flag$DISP, fb23_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(328) = 0.05, p = 0.3897
-#weak, not significant
-
-summary(lm(DISP ~ avg_meas, fb23_flag))
-#very bad R2
-
-fb23_flag <- fb23 %>% 
-  dplyr::select(Plot, SCAC, Date, Measurement.1, Measurement.2, Measurement.3) %>% 
-  group_by(Plot, Date) %>% 
-  summarize(avg_meas = sum(Measurement.1, Measurement.2, Measurement.3)/3,
-            SCAC = SCAC)
-
-cor.test(fb23_flag$SCAC, fb23_flag$avg_meas,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(328) = 0.1, p = 0.06911
-#weak, significant
-
-summary(lm(SCAC ~ avg_meas, fb23_flag))
-#very bad R2
-
-#Flags with invasive versus native ####
-##FB####
-fb_flag <- fb %>% 
-  dplyr::select(Block, Plot, Group, Density, Date, Measurement.1, Measurement.2, Measurement.3, Native.Cover, Invasive.Cover) %>% 
-  pivot_longer(cols = c(Measurement.1, Measurement.2, Measurement.3), names_to = "Meas_Num", values_to = "Count")
-
-cor.test(fb_flag$Invasive.Cover, fb_flag$Count,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(988) = 0.35, p < 2.2e-16
-#okay positive, very significant 
-
-cor.test(fb_flag$Native.Cover, fb_flag$Count,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(988) = 0.77, p < 2.2e-16
-#strong positive, very significant
-
-##UL####
-ul_flag <- ul %>% 
-  dplyr::select(Block, Plot, Group, Density, Date, Measurement.1, Measurement.2, Measurement.3, Native.Cover, Invasive.Cover) %>% 
-  pivot_longer(cols = c(Measurement.1, Measurement.2, Measurement.3), names_to = "Meas_Num", values_to = "Count")
-
-cor.test(ul_flag$Invasive.Cover, ul_flag$Count,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(1383) = 0.48, p < 2.2e-16
-#decent positive, very significant 
-
-cor.test(ul_flag$Native.Cover, ul_flag$Count,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(1383) = 0.69, p < 2.2e-16
-#strong positive, very significant
-
-##2023####
-fb23_flag <- fb23 %>% 
-  dplyr::select(Block, Plot, Group, Density, Date, Measurement.1, Measurement.2, Measurement.3, Native.Cover, Invasive.Cover) %>% 
-  pivot_longer(cols = c(Measurement.1, Measurement.2, Measurement.3), names_to = "Meas_Num", values_to = "Count")
-
-cor.test(fb23_flag$Invasive.Cover, fb23_flag$Count,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(988) = 0.71, p < 2.2e-16
-#strong positive, very significant 
-
-cor.test(fb23_flag$Native.Cover, fb23_flag$Count,
-         method = "pearson", use = "complete.obs", exact = FALSE, conf.int = TRUE)
-#r(988) = 0.19, p = 4.078e-09
-#weak positive, very significant
+(a + b) / (c + plot_spacer())
+ggsave("diversity_all.jpeg")
 
 # Wells ####
 load("wells.RData")
@@ -667,7 +445,7 @@ a <- wells_fb %>%
   ggplot(aes(x = Date, y = depth_cm, color = Block))+
   geom_point()+
   geom_line() +
-  labs(x = "Date", y = "Water Depth (cm)", title = "(b) Farmington Bay 2022") +
+  labs(x = "Date", y = "Water Depth (cm)", title = "(a) Farmington Bay 2022") +
   ylim(-100, 30) +
   theme(plot.title = element_text(size = 9)) +
   scale_color_manual(values = cp)
@@ -677,7 +455,7 @@ b <- wells_ul %>%
   ggplot(aes(x = Date, y = depth_cm, color = Block))+
   geom_point()+
   geom_line()+
-  labs(x = "Date", y = "Water Depth (cm)", title = "(a) Utah Lake 2022")+
+  labs(x = "Date", y = "Water Depth (cm)", title = "(b) Utah Lake 2022")+
   ylim(-100, 30)+
   theme(plot.title = element_text(size = 9)) +
   scale_color_manual(values = cp)
@@ -692,7 +470,7 @@ c <- wells_2023 %>%
   theme(plot.title = element_text(size = 9)) +
   scale_color_manual(values = cp)
 
-b/a/c + plot_layout(guides = "collect")
+a/b/c + plot_layout(guides = "collect")
 ggsave("wells.jpeg")
 
 # RUMA Spread ####
@@ -800,4 +578,3 @@ b <- fb23 %>%
 a / b + plot_layout(guides = "collect")
 #you can see how RUMA spread into all the other parts, and also how it senesced and then regrew
 ggsave("SCAC_both_years.jpeg")
-
