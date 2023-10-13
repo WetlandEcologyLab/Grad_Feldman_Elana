@@ -16,7 +16,7 @@ graph_data <-fb %>%
     values_to = "Percent_Cover"
   ) %>% #pivot so that all species names are in one column
   mutate(Status = case_when(
-    SPP %in% c("PHAU", "TYPHA", "RUST", "Tamarisk") ~ "Invasive",
+    SPP %in% c("PHAU", "Typha", "RUST", "Tamarisk") ~ "Invasive",
     SPP %in% c("BOMA", "SCAC", "SCAM") & Group == 4 ~ "Seeded",
     SPP %in% c("DISP", "MUAS") & Group == 3 ~ "Seeded",
     SPP %in% c("EUOC", "EUMA") & Group == 1 ~ "Seeded",
@@ -25,6 +25,8 @@ graph_data <-fb %>%
   ))%>%  #make a new column for species status
   group_by(Block, Group, Density, Date, Status) %>% #group by the plot and species status
   summarise(PC = sum(Percent_Cover, na.rm = TRUE)) #calculate totals
+
+
 
 graph_data$Group <- factor(graph_data$Group, levels = c(5, 4, 3, 2, 1, 10),
                     labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
@@ -40,11 +42,12 @@ graph_data$Density <- factor(graph_data$Density, levels = c("H", "L", "C"),
                  fun = mean, geom = "line") +
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
-    labs(x = "Date", y = "Proportional Cover", title = "(a) Farmington Bay") + 
+    labs(x = "Date", y = "Proportional Cover", title = "(a) Farmington Bay 2022") + 
     scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
-          strip.text.x = element_text(size = 6)) +
+          strip.text.x = element_text(size = 6),
+          axis.title = element_text(size = 9)) +
     ylim(0, 1) +
     facet_wrap(~Group)
 ))
@@ -61,7 +64,7 @@ graph_data2 <- ul%>%
     values_to = "Percent_Cover"
   ) %>% 
   mutate(Status = case_when(
-    SPP %in% c("PHAU", "TYPHA", "RUST", 
+    SPP %in% c("PHAU", "Typha", "RUST", 
                "Tamarisk", "ALPR", "CYDA", "BY", 
                "BASC", "LASE") ~ "Invasive",
     SPP %in% c("BOMA", "SCAC", "SCAM") & Group == 4 ~ "Seeded",
@@ -87,17 +90,17 @@ graph_data2$Density <- factor(graph_data2$Density, levels = c("H", "L", "C"),
                  fun = mean, geom = "line") +
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
-    labs(x = "Date", y = "Proportional Cover", title = "(b) Utah Lake") + 
+    labs(x = "Date", y = "Proportional Cover", title = "(b) Utah Lake 2022") + 
     scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
-          strip.text.x = element_text(size = 6)) +
+          strip.text.x = element_text(size = 6),
+          axis.title = element_text(size = 9)) +
     ylim(0, 1) +
     facet_wrap(~Group)
 ))
 
-fb_plot / ul_plot + plot_layout(guides = "collect")
-ggsave("native_seeded_invasive_cover.jpeg")
+
 
 ##2023 FB ####
 graph_data23 <-fb23 %>%
@@ -109,7 +112,7 @@ graph_data23 <-fb23 %>%
     values_to = "Percent_Cover"
   ) %>% #pivot so that all species names are in one column
   mutate(Status = case_when(
-    SPP %in% c("PHAU", "TYPHA", "RUST") ~ "Invasive",
+    SPP %in% c("PHAU", "Typha", "RUST") ~ "Invasive",
     SPP %in% c("BOMA", "SCAC", "SCAM") & Group == 4 ~ "Seeded",
     SPP %in% c("DISP") & Group == 3 ~ "Seeded",
     SPP %in% c("RUMA") & Group == 5 ~ "Seeded",
@@ -132,15 +135,17 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c("H", "L", "C"),
                  fun = mean, geom = "line") +
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
-    labs(x = "Date", y = "Proportional Cover") + 
+    labs(x = "Date", y = "Proportional Cover", title = "(c) Farmington Bay 2023") + 
     scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-          plot.title = element_text(size = 9)) +
+          plot.title = element_text(size = 9),
+          axis.title = element_text(size = 9)) +
     ylim(0,1) +
     facet_wrap(~Group)
 ))
 
-ggsave("invasive_native_2023.jpeg")
+fb_plot / ul_plot /fb23_plot + plot_layout(guides = "collect")
+ggsave("native_seeded_invasive_cover_all.jpeg", height = 10, width = 8, units = "in")
 
 #Barchart of final seeded ####
 
@@ -159,7 +164,7 @@ fb2 <-fb %>%
     values_to = "Percent_Cover"
   ) %>% #pivot so that all species names are in one column
   mutate(Status = case_when(
-    SPP %in% c("PHAU", "TYPHA", "RUST", "Tamarisk") ~ "Invasive",
+    SPP %in% c("PHAU", "Typha", "RUST", "Tamarisk") ~ "Invasive",
     SPP %in% c("BOMA", "SCAC", "SCAM") & Group == 4 ~ "Seeded",
     SPP %in% c("DISP", "MUAS") & Group == 3 ~ "Seeded",
     SPP %in% c("EUOC", "EUMA") & Group == 1 ~ "Seeded",
@@ -262,7 +267,7 @@ fb232 <- fb23 %>%
     values_to = "Percent_Cover"
   ) %>% #pivot so that all species names are in one column
   mutate(Status = case_when(
-    SPP %in% c("PHAU", "TYPHA", "RUST") ~ "Invasive",
+    SPP %in% c("PHAU", "Typha", "RUST") ~ "Invasive",
     SPP %in% c("BOMA", "SCAC", "SCAM") & Group == 4 ~ "Seeded",
     SPP %in% c("DISP") & Group == 3 ~ "Seeded",
     SPP %in% c("RUMA") & Group == 5 ~ "Seeded",
@@ -292,8 +297,95 @@ fb23_stack <- fb232 %>%
   theme(plot.title = element_text(size = 9),
         legend.position = "none")
 
-fb_stack / ul_stack /fb23_stack + plot_layout(guides = "collect")
-ggsave("stacked_species_all.jpeg")
+fb_stack / ul_stack / fb23_stack + plot_layout(guides = "collect")
+ggsave("stacked_species_all.jpeg", height = 11, width = 8, units = "in")
+
+#Barchart of final native ####
+c_labs <- c('BOMA', 'CHEN', 
+            'CYER', 'DISP', 'LEFA', 
+            'RACY', 'RUMA', 'SAAM', 
+            'SARU', 'SCAC', 'SCAM', 'SCPU', 'SYCI')
+
+cp_all <- c("#1F78B4" , 'plum1', 
+            'springgreen', "#B2DF8A",  'lightcyan', 
+            'paleturquoise', "#FDBF6F", 'khaki1', 
+            'orchid4', "#FF7F00", "#CAB2D6", 'olivedrab3', "#6A3D9A")
+
+legend(x = 1, legend = c_labs, fill = "cp_all")
+
+##FB####
+cp1 <- c("#1F78B4" , 'plum1', 
+             "#B2DF8A",  'lightcyan', 
+            'orchid4')
+
+#change names of Cheno
+fb2$SPP[fb2$SPP == "Cheno"] <- "CHEN"
+a <- fb2 %>% 
+  dplyr::filter(Status == "Native", Group == "Control", Percent_Cover > 0) %>% 
+  ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
+  geom_bar(position = "fill", stat = "identity") +
+  scale_fill_manual(values = cp1,
+                    labels = c( 'BOMA', 'CHEN',
+                                'DISP', 'LEFA',
+                                'SARU'))+
+  labs(x = "", y = "Relative Abundance", 
+       fill = "Species", title = "(a) Farmington Bay 2022") +
+  theme(plot.title = element_text(size = 10),
+        axis.text.x = element_blank(),
+        legend.position = "right",
+        axis.ticks.x = element_blank())
+
+
+##UL####
+cp3 <- c( "#1F78B4" , 'plum1', 
+            'springgreen', "#B2DF8A",  
+            'paleturquoise', "#FDBF6F", 'khaki1', 
+            'olivedrab3', "#6A3D9A")
+
+#change names of Cheno
+ul2$SPP[ul2$SPP == "Cheno"] <- "CHEN"
+b <- ul2 %>% 
+  dplyr::filter(Status == "Native", Group == "Control", Percent_Cover>0) %>% 
+  ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
+  geom_bar(position = "fill", stat = "identity") +
+  scale_fill_manual(values = cp3,
+                    labels = c('BOMA', 'CHEN',
+                               'CYER', 'DISP',
+                               'RACY', 'RUMA', 'SAAM',
+                              'SCPU', 'SYCI'))+
+  labs(x = "", y = "", 
+       fill = "Species", title = "(b) Utah Lake 2022") +
+  theme(plot.title = element_text(size = 10),
+        axis.text.x = element_blank(),
+        legend.position="right",
+        axis.ticks.x = element_blank())
+
+##FB23####
+cp2 <- c( "#1F78B4" , 
+            "#B2DF8A",  
+             "#FDBF6F", 
+             "#FF7F00", "#CAB2D6")
+#change names of Cheno
+fb232$SPP[fb232$SPP == "Cheno"] <- "CHEN"
+c <- fb232 %>% 
+  dplyr::filter(Status == "Native", Group == "Control") %>% 
+  ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
+  geom_bar(position = "fill", stat = "identity") +
+  scale_fill_manual(values = cp2,
+                    labels = c('BOMA', 
+                               'DISP', 
+                               'RUMA', 
+                               'SCAC', 'SCAM'))+
+  labs(x = "", y  = "", 
+       title = "(c) Farmington Bay 2023",
+       fill = "Species") +
+  theme(plot.title = element_text(size = 10),
+        axis.text.x = element_blank(),
+        legend.position = "right",
+        axis.ticks.x = element_blank())
+
+a+b+c 
+ggsave("native_abundance_all.jpeg", height = 8, width = 8, units = "in")
 
 # Diversity index ####
 ##FB####
