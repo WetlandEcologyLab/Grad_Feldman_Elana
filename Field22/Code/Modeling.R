@@ -466,15 +466,14 @@ emm2a <- emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response")
 data2a <- multcomp::cld(emm2a, alpha = 0.1, Letters = letters)
 
 data2a$gd <- factor(data2a$gd,
-                       levels = c("5:H", "5:L", "4:H", "4:L", 
+                       levels = c("10:C","5:H", "5:L", "4:H", "4:L", 
                                   "3:H", "3:L", "2:H", "2:L", 
-                                  "1:H", "1:L", "10:C"),
-                       labels = c("Annual Forb High", "Annual Forb Low", 
+                                  "1:H", "1:L"),
+                       labels = c("Control","Annual Forb High", "Annual Forb Low", 
                                   "Bulrush High", "Bulrush Low",
                                   "Grass High", "Grass Low",
                                   "Rush High", "Rush Low", 
-                                  "Perennial Forb High", "Perennial Forb Low",
-                                  "Control"))
+                                  "Perennial Forb High", "Perennial Forb Low"))
 
 b <- ggplot(data = data2a, aes(x = gd, y = response)) +
   geom_point(size=2) +
@@ -547,16 +546,16 @@ data1a$Density <- factor(data1a$Density,
                          labels = c("Low", "High"))
 
 ggplot(data = data1a, aes(x = Group, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=5)) +
+  geom_point(size=2, position = position_dodge(width = .5)) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5,
-                position = position_jitter(seed=5)) +
+                position = position_dodge(width = .5)) +
   labs(x="Seed Mix", y = "Model Predicted <br> Proportional Grass Cover") +
-  geom_text(aes(label = .group,  y = response),
-            color = "black",
-            position = position_jitter(seed=5),
-            vjust = -1, hjust = 1) +
+  geom_text(aes(label = .group,  y = response, group = Density),
+            position = position_dodge(width = .5),
+           color = "black",
+             vjust = -1) +
   scale_color_manual(values = c("darkblue", "red3")) +
   theme(axis.title.y = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 45, hjust = 0.9)) +
@@ -794,7 +793,7 @@ ggplot(data = data1a, aes(x = Group, y = response)) +
         axis.text.x = element_text(angle = 45, hjust = 0.9)) +
   coord_cartesian(ylim = c(0, 1))
 
-ggsave("model_means_bulrush_ul.jpeg")
+ggsave("model_means_bulrush_ul.jpeg", width = 3, height = 4, units = "in")
 
 ####Dunnetts####
 ul_b$gd <- factor(ul_b$Group:ul_b$Density) #compares every combination of treatment and control

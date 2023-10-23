@@ -1,5 +1,5 @@
 #Import####
-load("Cleaned_Data/main_dfs.RData")
+load("main_dfs.RData")
 library(vegan)
 library(tidyverse)
 library(patchwork)
@@ -35,18 +35,22 @@ final.dat$shannon <- div
 #change order of phrag presence and also labels
 final.dat$Phrag_Presence <- factor(final.dat$Phrag_Presence, levels = c("WO", "W"),
                                  labels = c("Absent", "Present"))
+final.dat$Density <- factor(final.dat$Density, levels = c("L", "H"),
+                                   labels = c("Low", "High"))
 
 ((a <- final.dat %>% 
   filter(Mix != "PHAU") %>% 
   ggplot(aes(x = Mix, y = shannon, color = Density)) +
   stat_summary(aes(group = interaction(Density, Mix)),
-               fun = mean, geom = "point", size = 2) +
+               fun = mean, geom = "point", size = 2,
+               position = position_dodge(width = .5)) +
   stat_summary(aes(group = interaction(Density, Mix), width = 0),
-               fun.data = mean_se, geom = "errorbar") +
+               fun.data = mean_se, geom = "errorbar",
+               position = position_dodge(width = .5)) +
   facet_wrap(~Phrag_Presence) +
   ylab("Mean Shannon Diversity Index") +
   ggtitle("(a)") +
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue"))+ #change legend labels
+  scale_color_manual(values = c("darkblue", "red3"))+ #change legend labels
   theme(plot.title = element_text(size = 9),
         legend.position = "none",
         axis.text.x = element_text(angle = 45, hjust = 0.9)) +
@@ -80,17 +84,22 @@ final.dat$shannon <- div
 final.dat$Phrag_Presence <- factor(final.dat$Phrag_Presence, levels = c("WO", "W"),
                                    labels = c("Absent", "Present"))
 
+final.dat$Density <- factor(final.dat$Density, levels = c("L", "H"),
+                            labels = c("Low", "High"))
+
 ((b <- final.dat %>% 
   filter(Mix != "PHAU") %>% 
   ggplot(aes(x = Mix, y = shannon, color = Density)) +
   stat_summary(aes(group = interaction(Density, Mix)),
-               fun = mean, geom = "point", size = 2) +
+               fun = mean, geom = "point", size = 2,
+               position = position_dodge(width = .5)) +
   stat_summary(aes(group = interaction(Density, Mix), width = 0),
-               fun.data = mean_se, geom = "errorbar") +
+               fun.data = mean_se, geom = "errorbar",
+               position = position_dodge(width = .5)) +
   ylab("")+
   ggtitle("(b)") +
   facet_wrap(~Phrag_Presence) +
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue")) + #change legend labels
+    scale_color_manual(values = c("darkblue", "red3"))+ #change legend labels
   theme(plot.title = element_text(size = 9),
         axis.text.x = element_text(angle = 45, hjust = 0.9),
         legend.position = "right") +

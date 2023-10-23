@@ -2,6 +2,14 @@ library(tidyverse)
 library(patchwork)
 load("main_dfs.RData")
 #Graphs for native species model####
+greenhouse$Species <- factor(greenhouse$Species, #make PHAU last
+                             levels = c('PHAU',"BICE", 'BOMA', 'DISP', 'EPCI', 'EUMA',
+                                        'EUOC', 'HENU', 'JUAR', 'JUGE', 'JUTO',
+                                        'MUAS', 'PUNU', 'RUMA', 'SCAC', 'SCAM',
+                                        'SCPU', 'SOCA', 'SYCI'))
+greenhouse$Density[is.na(greenhouse$Density)] <- "Control"
+greenhouse$Density <- factor(greenhouse$Density, levels = c("Control", "L", "H"),
+                             labels = c("Control","Low", "High"))
 
 #if I wanted to do just low density
 # greenhouse %>% 
@@ -17,6 +25,8 @@ load("main_dfs.RData")
 
 ## Native cover ####
 #how does native cover change over time by density and presence of phrag
+
+
 cover_native <- greenhouse %>% 
   filter(Species != "PHAU") %>%
   ggplot(aes(x = Date_Cleaned, y = Cover.Native, shape = Phrag_Presence, color = Density)) +
@@ -35,7 +45,7 @@ cover_native <- greenhouse %>%
         legend.title =ggtext::element_markdown(size = 10),
         legend.text = ggtext::element_markdown(size = 9)) +
   labs(x = "Date", y = "Proportional Native Cover", color = "Density", shape = "*P.australis* Presence") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low")) + #change the legend labels
+  scale_color_manual(values = c("darkblue", "red3")) + #change the legend labels
   scale_shape(labels = c("Present", "Absent"))
 
 cover_native
@@ -95,19 +105,23 @@ biomass$Phrag_Presence <- factor(biomass$Phrag_Presence, levels = c("WO", "W"),
                   labels = c("Absent", "Present")
 )
 
+biomass$Density <- factor(biomass$Density, levels = c("L", "H"),
+                                 labels = c("Low", "High")
+)
+
 biomass_native <- biomass %>%
   filter(Species != "PHAU") %>%
   ggplot(aes(x = Species,
              y = Native.Biomass, color = Density)) +
   #using the means of the blocks
   stat_summary(aes(group = interaction(Species, Density)),
-               fun = mean, geom = "point", size = 2, position = position_jitter(seed=1)) +
+               fun = mean, geom = "point", size = 2, position = position_dodge(width = .5)) +
   #error bars added
   stat_summary(aes(group = interaction(Species, Density), width = 0),
-               fun.data = mean_se, geom = "errorbar", position = position_jitter(seed=1)) +
+               fun.data = mean_se, geom = "errorbar", position = position_dodge(width = .5)) +
   labs(x = "Native Species Identity", y = "Native Biomass (g)", color = "Density") +
   facet_wrap(~Phrag_Presence) +
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue")) + #change the legend labels
+  scale_color_manual(values = c("darkblue", "red3")) + #change the legend labels
   theme(legend.title = ggtext::element_markdown(),
         legend.text = element_text(),#change legend size
         axis.text.x = element_text(angle = 45, hjust = 0.9),
@@ -135,11 +149,7 @@ ggsave(filename = "biomass_native.jpeg",
 
 ## Phrag cover ####
 #how does phrag cover change over time by density
-greenhouse$Species <- factor(greenhouse$Species, #make PHAU last
-                             levels = c("BICE", 'BOMA', 'DISP', 'EPCI', 'EUMA',
-                                        'EUOC', 'HENU', 'JUAR', 'JUGE', 'JUTO',
-                                        'MUAS', 'PUNU', 'RUMA', 'SCAC', 'SCAM',
-                                        'SCPU', 'SOCA', 'SYCI', 'PHAU'))
+
 cover_phrag <- greenhouse %>%
   ggplot(aes(x = Date_Cleaned, y = Cover.Phrag, color= Density)) +
   #using the means of the blocks
@@ -155,7 +165,7 @@ cover_phrag <- greenhouse %>%
   theme(legend.position = 'bottom',
         axis.text.x = element_text(angle = 45, hjust = 0.9)) +
   labs(x = "Date", y = "*P.australis* Proportional Cover", color = "Native Seeding Density") +
-  scale_color_manual(labels = c("High", "Low", "Control"), values = c("red3", "darkblue", "gray")) +
+  scale_color_manual(values = c("#7D7D7D","darkblue", "red3")) +
   theme(axis.title.y = ggtext::element_markdown())+
   coord_cartesian(ylim = c(0, 0.4))
 
@@ -171,14 +181,17 @@ ggsave(filename = "cover_phrag.jpeg",
 biomass %>% 
   group_by(Species) %>% 
   mutate(mean = mean(Phrag.Biomass, na.rm = TRUE)) %>% 
-  arrange(mean) %>% 
-  View()
+  arrange(mean) 
 
 biomass$Species <- factor(biomass$Species, 
-                             levels = c("HENU", 'RUMA', 'BICE', 'EPCI', 'EUOC',
+                             levels = c('PHAU',"HENU", 'RUMA', 'BICE', 'EPCI', 'EUOC',
                                         'MUAS', 'SYCI', 'EUMA', 'DISP', 'SOCA',
                                         'JUTO', 'JUGE', 'PUNU', 'BOMA', 'SCPU',
-                                        'SCAC', 'SCAM', 'JUAR', 'PHAU'))
+                                        'SCAC', 'SCAM', 'JUAR'))
+
+biomass$Density[is.na(biomass$Density)] <- "Control"
+biomass$Density <- factor(biomass$Density, levels = c("Control", "L", "H"),
+                             labels = c("Control","Low", "High"))
 
 biomass_phrag <- biomass %>% 
   filter(Phrag_Presence == "W") %>%
@@ -186,12 +199,14 @@ biomass_phrag <- biomass %>%
              y = Phrag.Biomass, color = Density)) +
   #using the means of the blocks
   stat_summary(aes(group = interaction(Species, Density)),
-               fun = mean, geom = "point", size = 2) +
+               fun = mean, geom = "point", size = 2,
+               position = position_dodge(width = 1)) +
   #error bars added
   stat_summary(aes(group = interaction(Species, Density), width = 0),
-               fun.data = mean_se, geom = "errorbar") +
+               fun.data = mean_se, geom = "errorbar",
+               position = position_dodge(width = 1)) +
   labs(x = "Native Species Identity", y = "*P.australis* Biomass (g)", color = "Density") +
-  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3", "darkblue", "grey"))+ #change the legend labels
+  scale_color_manual(values = c("#7D7D7D", "darkblue", "red3"))+ #change the legend labels
   theme(axis.title.y = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 45, hjust = 0.9))
 
@@ -523,8 +538,11 @@ cover.red <- final.data.red %>%
         axis.title.y = ggtext::element_markdown(size = 11),
         plot.title=element_text(size = 9)) +
   labs(y = "Proportion Reduction in <br> *P.australis* Cover", x = "", title = "(a)") +
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue")) #change the legend labels
+  scale_color_manual(values = c("darkblue", "red3")) #change the legend labels
 
+final.biomass.red$Density <- factor(final.biomass.red$Density,
+                                    levels = c("L", "H"),
+                                    labels = c("Low", "High"))
 
 biomass.red <- final.biomass.red %>%
   filter(Species != "PHAU") %>%
@@ -540,7 +558,7 @@ biomass.red <- final.biomass.red %>%
         axis.title.x = element_text(size = 10),
         plot.title=element_text(size = 9)) +
   labs(y = "Proportion Reduction of <br> *P.australis* Biomass", x = "Native Species Identity", title = "(b)") +
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue"))  #change the legend labels
+  scale_color_manual(values = c("darkblue", "red3"))  #change the legend labels
 
 cover.red / biomass.red
 

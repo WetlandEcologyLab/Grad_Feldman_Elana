@@ -1,5 +1,5 @@
 #Import####
-load("Cleaned_Data/main_dfs.RData")
+load("main_dfs.RData")
 library(tidyverse)
 library(viridis)
 library(patchwork)
@@ -270,6 +270,9 @@ final.df <- b %>%
 cover <- final.df %>%
   mutate(Mix = factor(Mix,
                       levels = c("Forb", "Bulrush", "Grass", "Equal"))) %>% 
+  mutate(Density = factor(Density,
+                          levels = c("L", "H"),
+                          labels = c("Low", "High"))) %>% 
   ggplot(aes(x = Mix, y = P.Cover.Red * -1, color = Density), size = 1) +
   ylim(0,1)+
   stat_summary(aes(group = interaction(Mix, Density)),
@@ -285,15 +288,20 @@ cover <- final.df %>%
         plot.title = element_text(size = 9),
         axis.title.x = element_text(size = 9)) +
   labs(y = "Reduction in *P.australis* <br>Proportional Cover", x = "", title = "(a)")+
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue"))
+  scale_color_manual(values = c("darkblue", "red3"))
 
 ## Raw Data over time #### 
 ### Native cover ####
-
 cover_dat %>% 
   filter(Mix != "PHAU") %>% 
   mutate(Mix = factor(Mix,
                       levels = c("Forb", "Bulrush", "Grass", "Equal"))) %>% 
+  mutate(Density = factor(Density,
+                          levels = c("L", "H"),
+                          labels = c("Low", "High"))) %>% 
+  mutate(Phrag_Presence = factor(Phrag_Presence,
+                                 levels = c("WO", "W"),
+                                labels = c("Absent", "Present"))) %>% 
   ggplot(aes(x = Date, y = Total, color = Density, shape = Phrag_Presence)) +
   stat_summary(aes(group = interaction(Density, Phrag_Presence)),
                fun = mean, geom = "point", size = 2, position = position_jitter(seed=3)) +
@@ -306,8 +314,7 @@ cover_dat %>%
   labs(y = "Total Proportional Native Cover", x = "Date",
        shape = "*P.australis* Presence") +
   facet_grid(~Mix) +
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue")) +
-  scale_shape(labels = c("Present", "Absent")) 
+  scale_color_manual(values = c("darkblue", "red3")) 
 
 ggsave("native_cover_over-time.jpeg")
 
@@ -320,41 +327,31 @@ cover_dat$Phrag_Presence[is.na(cover_dat$Phrag_Presence)] <- "Control"
 cover_dat$Density <- as.factor(cover_dat$Density)
 cover_dat$Phrag_Presence <- as.factor(cover_dat$Phrag_Presence)
 
-cp <-  c("red3", "darkblue", "grey")
-
-trt_label <- c("PHAU" = "Control",
-               "Grass" = "Grass",
-               "Bulrush" = "Bulrush",
-               "Forb" = "Forb",
-               "Equal" = "Equal")
-
 cover_dat %>% 
   filter(Phrag_Presence != "WO") %>% 
   mutate(Mix = factor(Mix,
-                      levels = c("Forb", "Bulrush", "Grass", "Equal", "PHAU"))) %>% 
+                      levels = c('PHAU',"Forb", "Bulrush", "Grass", "Equal"),
+                      labels = c("Control", "Forb", "Bulrush", "Grass", "Equal"))) %>% 
   mutate(Density = factor(Density,
-                      levels = c("H", "L", "Control"))) %>% 
+                      levels = c("Control", "L", "H"),
+                      labels = c("Control", "Low", "High"))) %>% 
   ggplot(aes(x = Date, y = Phrag, color = Density)) +
   stat_summary(aes(group = interaction(Density, Phrag_Presence)),
-               fun = mean, geom = "point", size = 2, position = position_jitter(seed=1)) +
+               fun = mean, geom = "point", size = 2, position = position_dodge(width = 0.5)) +
   stat_summary(aes(group = interaction(Density, Phrag_Presence), width = .5),
-               fun.data = mean_se, geom = "errorbar", position = position_jitter(seed=1)) +
+               fun.data = mean_se, geom = "errorbar", position = position_dodge(width = 0.5)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
         axis.title.y = ggtext::element_markdown(),
         legend.position = "bottom") +
   labs(y = "Proportional *P.australis* Cover", x = "Date") +
-  facet_grid(~Mix, labeller = as_labeller(trt_label)) +   
-  scale_color_manual(values = c("H" = "red3", "L" = "darkblue", "Control" = "darkgray"),
-                     labels = c("High", "Low", "Control"))
+  facet_grid(~Mix) +   
+  scale_color_manual(values = c("#7D7D7D", "darkblue", "red3"))
 
 ggsave("phrag_cover_over-time.jpeg")
 
 # Biomass graphs ####
 
 ##Native biomass####
-trt_label <- c("W" = "Present", 
-               "WO" = "Absent")
-
 biomass_dat %>%
   group_by(Mix, Density, Phrag_Presence, Replicate) %>% 
   summarize(PHAU = PHAU,
@@ -363,19 +360,32 @@ biomass_dat %>%
   filter(Mix != "PHAU")%>%
   mutate(Mix = factor(Mix,
                       levels = c("Grass", "Bulrush", "Forb", "Equal"))) %>% 
+  mutate(Density = factor(Density,
+                          levels = c("L", "H"),
+                          labels = c("Low", "High"))) %>% 
+  mutate(Phrag_Presence = factor(Phrag_Presence,
+                                 levels = c("WO", "W"),
+                                 labels = c("Absent", "Present"))) %>% 
   ggplot(aes(x = Mix, y = Total_Native, color = Density)) +
-  facet_grid(~factor(Phrag_Presence, levels=c("WO", "W")), labeller = as_labeller(trt_label)) +
+  facet_grid(~factor(Phrag_Presence)) +
   stat_summary(aes(group = interaction(Mix, Density, Phrag_Presence)),
                fun = mean, geom = "point") +
   stat_summary(aes(group = interaction(Mix, Density, Phrag_Presence)),
                fun.data = mean_se, geom = "errorbar", width = 0) +
   labs(x = "Seed Mix", y = "Total Native Biomass")+
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue"))+
+  scale_color_manual(values = c("darkblue", "red3"))+
   coord_cartesian(ylim = c(0, 90))
 
 ggsave("native_biomass_by-mix.jpeg")
 
 ##Phrag Biomass####
+biomass_dat$Density <- as.character(biomass_dat$Density)
+biomass_dat$Density[is.na(biomass_dat$Density)] <- "C"
+biomass_dat$Density <- factor(biomass_dat$Density,
+                              levels = c("C", "L", "H"),
+                              labels = c("Control", "Low", "High"))
+
+
 biomass_dat %>% 
   mutate(Mix = factor(Mix,
                       levels = c("PHAU", "Grass", "Bulrush", "Forb", "Equal"))) %>% 
@@ -385,8 +395,7 @@ biomass_dat %>%
   stat_summary(aes(group = interaction(Mix, Density)),
                fun.data = mean_se, geom = "errorbar", width = 0) +
   labs(x = "Seed Mix", y = "*P.australis* Biomass")+
-  scale_color_manual(labels = c('High', 'Low', 'Control'), 
-                     values = c("red3", "darkblue", "darkgrey"))+
+  scale_color_manual(values = c("#7D7D7D", "darkblue", "red3"))+
   scale_x_discrete(labels = c("Grass" = "Grass",
                               'Bulrush' = "Bulrush",
                               'Forb' = 'Forb',
@@ -562,7 +571,7 @@ biomass <- final.df %>%
         plot.title = element_text(size = 9),
         axis.title.x = element_text(size = 9)) +
   labs( x = "", title = "(b)")+
-  scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue"))
+  scale_color_manual(values = c("darkblue", "red3"))
 
 
 #Combine red graphs ####

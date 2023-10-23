@@ -28,11 +28,11 @@ graph_data <-fb %>%
 
 
 
-graph_data$Group <- factor(graph_data$Group, levels = c(5, 4, 3, 2, 1, 10),
-                    labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
-                               "Perennial forb", "Control"))
-graph_data$Density <- factor(graph_data$Density, levels = c("H", "L", "C"),
-                      labels = c("High", "Low", "Control"))
+graph_data$Group <- factor(graph_data$Group, levels = c(10, 5, 4, 3, 2, 1),
+                    labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
+                               "Perennial forb"))
+graph_data$Density <- factor(graph_data$Density, levels = c('C',"H", "L"),
+                      labels = c("Control","High", "Low"))
 
 ((fb_plot <- graph_data %>%
     ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
@@ -43,7 +43,7 @@ graph_data$Density <- factor(graph_data$Density, levels = c("H", "L", "C"),
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
     labs(x = "Date", y = "Proportional Cover", title = "(a) Farmington Bay 2022") + 
-    scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+    scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
           strip.text.x = element_text(size = 6),
@@ -76,11 +76,11 @@ graph_data2 <- ul%>%
   group_by(Block, Date, Density, Group, Status) %>%
   summarise(PC = sum(Percent_Cover, na.rm = TRUE))
 
-graph_data2$Group <- factor(graph_data2$Group, levels = c(5, 4, 3, 2, 1, 10),
-                           labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
-                                      "Perennial forb", "Control"))
-graph_data2$Density <- factor(graph_data2$Density, levels = c("H", "L", "C"),
-                             labels = c("High", "Low", "Control"))
+graph_data2$Group <- factor(graph_data2$Group, levels = c(10, 5, 4, 3, 2, 1),
+                           labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
+                                      "Perennial forb"))
+graph_data2$Density <- factor(graph_data2$Density, levels = c('C',"H", "L"),
+                             labels = c("Control","High", "Low"))
 
 ((ul_plot <- graph_data2 %>%
     ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
@@ -91,7 +91,7 @@ graph_data2$Density <- factor(graph_data2$Density, levels = c("H", "L", "C"),
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
     labs(x = "Date", y = "Proportional Cover", title = "(b) Utah Lake 2022") + 
-    scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+    scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
           strip.text.x = element_text(size = 6),
@@ -121,11 +121,12 @@ graph_data23 <-fb23 %>%
   group_by(Block, Density, Group, Date, Status) %>% #group by the plot and species status
   summarise(PC = sum(Percent_Cover, na.rm = TRUE)) #calculate totals
 
-graph_data23$Group <- factor(graph_data23$Group, levels = c(5, 4, 3, 2, 1, 10),
-                            labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
-                                       "Perennial forb", "Control"))
-graph_data23$Density <- factor(graph_data23$Density, levels = c("H", "L", "C"),
-                              labels = c("High", "Low", "Control"))
+graph_data23$Group <- factor(graph_data23$Group, levels = c(10, 5, 4, 3, 2, 1),
+                            labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
+                                       "Perennial forb"))
+graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"H", "L"),
+                              labels = c("Control","High", "Low"))
+
 
 ((fb23_plot <- graph_data23 %>%
     ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
@@ -136,7 +137,7 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c("H", "L", "C"),
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
     labs(x = "Date", y = "Proportional Cover", title = "(c) Farmington Bay 2023") + 
-    scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+    scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
           axis.title = element_text(size = 9)) +
@@ -413,20 +414,22 @@ fb_di$shannon <- div
 
 #Plot
 #change order of phrag presence and also labels
-fb_di$Group <- factor(fb_di$Group, levels = c(5, 4, 3, 2, 1, 10),
-                                   labels = c("Annual Forb", "Bulrush", "Grass", "Rush",  
-                                              "Perennial Forb", "Control"))
-fb_di$Density <- factor(fb_di$Density, levels = c("L", "H", "C"),
-                        labels = c("Low", "High", "Control"))
+fb_di$Group <- factor(fb_di$Group, levels = c(10, 5, 4, 3, 2, 1),
+                                   labels = c('Control',"Annual Forb", "Bulrush", "Grass", "Rush",  
+                                              "Perennial Forb"))
+fb_di$Density <- factor(fb_di$Density, levels = c("C","L", "H"),
+                        labels = c("Control","Low", "High"))
 
 ((a <- fb_di %>% 
   ggplot(aes(x = Group, y = shannon, color = Density)) +
   stat_summary(aes(group = interaction(Density, Group)),
-                 fun = mean, geom = "point", size = 2) +
+                 fun = mean, geom = "point", size = 2,
+               position = position_dodge(width = .5)) +
   stat_summary(aes(group = interaction(Density, Group), width = 0),
-                 fun.data = mean_se, geom = "errorbar") +
+                 fun.data = mean_se, geom = "errorbar",
+               position = position_dodge(width = .5)) +
   labs(y = "Mean Shannon Diversity Index", x = "Seed Mix", title = "(a) Farmington Bay 2022") +
-  scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
+  scale_color_manual(values = c('#7D7D7D',"darkblue", "red3")) + #change legend labels
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         plot.title = element_text(size = 9),
         axis.title = element_text(size = 9),
@@ -458,20 +461,22 @@ ul_di$shannon <- div
 
 #Plot
 #change order of phrag presence and also labels
-ul_di$Group <- factor(ul_di$Group, levels = c(5, 4, 3, 2, 1, 10),
-                      labels = c("Annual Forb", "Bulrush", "Grass", "Rush",  
-                                 "Perennial Forb", "Control"))
-ul_di$Density <- factor(ul_di$Density, levels = c("L", "H", "C"),
-                        labels = c("Low", "High", "Control"))
+ul_di$Group <- factor(ul_di$Group, levels = c(10, 5, 4, 3, 2, 1),
+                      labels = c('Control',"Annual Forb", "Bulrush", "Grass", "Rush",  
+                                 "Perennial Forb"))
+ul_di$Density <- factor(ul_di$Density, levels = c("C","L", "H"),
+                        labels = c("Control","Low", "High"))
 
 ((b <- ul_di %>% 
   ggplot(aes(x = Group, y = shannon, color = Density)) +
   stat_summary(aes(group = interaction(Density, Group)),
-               fun = mean, geom = "point", size = 2) +
+               fun = mean, geom = "point", size = 2,
+               position = position_dodge(width = .5)) +
   stat_summary(aes(group = interaction(Density, Group), width = 0),
-               fun.data = mean_se, geom = "errorbar") +
+               fun.data = mean_se, geom = "errorbar",
+               position = position_dodge(width = .5)) +
   labs(y = "", x = "Seed Mix", title = "(b) Utah Lake 2022") +
-  scale_color_manual(values = c("red3", "darkblue", "gray1")) + #change legend labels
+    scale_color_manual(values = c('#7D7D7D',"darkblue", "red3")) + #change legend labels
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         plot.title = element_text(size = 9),
         axis.title = element_text(size = 9),
@@ -505,28 +510,29 @@ fb23_di$shannon <- div
 
 #Plot
 #change order of phrag presence and also labels
-fb23_di$Group <- factor(fb23_di$Group, levels = c(5, 4, 3, 2, 1, 10),
-                        labels = c("Annual Forb", "Bulrush", "Grass", "Rush",  
-                                   "Perennial Forb", "Control"))
-fb23_di$Density <- factor(fb23_di$Density, levels = c("L", "H", "C"),
-                        labels = c("Low", "High", "Control"))
-
+fb23_di$Group <- factor(fb23_di$Group, levels = c(10, 5, 4, 3, 2, 1),
+                      labels = c('Control',"Annual Forb", "Bulrush", "Grass", "Rush",  
+                                 "Perennial Forb"))
+fb23_di$Density <- factor(fb23_di$Density, levels = c("C","L", "H"),
+                        labels = c("Control","Low", "High"))
 c <- fb23_di %>% 
     ggplot(aes(x = Group, y = shannon, color = Density)) +
     stat_summary(aes(group = interaction(Density, Group)),
-                 fun = mean, geom = "point", size = 2) +
+                 fun = mean, geom = "point", size = 2,
+                 position = position_dodge(width = .5)) +
     stat_summary(aes(group = interaction(Density, Group), width = 0),
-                 fun.data = mean_se, geom = "errorbar") +
-    labs(y = "Mean Shannon Diversity Index", x = "Seed Mix", title= "(c) Farmington Bay 2023") +
-    scale_color_manual(values = c("darkblue", "red3", "gray1")) + #change legend labels
+                 fun.data = mean_se, geom = "errorbar",
+                 position = position_dodge(width = .5)) +
+    labs(y = "", x = "Seed Mix", title= "(c) Farmington Bay 2023") +
+  scale_color_manual(values = c('#7D7D7D',"darkblue", "red3")) + #change legend labels
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
           axis.title = element_text(size = 9),
           legend.position = "right") +
     ylim(0, 2.5)
 
-(a + b) / (c + plot_spacer())
-ggsave("diversity_all.jpeg")
+a + b + c
+ggsave("diversity_all.jpeg", height = 8, width = 8, units = "in")
 
 # Wells ####
 load("wells.RData")

@@ -165,25 +165,32 @@ Anova(mdf.m1)
 
 emm <- emmeans(mdf.m1, pairwise ~ Phrag_Presence * Density, adjust = "tukey", type = "response")
 data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
+data1$Density <- factor(data1$Density,
+                              levels = c("L", "H"),
+                              labels = c("Low", "High"))
+data1$Phrag_Presence <- factor(data1$Phrag_Presence,
+                               levels = c("WO", "W"),
+                               labels = c("Absent", "Present"))
+
 data1
 
-BICE <- ggplot(data = data1, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
+((BICE <- ggplot(data = data1, aes(x = Phrag_Presence, y = response, color = Density)) +
+  geom_point(size=2, position = position_dodge(width = 0.5)) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
+                width=0, size=0.5, position = position_dodge(width = 0.5)) +
   labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=2),
+  geom_text(aes(label = .group,  y = response, group = Density), 
+            position = position_dodge(width = 0.5),
             color = "black", vjust = 1.5) +
   ggtitle("BICE") +
   theme(axis.title.x = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 25, hjust = 0.9),
         plot.title = element_text(size = 9),
         legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low")) +
+  scale_color_manual(values = c("darkblue", "red3")) +
   ylim(0, 1.2)
-
+))
 ###DISP####
 mdf <- greenhouse %>%
   filter(Species == "DISP", !is.na(Density),
@@ -198,26 +205,32 @@ Anova(mdf.m2)
 
 emm <- emmeans(mdf.m2, pairwise ~ Phrag_Presence * Density, adjust = "tukey", type = "response")
 data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
+data2$Density <- factor(data2$Density,
+                        levels = c("L", "H"),
+                        labels = c("Low", "High"))
+data2$Phrag_Presence <- factor(data2$Phrag_Presence,
+                               levels = c("WO", "W"),
+                               labels = c("Absent", "Present"))
 data2
 str_2 <- gsub(" ", "", data2$.group)
 
-DISP <- ggplot(data = data2, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", hjust = -.1, vjust = .7) +
-  ggtitle("DISP") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((DISP <- ggplot(data = data2, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = 1.2, vjust = -1) +
+    ggtitle("DISP") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###EPCI####
 mdf <- greenhouse %>%
   filter(Species == "EPCI", !is.na(Density),
@@ -234,23 +247,23 @@ emm <- emmeans(mdf.m3, pairwise ~ Phrag_Presence * Density, adjust = "tukey", ty
 data3 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data3
 
-EPCI <- ggplot(data = data3, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
+((EPCI <- ggplot(data = data3, aes(x = Phrag_Presence, y = response, color = Density)) +
+  geom_point(size=2, position = position_dodge(width = 0.5)) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
+                width=0, size=0.5, position = position_dodge(width = 0.5)) +
   labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", vjust = 2) +
+  geom_text(aes(label = .group,  y = response, group = Density), 
+            position = position_dodge(width = 0.5),
+            color = "black", vjust = 1.5) +
   ggtitle("EPCI") +
   theme(axis.title.x = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 25, hjust = 0.9),
         plot.title = element_text(size = 9),
         legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
+  scale_color_manual(values = c("darkblue", "red3")) +
   ylim(0, 1.2)
-
+))
 ###EUOC####
 mdf <- greenhouse %>%
   filter(Species == "EUOC", !is.na(Density),
@@ -268,24 +281,23 @@ data4 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data4
 str_4 <- gsub(" ", "", data4$.group)
 
-EUOC <- ggplot(data = data4, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = str_4,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", hjust = -.5) +
-  ggtitle("EUOC") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        axis.title.y = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((EUOC <- ggplot(data = data4, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = 1.5) +
+    ggtitle("EUOC") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###EUMA####
 mdf <- greenhouse %>%
   filter(Species == "EUMA", !is.na(Density),
@@ -302,24 +314,23 @@ emm <- emmeans(mdf.m5, pairwise ~ Phrag_Presence * Density, adjust = "tukey", ty
 data5 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data5
 
-EUMA <- ggplot(data = data5, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=1)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 1)) +
-  labs(x="", y = "Model Predicted <br> Proportional Cover", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=1),
-            color = "black", vjust = 1.5) +
-  ggtitle("EUMA") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        axis.title.y = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((EUMA <- ggplot(data = data5, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", vjust = 1.5) +
+    ggtitle("EUMA") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###HENU####
 mdf <- greenhouse %>%
   filter(Species == "HENU", !is.na(Density),
@@ -337,23 +348,23 @@ data6<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data6
 str_6 <- gsub(" ", "", data6$.group)
 
-HENU <- ggplot(data = data6, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = str_6,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", vjust = 1.5) +
-  ggtitle("HENU") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((HENU <- ggplot(data = data6, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", vjust = 1.5) +
+    ggtitle("HENU") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###JUAR####
 mdf <- greenhouse %>%
   filter(Species == "JUAR", !is.na(Density),
@@ -371,23 +382,23 @@ data7<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data7
 str_7 <- gsub(" ", "", data7$.group)
 
-JUAR <- ggplot(data = data7, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=5)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 5)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = str_7,  y = response), 
-            position = position_jitter(seed=5),
-            color = "black", vjust = -1.5) +
-  ggtitle("JUAR") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((JUAR <- ggplot(data = data7, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", vjust = -1.5) +
+    ggtitle("JUAR") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###MUAS####
 mdf <- greenhouse %>%
   filter(Species == "MUAS", !is.na(Density),
@@ -404,23 +415,23 @@ emm <- emmeans(mdf.m8, pairwise ~ Phrag_Presence*Density, adjust = "tukey", type
 data8<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data8
 
-MUAS <- ggplot(data = data8, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=1)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 1)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=1),
-            color = "black", hjust = -.1, vjust = 1) +
-  ggtitle("MUAS") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((MUAS <- ggplot(data = data8, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = 1.5, vjust = -1) +
+    ggtitle("MUAS") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###PUNU####
 mdf <- greenhouse %>%
   filter(Species == "PUNU", !is.na(Density),
@@ -438,23 +449,23 @@ data9<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data9
 str_9 <- sub(" ", "", data9$.group)
 
-PUNU <- ggplot(data = data9, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = str_9,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", vjust = 1.5) +
-  ggtitle("PUNU") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((PUNU <- ggplot(data = data9, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = 1.5) +
+    ggtitle("PUNU") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###RUMA####
 mdf <- greenhouse %>%
   filter(Species == "RUMA", !is.na(Density),
@@ -471,23 +482,23 @@ emm <- emmeans(mdf.m10, pairwise ~ Density*Phrag_Presence, adjust = "tukey", typ
 data10<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data10
 
-RUMA <- ggplot(data = data10, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", vjust = 1.5) +
-  ggtitle("RUMA") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((RUMA <- ggplot(data = data10, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", vjust = 1.5) +
+    ggtitle("RUMA") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###SCAC####
 mdf <- greenhouse %>%
   filter(Species == "SCAC", !is.na(Density),
@@ -505,23 +516,23 @@ data11<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data11
 str_11 <- gsub(" ", "", data11$.group)
 
-SCAC <- ggplot(data = data11, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=5)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 5)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = str_11,  y = response), 
-            position = position_jitter(seed=5),
-            color = "black", vjust = -1.5) +
-  ggtitle("SCAC") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((SCAC <- ggplot(data = data11, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", vjust = -1.5) +
+    ggtitle("SCAC") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###SCPU####
 mdf <- greenhouse %>%
   filter(Species == "SCPU", !is.na(Density),
@@ -538,23 +549,23 @@ emm <- emmeans(mdf.m12, pairwise ~ Phrag_Presence*Density, adjust = "tukey", typ
 data12 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data12
 
-SCPU <- ggplot(data = data12, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", vjust = -1.5) +
-  ggtitle("SCPU") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((SCPU <- ggplot(data = data12, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", vjust = -1.5) +
+    ggtitle("SCPU") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###SOCA####
 mdf <- greenhouse %>%
   filter(Species == "SOCA", !is.na(Density),
@@ -572,22 +583,23 @@ data13 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data13
 str_13 <- gsub(" ", "", data13$.group)
 
-SOCA <- ggplot(data = data13, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=1)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 1)) +
-  labs(x="*P. australis* Presence", y = "", color = "Density") +
-  geom_text(aes(label = str_13,  y = response), 
-            position = position_jitter(seed=1),
-            color = "black", hjust = -.5) +
-  ggtitle("SOCA") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        plot.title = element_text(size = 9)) +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 1.2)
-
+((SOCA <- ggplot(data = data13, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = 1.5) +
+    ggtitle("SOCA") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          legend.position = "right") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    ylim(0, 1.2)
+))
 ###ALL TOGETHER####
 BICE + DISP + EPCI + EUOC + EUMA + HENU + 
   JUAR + MUAS + PUNU + RUMA + SCAC + SCPU + SOCA +
@@ -610,25 +622,34 @@ Anova(mdf.m1)
 
 emm <- emmeans(mdf.m1, pairwise ~ Phrag_Presence * Density, adjust = "tukey", type= "response")
 data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
+data1$Density <- factor(data1$Density,
+                          levels= c("L", "H"),
+                          labels = c("Low", "High"))
+
+data1$Phrag_Presence <- factor(data1$Phrag_Presence,
+                                 levels= c("WO", "W"),
+                                 labels = c("Absent", "Present"))
+
 data1
 
-BICE_b <- ggplot(data = data1, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
+
+((BICE_b <- ggplot(data = data1, aes(x = Phrag_Presence, y = response, color = Density)) +
+  geom_point(size=2, position = position_dodge(width = 0.5)) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
+                width=0, size=0.5, position = position_dodge(width = 0.5)) +
   labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", hjust = -.1, vjust = .7) +
+  geom_text(aes(label = .group,  y = response, group = Density), 
+            position = position_dodge(width = 0.5),
+            color = "black", hjust = -.1, vjust = -.1) +
   ggtitle("BICE") +
   theme(axis.title.x = ggtext::element_markdown(),
         plot.title = element_text(size = 9),
         axis.text.x = element_text(angle = 25, hjust = 0.9),
         legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
+  scale_color_manual(values = c("darkblue", "red3"))+
   ylim(0, 120)
-
+))
 ###DISP####
 mdf <- biomass %>%
   filter(Species == "DISP", !is.na(Density))
@@ -644,23 +665,23 @@ emm <- emmeans(mdf.m2, pairwise ~ Phrag_Presence * Density, adjust = "tukey", ty
 data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data2
 
-DISP_b <- ggplot(data = data2, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", vjust = -1) +
-  ggtitle("DISP") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((DISP_b <- ggplot(data = data2, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = -.1, vjust = -1) +
+    ggtitle("DISP") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###EPCI####
 mdf <- biomass %>%
   filter(Species == "EPCI", !is.na(Density))
@@ -677,23 +698,23 @@ data3 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data3
 str_3 <- gsub(" ", "", data3$.group)
 
-EPCI_b <- ggplot(data = data3, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
+((EPCI_b <- ggplot(data = data3, aes(x = Phrag_Presence, y = response, color = Density)) +
+  geom_point(size=2, position = position_dodge(width = 0.5)) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
+                width=0, size=0.5, position = position_dodge(width = 0.5)) +
   labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", vjust = 1.1, hjust = -.05) +
+  geom_text(aes(label = .group,  y = response, group = Density), 
+            position = position_dodge(width = 0.5),
+            color = "black", hjust = -.1, vjust = .7) +
   ggtitle("EPCI") +
   theme(axis.title.x = ggtext::element_markdown(),
         plot.title = element_text(size = 9),
         axis.text.x = element_text(angle = 25, hjust = 0.9),
         legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
+  scale_color_manual(values = c("darkblue", "red3"))+
   ylim(0, 120)
-
+))
 ###EUOC####
 mdf <- biomass %>%
   filter(Species == "EUOC", !is.na(Density))
@@ -710,24 +731,23 @@ data4 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data4
 str_4 <- gsub(" ", "", data4$.group)
 
-EUOC_b <- ggplot(data = data4, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=6)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 6)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = str_4,  y = response), 
-            position = position_jitter(seed=6),
-            color = "black", vjust = -1, hjust = -.05) +
-  ggtitle("EUOC") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((EUOC_b <- ggplot(data = data4, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", vjust = -.7) +
+    ggtitle("EUOC") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###EUMA####
 mdf <- biomass %>%
   filter(Species == "EUMA", !is.na(Density))
@@ -743,24 +763,23 @@ emm <- emmeans(mdf.m5, pairwise ~ Phrag_Presence * Density, adjust = "tukey", ty
 data5 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data5
 
-EUMA_b <- ggplot(data = data5, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
-  labs(x="", y = "Model Predicted <br> Biomass (g)", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", vjust = -1) +
-  ggtitle("EUMA") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((EUMA_b <- ggplot(data = data5, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = -.1, vjust = .7) +
+    ggtitle("EUMA") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###HENU####
 mdf <- biomass %>%
   filter(Species == "HENU", !is.na(Density))
@@ -776,23 +795,23 @@ emm <- emmeans(mdf.m6, pairwise ~ Density * Phrag_Presence, adjust = "tukey", ty
 data6<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data6
 
-HENU_b <- ggplot(data = data6, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", vjust = -1) +
-  ggtitle("HENU") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((HENU_b <- ggplot(data = data6, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = -.1, vjust = 1) +
+    ggtitle("HENU") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###JUAR####
 mdf <- biomass %>%
   filter(Species == "JUAR", !is.na(Density))
@@ -808,23 +827,23 @@ emm <- emmeans(mdf.m7, pairwise ~ Phrag_Presence * Density, adjust = "tukey", ty
 data7<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data7
 
-JUAR_b <- ggplot(data = data7, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", vjust = -1) +
-  ggtitle("JUAR") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((JUAR_b <- ggplot(data = data7, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = -.1, vjust = -.7) +
+    ggtitle("JUAR") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###MUAS####
 mdf <- biomass %>%
   filter(Species == "MUAS", !is.na(Density))
@@ -840,23 +859,23 @@ emm <- emmeans(mdf.m8, pairwise ~ Phrag_Presence*Density, adjust = "tukey", type
 data8<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data8
 
-MUAS_b <- ggplot(data = data8, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", vjust = -1) +
-  ggtitle("MUAS") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((MUAS_b <- ggplot(data = data8, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = .1, vjust = -.7) +
+    ggtitle("MUAS") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###PUNU####
 mdf <- biomass %>%
   filter(Species == "PUNU", !is.na(Density))
@@ -873,23 +892,23 @@ data9<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data9
 str_9 <- gsub(" ", "", data9$.group)
 
-PUNU_b <- ggplot(data = data9, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = str_9,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", hjust = -1) +
-  ggtitle("PUNU") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((PUNU_b <- ggplot(data = data9, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = .1, vjust = -.7) +
+    ggtitle("PUNU") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###RUMA####
 mdf <- biomass %>%
   filter(Species == "RUMA", !is.na(Density))
@@ -905,23 +924,23 @@ emm <- emmeans(mdf.m10, pairwise ~ Density*Phrag_Presence, adjust = "tukey", typ
 data10<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data10
 
-RUMA_b <- ggplot(data = data10, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", vjust = 1.5) +
-  ggtitle("RUMA") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((RUMA_b <- ggplot(data = data10, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = -.1, vjust = .7) +
+    ggtitle("RUMA") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###SCAC####
 mdf <- biomass %>%
   filter(Species == "SCAC", !is.na(Density))
@@ -937,23 +956,23 @@ emm <- emmeans(mdf.m11, pairwise ~ Density*Phrag_Presence, adjust = "tukey", typ
 data11<- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data11
 
-SCAC_b <- ggplot(data = data11, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=5)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 5)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=5),
-            color = "black", vjust = -1) +
-  ggtitle("SCAC") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((SCAC_b <- ggplot(data = data11, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = -.1, vjust = -.7) +
+    ggtitle("SCAC") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###SCPU####
 mdf <- biomass %>%
   filter(Species == "SCPU", !is.na(Density))
@@ -969,23 +988,23 @@ emm <- emmeans(mdf.m12, pairwise ~ Phrag_Presence*Density, adjust = "tukey", typ
 data12 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data12
 
-SCPU_b <- ggplot(data = data12, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=4)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 4)) +
-  labs(x="", y = "", color = "Density") +
-  geom_text(aes(label = .group,  y = response), 
-            position = position_jitter(seed=4),
-            color = "black", vjust = -1) +
-  ggtitle("SCPU") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        legend.position = "none") +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((SCPU_b <- ggplot(data = data12, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", hjust = -.1, vjust = -.7) +
+    ggtitle("SCPU") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "none") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###SOCA####
 mdf <- biomass %>%
   filter(Species == "SOCA", !is.na(Density))
@@ -1002,29 +1021,28 @@ data13 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 data13
 dat_list <- c("a", " ab", " ab", "b")
 
-SOCA_b <- ggplot(data = data13, aes(x = Phrag_Presence, y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=2)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed = 2)) +
-  labs(x="*P. australis* Presence", y = "", color = "Density") +
-  geom_text(aes(label = dat_list,  y = response), 
-            position = position_jitter(seed=2),
-            color = "black", vjust = -1) +
-  ggtitle("SOCA") +
-  theme(axis.title.x = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
-        plot.title = element_text(size = 9)) +
-  scale_color_manual(values = c("red3", "darkblue"), labels = c("High", "Low"))+
-  ylim(0, 120)
-
+((SOCA_b <- ggplot(data = data13, aes(x = Phrag_Presence, y = response, color = Density)) +
+    geom_point(size=2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5, position = position_dodge(width = 0.5)) +
+    labs(x="", y = "", color = "Density") +
+    geom_text(aes(label = .group,  y = response, group = Density), 
+              position = position_dodge(width = 0.5),
+              color = "black", vjust = -.7) +
+    ggtitle("SOCA") +
+    theme(axis.title.x = ggtext::element_markdown(),
+          plot.title = element_text(size = 9),
+          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          legend.position = "left") +
+    scale_color_manual(values = c("darkblue", "red3"))+
+    ylim(0, 120)
+))
 ###ALL TOGETHER####
 BICE_b + DISP_b + EPCI_b + EUOC_b + EUMA_b + HENU_b + 
   JUAR_b + MUAS_b + PUNU_b + RUMA_b + SCAC_b + SCPU_b + SOCA_b +
   guide_area() +
   plot_layout(guides = "collect")
 
-ggsave("two-way_model-means_biomass.jpeg", height = 1737, width = 1675, units = 
-        "px")
-
-##All all together####
+ggsave("two-way_model-means_biomass.jpeg", height = 5.79, width = 7.24, units = 
+        "in")

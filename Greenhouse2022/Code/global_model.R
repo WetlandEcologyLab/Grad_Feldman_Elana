@@ -77,7 +77,7 @@ ggplot(data = data1, aes(x = Phrag_Presence, y = response * 100,
         legend.position = "none") +
   scale_color_manual(values = color1)
 
-ggsave("native_cover_presence_model_means.jpeg")
+#ggsave("native_cover_presence_model_means.jpeg")
 
 ##species by density ####
 emm <- emmeans(mdf.m1, pairwise ~ Species * Density, adjust = "tukey", type = "response")
@@ -103,7 +103,7 @@ ggplot(data = data2, aes(x = reorder(Species,response), y = response * 100, colo
         plot.title = element_text(size = 9)) +
   scale_color_manual(values = color2)
 
-ggsave("native_cover_species_model_means.jpeg")
+#ggsave("native_cover_species_model_means.jpeg")
 
 #Native biomass ####
 table(biomass$Species)
@@ -446,26 +446,29 @@ e <- ggplot(data = data1, aes(x = Phrag_Presence, y = response,
   scale_color_manual(values = color1)
 
 
-f <- ggplot(data = data2, aes(x = reorder(Species,response), y = response, color = Density)) +
-  geom_point(size=2, position = position_jitter(seed=1)) +
+data2$Density <- factor(data2$Density,
+                        levels = c("Low", "High"))
+((f <- ggplot(data = data2, aes(x = reorder(Species,response), y = response, color = Density)) +
+  geom_point(size=2, position = position_dodge(width = 0.5)) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
-                width=0, size=0.5, position = position_jitter(seed=1)) +
+                width=0, size=0.5, position = position_dodge(width = 0.5)) +
   labs(x="Native Species Identity", y = "Model Predicted Proportional Native Cover",
        title = '(b)') +
   ylim(0, 1) +
   geom_text(aes(label = str_4,
+                group = Density,
                 vjust = 1.7, hjust = -.1),
-            check_overlap = TRUE,
-            color = "black", position = position_jitter(seed=1),
+            #check_overlap = TRUE,
+            color = "black", position = position_dodge(width = 0.5),
             size = 3) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
         axis.title.y = ggtext::element_markdown(),
         axis.title.x = ggtext::element_markdown(size = 11),
         plot.title = element_text(size = 9),
         legend.position = "bottom") +
-  scale_color_manual(values = color2)
-
+  scale_color_manual(values = c("darkblue", "red3"))
+))
 
 (e + f) + plot_layout(widths = c(1, 3))
 ggsave("native_cover_model_means_both.jpeg")
