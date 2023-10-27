@@ -571,71 +571,18 @@ c <- wells_2023 %>%
 a/b/c + plot_layout(guides = "collect")
 ggsave("wells.jpeg")
 
-# RUMA Spread ####
-##Year 1 ####
-fb$Group <- factor(fb$Group, levels = c(5, 4, 3, 2, 1, 10),
-                   labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
-                              "Perennial forb", "Control"))
-fb$Density <- factor(fb$Density, levels = c("H", "L", "C"),
-                     labels = c("High", "Low", "Control"))
-fb23$Group <- factor(fb23$Group, levels = c(5, 4, 3, 2, 1, 10),
-                     labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
-                                "Perennial forb", "Control"))
-fb23$Density <- factor(fb23$Density, levels = c("H", "L", "C"),
-                       labels = c("High", "Low", "Control"))
-a <- fb %>% 
-  ggplot(aes(x = Date, y = RUMA, color = Density)) +
-  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
-               fun = mean, geom = "point", size = 2) +
-  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
-               fun = mean, geom = "line") +
-  stat_summary(aes(group = interaction(Group, Density), width = 0), #calculate error bars
-               fun.data = mean_se, geom = "errorbar", size = .5) +
-  facet_grid(~Group) +
-  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        axis.title.y = ggtext::element_markdown(),
-        strip.text.x = element_text(size = 6)) +
-  labs(x = "Date", y = "*Rumex maritimus* Cover", title = "(a) 2022 Growing Season") +
-  coord_cartesian(ylim = c(0, .2))
-
-
-##Year 2 ####
-
-b <- fb23 %>% 
-  ggplot(aes(x = Date, y = RUMA, color = Density)) +
-  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
-               fun = mean, geom = "point", size = 2) +
-  stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
-               fun = mean, geom = "line") +
-  stat_summary(aes(group = interaction(Group, Density), width = 0), #calculate error bars
-               fun.data = mean_se, geom = "errorbar", size = .5) +
-  facet_grid(~Group) +
-  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        axis.title.y = ggtext::element_markdown(),
-        strip.text.x = element_text(size = 6)) +
-  labs(x = "Date", y = "*Rumex maritimus* Cover", title = "(b) 2023 Growing Season")+
-  coord_cartesian(ylim = c(0, .2))
-
-a / b + plot_layout(guides = "collect")
-#you can see how RUMA spread into all the other parts, and also how it senesced and then regrew
-ggsave("RUMA_both_years.jpeg")
-
 # SCAC Spread ####
 ##Year 1 ####
-fb$Group <- factor(fb$Group, levels = c(5, 4, 3, 2, 1, 10),
-                   labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
-                              "Perennial forb", "Control"))
-fb$Density <- factor(fb$Density, levels = c("H", "L", "C"),
-                     labels = c("High", "Low", "Control"))
-fb23$Group <- factor(fb23$Group, levels = c(5, 4, 3, 2, 1, 10),
-                     labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
-                                "Perennial forb", "Control"))
-fb23$Density <- factor(fb23$Density, levels = c("H", "L", "C"),
-                       labels = c("High", "Low", "Control"))
+fb$Group <- factor(fb$Group, levels = c(10, 5, 4, 3, 2, 1),
+                   labels = c("Control","Annual Forb", "Bulrush", "Grass", "Rush",
+                              "Perennial forb"))
+fb$Density <- factor(fb$Density, levels = c("C", "L", "H"),
+                     labels = c("Control", "Low", "High"))
+fb23$Group <- factor(fb23$Group, levels = c(10, 5, 4, 3, 2, 1),
+                     labels = c("Control","Annual Forb", "Bulrush", "Grass", "Rush",
+                                "Perennial forb"))
+fb23$Density <- factor(fb23$Density, levels = c("C", "L", "H"),
+                       labels = c("Control", "Low", "High"))
 a <- fb %>% 
   ggplot(aes(x = Date, y = SCAC, color = Density)) +
   stat_summary(aes(group = interaction(Group, Density)), #calculate means of the total cover
@@ -645,7 +592,7 @@ a <- fb %>%
   stat_summary(aes(group = interaction(Group, Density), width = 0), #calculate error bars
                fun.data = mean_se, geom = "errorbar", size = .5) +
   facet_grid(~Group) +
-  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+  scale_color_manual(values = c("#7D7D7D", "darkblue", "red3")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         plot.title = element_text(size = 9),
         axis.title.y = ggtext::element_markdown(),
@@ -665,7 +612,7 @@ b <- fb23 %>%
   stat_summary(aes(group = interaction(Group, Density), width = 0), #calculate error bars
                fun.data = mean_se, geom = "errorbar", size = .5) +
   facet_grid(~Group) +
-  scale_color_manual(labels = c('High', 'Low', "Control"), values = c("red3",  "darkblue" , "grey1" )) +
+  scale_color_manual(values = c("#7D7D7D", "darkblue", "red3")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         plot.title = element_text(size = 9),
         axis.title.y = ggtext::element_markdown(),
