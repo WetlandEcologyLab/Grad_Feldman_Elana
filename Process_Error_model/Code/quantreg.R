@@ -3,8 +3,8 @@
 library(quantreg)
 library(tidyverse)
 #load("r_values_table.RData")
-values <- read.csv("r_values.csv")
-load("main_dfs.RData")
+values <- read.csv("Data/r_values.csv")
+load("Data/main_dfs.RData")
 
 #For this analysis, we want to find the quantiles of phrag growth by growth rate
 
@@ -64,10 +64,11 @@ dat2 %>%
   geom_quantile(quantiles = c(0.5, 0.95),
                 aes(color = factor(..quantile..)),
                 size = 1) +
-  xlab("Intrinsic Rate of Growth (r)") +
+  xlab("Intrinsic Rate of Growth (*r*)") +
   ylab("Proportional *P.australis* Cover") +
   labs(color = "Quantiles") +
-  theme(axis.title.y = ggtext::element_markdown()) +
+  theme(axis.title.y = ggtext::element_markdown(),
+        axis.title.x = ggtext::element_markdown()) +
   scale_color_manual(values = color) +
   ylim(0, 0.5)
 ggsave("quant_reg_ggplot.jpeg")

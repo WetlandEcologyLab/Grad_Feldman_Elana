@@ -17,7 +17,7 @@ gh_final %>%
   select(-Phrag) %>%
   filter(Mix != "PHAU")%>%
   mutate(Mix = factor(Mix,
-                      levels = c("Grass", "Bulrush", "Forb", "Equal"))) %>% 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   ggplot(aes(x = Mix, y = Total, color = Density)) +
   facet_grid(~factor(Phrag_Presence, levels=c("WO", "W")), labeller = as_labeller(trt_label)) +
   stat_summary(aes(group = interaction(Mix, Density, Phrag_Presence)),
@@ -33,7 +33,7 @@ ggsave("native_cover_by-mix.jpeg")
 colors <- c("darkgray", "#F8766D", "#00BFC4")
 gh_final %>% 
   mutate(Mix = factor(Mix,
-                      levels = c("PHAU","Grass", "Bulrush", "Forb", "Equal"))) %>% 
+                      levels = c("PHAU","Bulrush", "Forb", "Grass", "Equal"))) %>% 
   ggplot(aes(x = Mix, y = Phrag, color = Density)) +
   stat_summary(aes(group = interaction(Mix, Density)),
                fun = mean, geom = "point") +
@@ -74,7 +74,7 @@ gh_tw <- gh_totals %>%
 
 a <- gh_tw %>%
   mutate(Mix = factor(Mix,
-                      levels = c("Grass", "Bulrush", "Forb", "Equal", "PHAU"))) %>% 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal", "PHAU"))) %>% 
   filter(Phrag_Presence != "WO") %>%
   ggplot(aes(fill = group, y = cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
@@ -111,7 +111,7 @@ a <- gh_tw %>%
 #### Without phrag ####
 b <- gh_tw %>%
   mutate(Mix = factor(Mix,
-                      levels = c("Grass", "Bulrush", "Forb", "Equal"))) %>% 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   filter(Phrag_Presence != "W") %>%
   ggplot(aes(fill = group, y = cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity", show.legend = FALSE) +
@@ -150,7 +150,9 @@ c <- gh_sl %>%
                           levels = c("BOMA", "SCAC", "SCAM",
                                      "DISP", "MUAS", "PUNU",
                                      "EUMA", "EUOC", "SOCA",
-                                     "Phrag"))) %>% 
+                                     "Phrag")),
+         Mix = factor(Mix, 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   ggplot(aes(fill = Species, y = Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
   labs(x = "", y = "", fill = "Species",
@@ -213,7 +215,9 @@ d <- gh_sl %>%
                           levels = c("BOMA", "SCAC", "SCAM",
                                      "DISP", "MUAS", "PUNU",
                                      "EUMA", "EUOC", "SOCA",
-                                     "Phrag"))) %>% 
+                                     "Phrag")),
+         Mix = factor(Mix, 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   ggplot(aes(fill = Species, y = Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity", show.legend = FALSE) +
   labs(x = "", y = "Relative Abundance", fill = "Species",
@@ -269,7 +273,7 @@ final.df <- b %>%
 #ggsave("phrag_cover_red.jpeg")
 cover <- final.df %>%
   mutate(Mix = factor(Mix,
-                      levels = c("Forb", "Bulrush", "Grass", "Equal"))) %>% 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   mutate(Density = factor(Density,
                           levels = c("L", "H"),
                           labels = c("Low", "High"))) %>% 
@@ -295,7 +299,7 @@ cover <- final.df %>%
 cover_dat %>% 
   filter(Mix != "PHAU") %>% 
   mutate(Mix = factor(Mix,
-                      levels = c("Forb", "Bulrush", "Grass", "Equal"))) %>% 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   mutate(Density = factor(Density,
                           levels = c("L", "H"),
                           labels = c("Low", "High"))) %>% 
@@ -330,16 +334,16 @@ cover_dat$Phrag_Presence <- as.factor(cover_dat$Phrag_Presence)
 cover_dat %>% 
   filter(Phrag_Presence != "WO") %>% 
   mutate(Mix = factor(Mix,
-                      levels = c('PHAU',"Forb", "Bulrush", "Grass", "Equal"),
-                      labels = c("Control", "Forb", "Bulrush", "Grass", "Equal"))) %>% 
+                      levels = c('PHAU',"Bulrush", "Forb", "Grass", "Equal"),
+                      labels = c("Control", "Bulrush", "Forb", "Grass", "Equal"))) %>% 
   mutate(Density = factor(Density,
                       levels = c("Control", "L", "H"),
                       labels = c("Control", "Low", "High"))) %>% 
   ggplot(aes(x = Date, y = Phrag, color = Density)) +
   stat_summary(aes(group = interaction(Density, Phrag_Presence)),
-               fun = mean, geom = "point", size = 2, position = position_dodge(width = 0.5)) +
+               fun = mean, geom = "point", size = 2, position = position_dodge(width = 1)) +
   stat_summary(aes(group = interaction(Density, Phrag_Presence), width = .5),
-               fun.data = mean_se, geom = "errorbar", position = position_dodge(width = 0.5)) +
+               fun.data = mean_se, geom = "errorbar", position = position_dodge(width = 1)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
         axis.title.y = ggtext::element_markdown(),
         legend.position = "bottom") +
@@ -359,7 +363,7 @@ biomass_dat %>%
                                SCAM, DISP, MUAS, PUNU,BOMA, na.rm = TRUE)) %>% 
   filter(Mix != "PHAU")%>%
   mutate(Mix = factor(Mix,
-                      levels = c("Grass", "Bulrush", "Forb", "Equal"))) %>% 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   mutate(Density = factor(Density,
                           levels = c("L", "H"),
                           labels = c("Low", "High"))) %>% 
@@ -388,7 +392,7 @@ biomass_dat$Density <- factor(biomass_dat$Density,
 
 biomass_dat %>% 
   mutate(Mix = factor(Mix,
-                      levels = c("PHAU", "Grass", "Bulrush", "Forb", "Equal"))) %>% 
+                      levels = c("PHAU", "Bulrush", "Forb", "Grass",  "Equal"))) %>% 
   ggplot(aes(x = Mix, y = PHAU, color = Density)) +
   stat_summary(aes(group = interaction(Mix, Density)),
                fun = mean, geom = "point") +
@@ -429,7 +433,7 @@ biomass_l <- biomass_t %>%
 
 e <- biomass_l %>%
   mutate(Mix = factor(Mix,
-                      levels = c("Grass", "Bulrush", "Forb", "Equal", "PHAU"))) %>% 
+                      levels = c( "Bulrush", "Forb", "Grass","Equal", "PHAU"))) %>% 
   filter(Phrag_Presence != "WO") %>%
   ggplot(aes(fill = group, y = cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
@@ -449,7 +453,7 @@ e <- biomass_l %>%
 #### Without phrag ####
 f <- biomass_l %>%
   mutate(Mix = factor(Mix,
-                      levels = c("Grass", "Bulrush", "Forb", "Equal"))) %>% 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   filter(Phrag_Presence != "W") %>%
   ggplot(aes(fill = group, y = cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity", show.legend = FALSE) +
@@ -486,7 +490,9 @@ g <- biomass_sl %>%
                           levels = c("SCAC", "SCAM",
                                      "DISP", "MUAS", "PUNU",
                                      "EUMA", "EUOC", "SOCA",
-                                     "PHAU"))) %>% 
+                                     "PHAU")),
+         Mix = factor(Mix, 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   ggplot(aes(fill = Species, y = Biomass, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
   labs(x = "Density", y = "", fill = "Species",
@@ -513,7 +519,9 @@ h <- biomass_sl %>%
                           levels = c("SCAC", "SCAM",
                                      "DISP", "MUAS", "PUNU",
                                      "EUMA", "EUOC", "SOCA",
-                                     "PHAU"))) %>% 
+                                     "PHAU")),
+         Mix = factor(Mix, 
+                      levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   ggplot(aes(fill = Species, y = Biomass, x = Density)) +
   geom_bar(position = "fill", stat = "identity", show.legend = FALSE) +
   labs(x = "Density", y = "Relative Abundance", fill = "Species")+
@@ -554,7 +562,10 @@ final.df <- b %>%
 #graph
 biomass <- final.df %>% 
   mutate(Mix = factor(Mix,
-                      levels = c("Forb", "Bulrush", "Grass", "Equal"))) %>% 
+                      levels = c( "Bulrush", "Forb","Grass", "Equal")),
+         Density = factor(Density,
+                          levels = c("L", "H"),
+                          labels = c("Low", "High"))) %>% 
   ggplot(aes(x = Mix, y = Pos.Red, color = Density), size = 1) +
   scale_y_continuous(name = "Reduction in *P.australis* <br>Biomass", #for some reason ylim changes the data
                      breaks = seq(-.25, 2, by = .25)) +

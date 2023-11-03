@@ -49,7 +49,8 @@ graph_data$Density <- factor(graph_data$Density, levels = c('C',"H", "L"),
           strip.text.x = element_text(size = 6),
           axis.title = element_text(size = 9)) +
     ylim(0, 1) +
-    facet_wrap(~Group)
+    facet_wrap(~Group) +
+    scale_x_date(date_labels = "%b %d")
 ))
 
 
@@ -97,7 +98,8 @@ graph_data2$Density <- factor(graph_data2$Density, levels = c('C',"H", "L"),
           strip.text.x = element_text(size = 6),
           axis.title = element_text(size = 9)) +
     ylim(0, 1) +
-    facet_wrap(~Group)
+    facet_wrap(~Group)+
+    scale_x_date(date_labels = "%b %d")
 ))
 
 
@@ -142,7 +144,8 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"H", "L"),
           plot.title = element_text(size = 9),
           axis.title = element_text(size = 9)) +
     ylim(0,1) +
-    facet_wrap(~Group)
+    facet_wrap(~Group)+
+    scale_x_date(date_labels = "%b %d")
 ))
 
 fb_plot / ul_plot /fb23_plot + plot_layout(guides = "collect")
@@ -546,7 +549,8 @@ a <- wells_fb %>%
   labs(x = "Date", y = "Water Depth (cm)", title = "(a) Farmington Bay 2022") +
   ylim(-100, 30) +
   theme(plot.title = element_text(size = 9)) +
-  scale_color_manual(values = cp)
+  scale_color_manual(values = cp) +
+  scale_x_date(limits = as.Date(c("2022-06-01", "2022-10-01")))
 
 ##ul ####
 b <- wells_ul %>% 
@@ -556,7 +560,8 @@ b <- wells_ul %>%
   labs(x = "Date", y = "Water Depth (cm)", title = "(b) Utah Lake 2022")+
   ylim(-100, 30)+
   theme(plot.title = element_text(size = 9)) +
-  scale_color_manual(values = cp)
+  scale_color_manual(values = cp) +
+  scale_x_date(limits = as.Date(c("2022-06-01", "2022-10-01")))
 
 ##2023 ####
 c <- wells_2023 %>% 
@@ -566,7 +571,8 @@ c <- wells_2023 %>%
   labs(x = "Date", y = "Water Depth (cm)", title = "(c) Farmington Bay 2023")+
   ylim(-100, 30)+
   theme(plot.title = element_text(size = 9)) +
-  scale_color_manual(values = cp)
+  scale_color_manual(values = cp)+
+  scale_x_date(limits = as.Date(c("2023-06-01", "2023-10-01")))
 
 a/b/c + plot_layout(guides = "collect")
 ggsave("wells.jpeg")

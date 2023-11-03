@@ -461,8 +461,7 @@ final.biomass.red <- final.biomass.red %>%
 final.data.red %>% 
   group_by(Species, Density) %>% 
   mutate(mean = mean(Pos.Red, na.rm = TRUE)) %>% 
-  arrange(mean) %>% 
-  View()
+  arrange(mean) 
 
 cover.red <- final.data.red %>% 
   filter(Species != "PHAU") %>%
@@ -486,8 +485,8 @@ scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue")) #c
 
 cover.red
 
-ggsave(filename = "cover_reduction.jpeg", 
-       device = "jpeg")
+# ggsave(filename = "cover_reduction.jpeg", 
+#        device = "jpeg")
 
 ##Biomass reduction ####
 # final.biomass.red %>%
@@ -510,13 +509,13 @@ biomass.red <- final.biomass.red %>%
                position = position_dodge(0.95)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
         axis.title.y = ggtext::element_markdown()) +
-  labs(y = "Proportion Reduction of *P.australis* Biomass", x = "Native Species Identity") +
+  labs(y = "Proportion Reduction in *P.australis* Biomass", x = "Native Species Identity") +
   scale_color_manual(labels = c('High', 'Low'), values = c("red3", "darkblue"))  #change the legend labels
 
 biomass.red
 
-ggsave(filename = "biomass_reduction.jpeg", 
-       device = "jpeg")
+# ggsave(filename = "biomass_reduction.jpeg", 
+#        device = "jpeg")
 
 ### Put them together ####
 cover.red <- final.data.red %>% 
@@ -537,6 +536,7 @@ cover.red <- final.data.red %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
         axis.title.y = ggtext::element_markdown(size = 11),
         plot.title=element_text(size = 9)) +
+  coord_cartesian(ylim = c(-1, 1)) +
   labs(y = "Proportion Reduction in <br> *P.australis* Cover", x = "", title = "(a)") +
   scale_color_manual(values = c("darkblue", "red3")) #change the legend labels
 
@@ -557,7 +557,8 @@ biomass.red <- final.biomass.red %>%
         axis.title.y = ggtext::element_markdown(size = 11),
         axis.title.x = element_text(size = 10),
         plot.title=element_text(size = 9)) +
-  labs(y = "Proportion Reduction of <br> *P.australis* Biomass", x = "Native Species Identity", title = "(b)") +
+  coord_cartesian(ylim = c(-1, 1)) +
+  labs(y = "Proportion Reduction in <br> *P.australis* Biomass", x = "Native Species Identity", title = "(b)") +
   scale_color_manual(values = c("darkblue", "red3"))  #change the legend labels
 
 cover.red / biomass.red

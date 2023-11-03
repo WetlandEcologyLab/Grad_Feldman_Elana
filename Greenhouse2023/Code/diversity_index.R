@@ -37,6 +37,8 @@ final.dat$Phrag_Presence <- factor(final.dat$Phrag_Presence, levels = c("WO", "W
                                  labels = c("Absent", "Present"))
 final.dat$Density <- factor(final.dat$Density, levels = c("L", "H"),
                                    labels = c("Low", "High"))
+final.dat$Mix <- factor(final.dat$Mix, 
+                        levels = c("Bulrush", "Forb", "Grass", "Equal"))
 
 ((a <- final.dat %>% 
   filter(Mix != "PHAU") %>% 
@@ -86,6 +88,8 @@ final.dat$Phrag_Presence <- factor(final.dat$Phrag_Presence, levels = c("WO", "W
 
 final.dat$Density <- factor(final.dat$Density, levels = c("L", "H"),
                             labels = c("Low", "High"))
+final.dat$Mix <- factor(final.dat$Mix, 
+                        levels = c("Bulrush", "Forb", "Grass", "Equal"))
 
 ((b <- final.dat %>% 
   filter(Mix != "PHAU") %>% 
