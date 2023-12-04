@@ -2,7 +2,7 @@
 
 ## Graph the species to determine that they are following logistic growth ####
 
-load("main_dfs.RData")
+load("Data/main_dfs.RData")
 
 library(ggplot2)
 library(magrittr)
@@ -1697,7 +1697,7 @@ mtext("R2 = 0.91", side=3)
 
 #Graph the species to determine that they are following logistic growth
 
-load("main_dfs.RData")
+load("Data/main_dfs.RData")
 
 library(ggplot2)
 library(magrittr)

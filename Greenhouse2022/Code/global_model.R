@@ -103,7 +103,7 @@ ggplot(data = data2, aes(x = reorder(Species,response), y = response * 100, colo
         plot.title = element_text(size = 9)) +
   scale_color_manual(values = color2)
 
-#ggsave("native_cover_species_model_means.jpeg")
+ggsave("native_cover_species_model_means.jpeg", height = 8, width = 8, unit = "in")
 
 #Native biomass ####
 table(biomass$Species)
