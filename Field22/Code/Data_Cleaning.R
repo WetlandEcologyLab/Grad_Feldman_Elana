@@ -2,21 +2,24 @@
 fb <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/clean_fb.csv")
 ul <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/clean_ul.csv")
 
+
+#All package version saved in renv.lock 
+#renv::init, renv::restore
 library(dplyr)
+library(lubridate)
 
 View(fb)
 View(ul)
 
-##Note: I have a slightly cleaner, though not shorter, way of changing all my column values
-#in my bookdown for Reproducible Data Science. I can decide later if that would be better to publish
-#fix FB####
+#Clean Farmington Bay 2022 Data####
 glimpse(fb)
 
-#remake block and make plot a factor
+#rename block and make  a factor
 names(fb)[1] <- "Block"
-fb$Plot <- as.factor(fb$Plot)
+fb$Block <- as.factor(fb$Block)
 
-#change the C in block so it is not rank deficient, then make a factor
+
+#change the C in block to 10 so it is easier to keep track of, then make a factor
 fb$Group[fb$Group == "C"] <- 10
 fb$Group <- as.factor(fb$Group)
 
@@ -28,10 +31,9 @@ unique(fb$Density)
 fb$Density <- as.factor(fb$Density)
 
 #fix the date
-library(lubridate)
 fb$Date <- lubridate::mdy(fb$Date)
 
-#change cover values to the 5s and make numeric
+#change cover values to the midpoints, make numeric, and make a decimal
 unique(fb$Total.Cover)
 fb$Total.Cover[fb$Total.Cover == "<1"] <- "0.5"
 fb$Total.Cover[fb$Total.Cover == 1.00] <- 5.00
@@ -238,25 +240,25 @@ df1 <- fb %>%
 fb$Invasive.Cover <- df$Invasive
 fb$Native.Cover <- df1$Native
 
+#check to make sure the new sections make sense
 max(fb$Invasive.Cover, na.rm = T)
 max(fb$Native.Cover, na.rm = T)
 
-#unique(fb$Invasive.Cover)
-#get rid of the NAs and 0s
-#min(fb$Invasive.Cover)
+#change NAs and 0s to a trace value so it can be used with the beta
+#trace value should be at least half the smallest recorded value
+min(fb$Invasive.Cover)
 fb$Invasive.Cover[is.na(fb$Invasive.Cover)] <- 0.0025
 fb$Invasive.Cover[fb$Invasive.Cover==0] <- 0.0025
 
-#unique(fb$Native.Cover)
-#min(fb$Native.Cover, na.rm = TRUE)
+min(fb$Native.Cover, na.rm = TRUE)
 fb$Native.Cover[is.na(fb$Native.Cover)] <- 0.0025
 fb$Native.Cover[fb$Native.Cover==0] <- 0.0025
 
-# fix UL####
+#Clean Utah Lake 2022 Data####
 glimpse(ul)
 
-#make block and plot factors, fix the C group in Block
-ul$Plot <- as.factor(ul$Plot)
+#make block and plot factors, change group C to 10 to make it easier to follow
+ul$Block <- as.factor(ul$Block)
 ul$Group[ul$Group == "C"] <- 10
 ul$Group <- as.factor(ul$Group)
 
@@ -270,7 +272,7 @@ ul$Density <- as.factor(ul$Density)
 #fix the date
 ul$Date <- lubridate::mdy(ul$Date)
 
-#fix all numbers and make everything numeric
+#change cover values to the midpoints, make numeric, and make a decimal
 unique(ul$Total.Cover)
 ul$Total.Cover[ul$Total.Cover == "<1"] <- "0.5"
 ul$Total.Cover[ul$Total.Cover == ">1"] <- "0.5"
@@ -551,40 +553,36 @@ ul$Native.Cover <- df1$Native
 max(ul$Invasive.Cover, na.rm = TRUE)
 max(ul$Native.Cover, na.rm = TRUE)
 
-unique(ul$Invasive.Cover)
-#get rid of the NAs
-#min(ul$Invasive.Cover, na.rm = TRUE)
+#change NAs and 0s to a trace value so it can be used with the beta
+#trace value should be at least half the smallest recorded value
+min(ul$Invasive.Cover, na.rm = TRUE)
 ul$Invasive.Cover[is.na(ul$Invasive.Cover)] <- 0.0025
 ul$Invasive.Cover[ul$Invasive.Cover==0] <- 0.0025
 
-#unique(ul$Native.Cover)
-#min(ul$Native.Cover, na.rm = TRUE)
+min(ul$Native.Cover, na.rm = TRUE)
 ul$Native.Cover[is.na(ul$Native.Cover)] <- 0.0025
 ul$Native.Cover[ul$Native.Cover==0] <- 0.0025
 
-# 2023 ####
+#Clean Farmington Bay 2023 Data####
 fb23 <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/FB2023-CLEAN.csv")
-
-library(dplyr)
 
 #View(fb23)
 glimpse(fb23)
 
-#rename block
+#rename block and make a factor
 names(fb23)[1] <- "Block"
 fb23$Block <- as.factor(fb23$Block)
 
-#make everythign a factor
+#make everything a factor, and rename C group to 10 to make easier to follow
 fb23$Plot <- as.factor(fb23$Plot)
 fb23$Group[fb23$Group == "C"] <- 10
 fb23$Group <- as.factor(fb23$Group)
 fb23$Density <- as.factor(fb23$Density)
 
 #fix the date
-library(lubridate)
 fb23$Date <- lubridate::mdy(fb23$Date)
 
-#change cover values to the 5s and make numeric
+#change cover values to the midpoints, make numeric, and make a decimal
 unique(fb23$Total.Cover)
 fb23$Total.Cover[fb23$Total.Cover == "<1"] <- 0.5
 fb23$Total.Cover[fb23$Total.Cover == 0] <- 0.25
@@ -717,19 +715,18 @@ max(fb23$Native.Cover, na.rm = T)
 save(ul, fb, fb23, file = "clean_dfs.RData")
 
 
-# Wells ####
+#Clean the well data####
 wells_ul <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/UL_wells.csv")
 wells_fb <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/FB_wells.csv")
 wells_2023 <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/2023_wells.csv")
 
-##Fb####
+##Farmington Bay####
 #glimpse(wells_fb)
 
-#Fix the names of important column
+#Fix the names of important columns
 names(wells_fb)[11] <- "depth_cm"
 
 #make date a date
-library(lubridate)
 wells_fb$Date <- lubridate::mdy(wells_fb$Date)
 
 #make block a factor
@@ -738,7 +735,7 @@ wells_fb$Block <- as.factor(wells_fb$Block)
 ##Ul####
 #glimpse(wells_ul)
 
-#Fix the names of important column
+#Fix the names of important columns
 names(wells_ul)[11] <- "depth_cm"
 
 #make date a date
@@ -750,7 +747,7 @@ wells_ul$Block <- as.factor(wells_ul$Block)
 ##2023####
 #glimpse(wells_2023)
 
-#Fix the names of important column
+#Fix the names of important columns
 names(wells_2023)[8] <- "depth_cm"
 
 #make date a date

@@ -1,11 +1,14 @@
+#Load data and packages
+#All package version saved in renv.lock 
+#renv::init, renv::restore
 load("clean_dfs.RData")
 library(tidyverse)
 library(RColorBrewer)
 library(patchwork)
 library(vegan)
 
-#Invasive vs native####
-##Fb####
+#Graphs of invasive versus native versus seeded cover####
+##Farmington Bay 2022####
 graph_data <-fb %>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, Cheno, Typha, 
          BOMA, DISP, EUMA, SYCI, LEFA, SCAC, BICE, BIFR, EUOC, MUAS, SCAM, RUMA,
@@ -22,12 +25,12 @@ graph_data <-fb %>%
     SPP %in% c("EUOC", "EUMA") & Group == 1 ~ "Seeded",
     SPP %in% c("SYCI", "BICE", "BIFR", "RUMA") & Group == 5 ~ "Seeded",
     TRUE ~ "Native"
-  ))%>%  #make a new column for species status
+  ))%>%  #make a new column for species status (native, invasive, seeded)
   group_by(Block, Group, Density, Date, Status) %>% #group by the plot and species status
   summarise(PC = sum(Percent_Cover, na.rm = TRUE)) #calculate totals
 
 
-
+#refactor to help with the graphing
 graph_data$Group <- factor(graph_data$Group, levels = c(10, 5, 4, 3, 2, 1),
                     labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
                                "Perennial forb"))
@@ -44,26 +47,26 @@ graph_data$Density <- factor(graph_data$Density, levels = c('C',"H", "L"),
                  fun.data = mean_se, geom = "errorbar", size = .5) +
     labs(x = "Date", y = "Proportional Cover", title = "(a) Farmington Bay 2022") + 
     scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+    theme(axis.text.x = element_text(angle = 45, hjust = 0.9), #angle the x axis text
           plot.title = element_text(size = 9),
-          strip.text.x = element_text(size = 6),
+          strip.text.x = element_text(size = 6), #change size of facet wrap titles
           axis.title = element_text(size = 9)) +
     ylim(0, 1) +
     facet_wrap(~Group) +
-    scale_x_date(date_labels = "%b %d")
+    scale_x_date(date_labels = "%b %d") #make the dates month/day
 ))
 
 
-## UL####
+##Utah Lake 2022 ####
 graph_data2 <- ul%>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, BOMA, BICE, CYER, RUMA,
          Cheno, SCAC, SCPU, SCAM, DISP, RACY, ASIN, ALPR, CYDA, Unk_Bulrush, BY, SYCI,
-         EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) %>%
+         EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) %>% #remove unnecessary columns
   pivot_longer(
     cols = 6:30, 
     names_to = "SPP",
     values_to = "Percent_Cover"
-  ) %>% 
+  ) %>%  #pivot so that all species names are in one column
   mutate(Status = case_when(
     SPP %in% c("PHAU", "Typha", "RUST", 
                "Tamarisk", "ALPR", "CYDA", "BY", 
@@ -73,10 +76,11 @@ graph_data2 <- ul%>%
     SPP == "EUOC" & Group == 1 ~ "Seeded",
     SPP %in% c("SYCI", "BICE", "RUMA") & Group == 5 ~ "Seeded",
     TRUE ~ "Native"
-  ))%>% 
+  ))%>% #make a new column for species status (native, invasive, seeded)
   group_by(Block, Date, Density, Group, Status) %>%
-  summarise(PC = sum(Percent_Cover, na.rm = TRUE))
+  summarise(PC = sum(Percent_Cover, na.rm = TRUE)) #get the sum of the cover
 
+#refactor everything to help with graphing
 graph_data2$Group <- factor(graph_data2$Group, levels = c(10, 5, 4, 3, 2, 1),
                            labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
                                       "Perennial forb"))
@@ -93,18 +97,17 @@ graph_data2$Density <- factor(graph_data2$Density, levels = c('C',"H", "L"),
                  fun.data = mean_se, geom = "errorbar", size = .5) +
     labs(x = "Date", y = "Proportional Cover", title = "(b) Utah Lake 2022") + 
     scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+    theme(axis.text.x = element_text(angle = 45, hjust = 0.9), #angle the x axis text
           plot.title = element_text(size = 9),
-          strip.text.x = element_text(size = 6),
+          strip.text.x = element_text(size = 6), #change size of the facet wrap titles
           axis.title = element_text(size = 9)) +
     ylim(0, 1) +
     facet_wrap(~Group)+
-    scale_x_date(date_labels = "%b %d")
+    scale_x_date(date_labels = "%b %d") #change date to month/day
 ))
 
 
-
-##2023 FB ####
+##Farmington Bay 2023 ####
 graph_data23 <-fb23 %>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, Typha, 
                 BOMA, DISP, SCAC, SCAM, RUMA, RUST) %>%  #remove unnecessary columns
@@ -123,6 +126,7 @@ graph_data23 <-fb23 %>%
   group_by(Block, Density, Group, Date, Status) %>% #group by the plot and species status
   summarise(PC = sum(Percent_Cover, na.rm = TRUE)) #calculate totals
 
+#refactor to help with graphing
 graph_data23$Group <- factor(graph_data23$Group, levels = c(10, 5, 4, 3, 2, 1),
                             labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
                                        "Perennial forb"))
@@ -145,17 +149,16 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"H", "L"),
           axis.title = element_text(size = 9)) +
     ylim(0,1) +
     facet_wrap(~Group)+
-    scale_x_date(date_labels = "%b %d")
+    scale_x_date(date_labels = "%b %d") #change date to month/day
 ))
 
 fb_plot / ul_plot /fb23_plot + plot_layout(guides = "collect")
-ggsave("native_seeded_invasive_cover_all.jpeg", height = 10, width = 8, units = "in")
 
-#Barchart of final seeded ####
+#Barchart of all the seeded species final growth####
 
-##FB####
+##Farmington Bay 2022####
 cp <- c("#A6CEE3", "#1F78B4" ,"#B2DF8A", "#33A02C", "#FB9A99" ,
-        "#E31A1C", "#FDBF6F" ,"#FF7F00", "#CAB2D6","#6A3D9A")
+        "#E31A1C", "#FDBF6F" ,"#FF7F00", "#CAB2D6","#6A3D9A") #colors to use in the graph
 
 fb2 <-fb %>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, Cheno, Typha, 
@@ -174,11 +177,12 @@ fb2 <-fb %>%
     SPP %in% c("EUOC", "EUMA") & Group == 1 ~ "Seeded",
     SPP %in% c("SYCI", "BICE", "BIRF", "RUMA") & Group == 5 ~ "Seeded",
     TRUE ~ "Native"
-  )) 
+  )) #label species as invasive, native, or seeded
 
 #change BIFR to BICE because I am combining them
 fb2$SPP[fb2$SPP == "BIFR"] <- "BICE"
 
+#refactor to help with graphing
 fb2$Group <- factor(fb2$Group, levels = c(5, 4, 3, 2, 1, 10),
                     labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
                                "Perennial forb", "Control"))
@@ -186,7 +190,7 @@ fb2$Density <- factor(fb2$Density, levels = c("H", "L"),
                     labels = c("High", "Low"))
 
 fb_stack <- fb2 %>% 
-  dplyr::filter(Status == "Seeded") %>% 
+  dplyr::filter(Status == "Seeded") %>% #only use seeded species
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
   facet_grid(~Group) +
@@ -200,27 +204,27 @@ fb_stack <- fb2 %>%
                                'RUMA',
                                'SCAC',
                                'SCAM',
-                               'SYCI'))+
+                               'SYCI'))+ #use the manual colors I specified above
   labs(x = "", y = "Relative Abundance", 
        fill = "Species", title = "(a) Farmington Bay 2022") +
   theme(plot.title = element_text(size = 9))
   
 
-##UL####
+##Utah Lake 2022####
 
 cp2 <- c("#A6CEE3", "#1F78B4" ,"#B2DF8A", "#FB9A99" ,
-        "#FDBF6F" ,"#FF7F00", "#CAB2D6","#6A3D9A")
+        "#FDBF6F" ,"#FF7F00", "#CAB2D6","#6A3D9A") #colors to use in the graph
 
 ul2 <- ul%>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, BOMA, BICE, CYER, RUMA,
          Cheno, SCAC, SCPU, SCAM, DISP, RACY, ASIN, ALPR, CYDA, Unk_Bulrush, BY, SYCI,
-         EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) %>%
-  filter(Date == "2022-09-16") %>% 
+         EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) %>% #only select needed columns
+  filter(Date == "2022-09-16") %>% #only need the last date
   pivot_longer(
     cols = 6:30, 
     names_to = "SPP",
     values_to = "Percent_Cover"
-  ) %>% 
+  ) %>% #pivot so that all names are in one column
   mutate(Status = case_when(
     SPP %in% c("PHAU", "TYPHA", "RUST", 
                "Tamarisk", "ALPR", "CYDA", "BY", 
@@ -229,9 +233,10 @@ ul2 <- ul%>%
     SPP == "DISP" & Group == 3 ~ "Seeded",
     SPP == "EUOC" & Group == 1 ~ "Seeded",
     SPP %in% c("SYCI", "BICE", "RUMA") & Group == 5 ~ "Seeded",
-    TRUE ~ "Native"
+    TRUE ~ "Native" #label species by status
   ))
 
+#refactor to help with graphing
 ul2$Group <- factor(ul2$Group, levels = c(5, 4, 3, 2, 1, 10),
                     labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
                                "Perennial forb", "Control"))
@@ -239,7 +244,7 @@ ul2$Density <- factor(ul2$Density, levels = c("H", "L"),
                       labels = c("High", "Low"))
 
 ul_stack <- ul2 %>% 
-  dplyr::filter(Status == "Seeded") %>% 
+  dplyr::filter(Status == "Seeded") %>% #only seeded species
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
   facet_grid(~Group) +
@@ -251,15 +256,15 @@ ul_stack <- ul2 %>%
                                'RUMA',
                                'SCAC',
                                'SCAM',
-                               'SYCI'))+
+                               'SYCI'))+ #manually add colors specified above
   labs(x = "", y = "Relative Abundance", 
        fill = "Species", title = "(b) Utah Lake 2022") +
   theme(plot.title = element_text(size = 9),
         legend.position = "none")
 
 
-##FB2023####
-cp3 <- c("#1F78B4" ,"#B2DF8A", "#FDBF6F" ,"#FF7F00", "#CAB2D6")
+##Farmington Bay 2023####
+cp3 <- c("#1F78B4" ,"#B2DF8A", "#FDBF6F" ,"#FF7F00", "#CAB2D6") #colors to use in graph
 
 fb232 <- fb23 %>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, Typha, 
@@ -276,8 +281,9 @@ fb232 <- fb23 %>%
     SPP %in% c("DISP") & Group == 3 ~ "Seeded",
     SPP %in% c("RUMA") & Group == 5 ~ "Seeded",
     TRUE ~ "Native"
-  ))
+  )) #label species by status (native, invasive, seeded)
 
+#refactor to help with graphing
 fb232$Group <- factor(fb232$Group, levels = c(5, 4, 3, 2, 1, 10),
                     labels = c("Annual Forb", "Bulrush", "Grass", "Rush",
                                "Perennial forb", "Control"))
@@ -285,7 +291,7 @@ fb232$Density <- factor(fb232$Density, levels = c("H", "L"),
                       labels = c("High", "Low"))
 
 fb23_stack <- fb232 %>% 
-  dplyr::filter(Status == "Seeded") %>% 
+  dplyr::filter(Status == "Seeded") %>% #only seeded species
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
   facet_grid(~Group) +
@@ -294,7 +300,7 @@ fb23_stack <- fb232 %>%
                                "DISP",
                                'RUMA',
                                'SCAC',
-                               'SCAM'))+
+                               'SCAM'))+ #manually use colors specified above
   labs(x = "Native Seeding Density", y  = "Relative Abundance", 
        title = "(c) Farmington Bay 2023",
        fill = "Species") +
@@ -302,36 +308,23 @@ fb23_stack <- fb232 %>%
         legend.position = "none")
 
 fb_stack / ul_stack / fb23_stack + plot_layout(guides = "collect")
-ggsave("stacked_species_all.jpeg", height = 11, width = 8, units = "in")
 
-#Barchart of final native ####
-c_labs <- c('BOMA', 'CHEN', 
-            'CYER', 'DISP', 'LEFA', 
-            'RACY', 'RUMA', 'SAAM', 
-            'SARU', 'SCAC', 'SCAM', 'SCPU', 'SYCI')
+#Barchart of unseeded natives####
 
-cp_all <- c("#1F78B4" , 'plum1', 
-            'springgreen', "#B2DF8A",  'lightcyan', 
-            'paleturquoise', "#FDBF6F", 'khaki1', 
-            'orchid4', "#FF7F00", "#CAB2D6", 'olivedrab3', "#6A3D9A")
-
-legend(x = 1, legend = c_labs, fill = "cp_all")
-
-##FB####
+##Farmington Bay 2022####
 cp1 <- c("#1F78B4" , 'plum1', 
              "#B2DF8A",  'lightcyan', 
-            'orchid4')
+            'orchid4') #colors to use in the graph
 
-#change names of Cheno
-fb2$SPP[fb2$SPP == "Cheno"] <- "CHEN"
+fb2$SPP[fb2$SPP == "Cheno"] <- "CHEN" #change name to species code
 a <- fb2 %>% 
-  dplyr::filter(Status == "Native", Group == "Control", Percent_Cover > 0) %>% 
+  dplyr::filter(Status == "Native", Group == "Control", Percent_Cover > 0) %>% #only natives in the control
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
   scale_fill_manual(values = cp1,
                     labels = c( 'BOMA', 'CHEN',
                                 'DISP', 'LEFA',
-                                'SARU'))+
+                                'SARU'))+ #add colors specified above
   labs(x = "", y = "Relative Abundance", 
        fill = "Species", title = "(a) Farmington Bay 2022") +
   theme(plot.title = element_text(size = 10),
@@ -340,23 +333,23 @@ a <- fb2 %>%
         axis.ticks.x = element_blank())
 
 
-##UL####
+##Utah Lake 2022####
 cp3 <- c( "#1F78B4" , 'plum1', 
             'springgreen', "#B2DF8A",  
             'paleturquoise', "#FDBF6F", 'khaki1', 
-            'olivedrab3', "#6A3D9A")
+            'olivedrab3', "#6A3D9A") #colors to use in the graph
 
-#change names of Cheno
+#change names of Cheno to be a species code
 ul2$SPP[ul2$SPP == "Cheno"] <- "CHEN"
 b <- ul2 %>% 
-  dplyr::filter(Status == "Native", Group == "Control", Percent_Cover>0) %>% 
+  dplyr::filter(Status == "Native", Group == "Control", Percent_Cover>0) %>% #only want natives in the control
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
   scale_fill_manual(values = cp3,
                     labels = c('BOMA', 'CHEN',
                                'CYER', 'DISP',
                                'RACY', 'RUMA', 'SAAM',
-                              'SCPU', 'SYCI'))+
+                              'SCPU', 'SYCI'))+ #use colors specified above
   labs(x = "", y = "", 
        fill = "Species", title = "(b) Utah Lake 2022") +
   theme(plot.title = element_text(size = 10),
@@ -364,22 +357,22 @@ b <- ul2 %>%
         legend.position="right",
         axis.ticks.x = element_blank())
 
-##FB23####
+##Farmington Bay 2023####
 cp2 <- c( "#1F78B4" , 
             "#B2DF8A",  
              "#FDBF6F", 
-             "#FF7F00", "#CAB2D6")
-#change names of Cheno
-fb232$SPP[fb232$SPP == "Cheno"] <- "CHEN"
+             "#FF7F00", "#CAB2D6") #colors to use in the graph
+
+fb232$SPP[fb232$SPP == "Cheno"] <- "CHEN"#change name to species code
 c <- fb232 %>% 
-  dplyr::filter(Status == "Native", Group == "Control") %>% 
+  dplyr::filter(Status == "Native", Group == "Control") %>%  #only natives in the control
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
   scale_fill_manual(values = cp2,
                     labels = c('BOMA', 
                                'DISP', 
                                'RUMA', 
-                               'SCAC', 'SCAM'))+
+                               'SCAC', 'SCAM'))+ #use colors specified above
   labs(x = "", y  = "", 
        title = "(c) Farmington Bay 2023",
        fill = "Species") +
@@ -389,10 +382,9 @@ c <- fb232 %>%
         axis.ticks.x = element_blank())
 
 a+b+c 
-ggsave("native_abundance_all.jpeg", height = 8, width = 8, units = "in")
 
-# Diversity index ####
-##FB####
+# Graph of Shannon Diversity Index####
+##Farmington Bay 2022####
 #only want the final cover
 fb_di <- fb %>% 
   filter(Date == "2022-09-16") %>% 
@@ -439,7 +431,8 @@ fb_di$Density <- factor(fb_di$Density, levels = c("C","L", "H"),
         legend.position = "blank") +
   ylim(0, 2.5)
 ))
-##UL####
+
+##Utah Lake 2022####
 #only want the final cover
 ul_di <- ul %>% 
   filter(Date == "2022-09-16") %>% 
@@ -488,7 +481,7 @@ ul_di$Density <- factor(ul_di$Density, levels = c("C","L", "H"),
 ))
   
 
-## Fb 2023 ####
+## Farmington Bay 2023 ####
 #only want the final cover
 fb23_di <- fb23 %>% 
   filter(Date == "2023-09-11") %>% 
@@ -535,13 +528,12 @@ c <- fb23_di %>%
     ylim(0, 2.5)
 
 a + b + c
-ggsave("diversity_all.jpeg", height = 8, width = 8, units = "in")
 
-# Wells ####
+# Graphs of Water Depth ####
 load("wells.RData")
 
-cp <- c("cadetblue4", "cornflowerblue", "deepskyblue", "deepskyblue4", "cyan3", "darkblue")
-##FB ####
+cp <- c("cadetblue4", "cornflowerblue", "deepskyblue", "deepskyblue4", "cyan3", "darkblue") #colors to use
+##Farmington Bay 2022 ####
 a <- wells_fb %>% 
   ggplot(aes(x = Date, y = depth_cm, color = Block))+
   geom_point()+
@@ -549,10 +541,10 @@ a <- wells_fb %>%
   labs(x = "Date", y = "Water Depth (cm)", title = "(a) Farmington Bay 2022") +
   ylim(-100, 30) +
   theme(plot.title = element_text(size = 9)) +
-  scale_color_manual(values = cp) +
-  scale_x_date(limits = as.Date(c("2022-06-01", "2022-10-01")))
+  scale_color_manual(values = cp) + #use specified colors
+  scale_x_date(limits = as.Date(c("2022-06-01", "2022-10-01"))) #use date limits so axes line up
 
-##ul ####
+##Utah Lake 2022####
 b <- wells_ul %>% 
   ggplot(aes(x = Date, y = depth_cm, color = Block))+
   geom_point()+
@@ -560,10 +552,10 @@ b <- wells_ul %>%
   labs(x = "Date", y = "Water Depth (cm)", title = "(b) Utah Lake 2022")+
   ylim(-100, 30)+
   theme(plot.title = element_text(size = 9)) +
-  scale_color_manual(values = cp) +
-  scale_x_date(limits = as.Date(c("2022-06-01", "2022-10-01")))
+  scale_color_manual(values = cp) + #use specified colors
+  scale_x_date(limits = as.Date(c("2022-06-01", "2022-10-01"))) #use date limits so axes line up
 
-##2023 ####
+##Farmington Bay 2023 ####
 c <- wells_2023 %>% 
   ggplot(aes(x = Date, y = depth_cm, color = Block))+
   geom_point()+
@@ -571,14 +563,14 @@ c <- wells_2023 %>%
   labs(x = "Date", y = "Water Depth (cm)", title = "(c) Farmington Bay 2023")+
   ylim(-100, 30)+
   theme(plot.title = element_text(size = 9)) +
-  scale_color_manual(values = cp)+
-  scale_x_date(limits = as.Date(c("2023-06-01", "2023-10-01")))
+  scale_color_manual(values = cp)+ #use specified colors
+  scale_x_date(limits = as.Date(c("2023-06-01", "2023-10-01"))) #use date limits so axes line up
 
 a/b/c + plot_layout(guides = "collect")
-ggsave("wells.jpeg")
 
-# SCAC Spread ####
-##Year 1 ####
+# Graph of SCAC Growth Over Time ####
+##Farmington Bay 2022####
+#refactor everything to help with graphing
 fb$Group <- factor(fb$Group, levels = c(10, 5, 4, 3, 2, 1),
                    labels = c("Control","Annual Forb", "Bulrush", "Grass", "Rush",
                               "Perennial forb"))
@@ -607,7 +599,7 @@ a <- fb %>%
   coord_cartesian(ylim = c(0, .2))
 
 
-##Year 2 ####
+##Farmington Bay 2023####
 
 b <- fb23 %>% 
   ggplot(aes(x = Date, y = SCAC, color = Density)) +
@@ -627,5 +619,3 @@ b <- fb23 %>%
   coord_cartesian(ylim = c(0, .2))
 
 a / b + plot_layout(guides = "collect")
-#you can see how RUMA spread into all the other parts, and also how it senesced and then regrew
-ggsave("SCAC_both_years.jpeg")

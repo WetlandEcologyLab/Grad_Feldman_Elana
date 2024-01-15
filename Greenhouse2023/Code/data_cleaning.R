@@ -2,12 +2,16 @@
 cover_dat <- read.csv("Raw_Data/2023_greenhouse_data_raw.csv")
 biomass_dat <- read.csv("Raw_Data/2023_greenhouse_biomass_data_raw.csv")
 
+#All package version saved in renv.lock 
+#renv::init, renv::restore
+
 library(tidyverse)
 
 # Fix cover data ####
-
-## change cover class values ####
 glimpse(cover_dat)
+
+#change all values to the midpoint and make numeric
+#0s are nudged to a trace value and 100s are nudged to .995 so we can use the beta distribution
 
 #TOTAL
 unique(cover_dat$Total)
@@ -201,11 +205,10 @@ cover_dat$PUNU[cover_dat$PUNU == " <1"] <- 0.05
 cover_dat$PUNU <- as.numeric(cover_dat$PUNU)
 unique(cover_dat$PUNU)
 
-
-## Fix the date ####
+#make the date a date
 cover_dat$Date <- lubridate::mdy(cover_dat$Date)
 
-## Split tub into mix, density, and phrag presence ####
+#Split tub column into mix, density, and phrag presence
 cover_dat <- cover_dat %>% 
   separate(col = "Tub", into = c("Mix", "Other"))
 
@@ -218,17 +221,19 @@ unique(cover_dat$Mix)
 unique(cover_dat$Density)
 unique(cover_dat$Phrag_Presence)
 
-##Fix phrag column so it is equal to the total column ####
+#Fix phrag column so it is equal to the total column
+#When filling out the spreadsheet, I would put the total cover for all the PHAU in the 
+#PHAU control plots under Total instead of Phrag
 cover_dat <- cover_dat %>% 
   mutate(Phrag = ifelse(Mix == "PHAU", Total, Phrag))
 
-## Name the mixes ####
+#Name the mixes
 cover_dat$Mix[cover_dat$Mix == 1] <- "Forb"
 cover_dat$Mix[cover_dat$Mix == 2] <- "Grass"
 cover_dat$Mix[cover_dat$Mix == 3] <- "Bulrush"
 cover_dat$Mix[cover_dat$Mix == 4] <- "Equal"
 
-## Make everything factors ####
+#Make everything factors
 cover_dat$Mix <- as.factor(cover_dat$Mix)
 cover_dat$Density <- as.factor(cover_dat$Density)
 cover_dat$Phrag_Presence <- as.factor(cover_dat$Phrag_Presence)
@@ -236,48 +241,44 @@ cover_dat$Phrag_Presence <- as.factor(cover_dat$Phrag_Presence)
 # Fix biomass data ####
 glimpse(biomass_dat)
 
-## change column name ####
+#change column name
 colnames(biomass_dat)[4] <- "Weight"
 
-## fix column ####
 
-#values column
+#add a trace value to my "T" values and then make numeric
 biomass_dat$Weight[biomass_dat$Weight == "T"] <- 0.5
 biomass_dat$Weight <- as.numeric(biomass_dat$Weight)
 
-#species column
+#get rid of the unnecessary space after some species ("PHAU ")
 biomass_dat$Species[biomass_dat$Species == "PHAU "] <- "PHAU"
 
-## split the tub column ####
+#split the tub column into mix, density, and phrag presence
 biomass_dat <- biomass_dat %>% 
   separate(col = "Tub", into = c("Mix", "Other"))
 
 biomass_dat <- biomass_dat %>% 
   separate(col = "Other", into = c("Density", "Phrag_Presence"), sep=1)
 
-## make wide ####
-
+# make wide so each species is a different column
 biomass_dat <- biomass_dat %>% pivot_wider(
   names_from = Species,
   values_from = Weight,
   id_cols = c(Mix, Density, Phrag_Presence, Replicate)
 )
 
-## Get rid of the NAs in the W category ####
-
+#Any tub that was seeded with PHAU but has PHAU cover listed as NA should have that changed to 0
 biomass_dat %>% 
   filter(Phrag_Presence == "W" & is.na(PHAU))
 
-biomass_dat[60, 5] <- 0
+biomass_dat[60, 5] <- 0 #should be a 
 
-## Name the mixes ####
+# Name the mixes
 biomass_dat$Mix[biomass_dat$Mix == 1] <- "Forb"
 biomass_dat$Mix[biomass_dat$Mix == 2] <- "Grass"
 biomass_dat$Mix[biomass_dat$Mix == 3] <- "Bulrush"
 biomass_dat$Mix[biomass_dat$Mix == 4] <- "Equal"
 
-## make things factors ####
-
+#make everything a factor
 biomass_dat$Mix <- as.factor(biomass_dat$Mix)
 biomass_dat$Density <- as.factor(biomass_dat$Density)
 biomass_dat$Phrag_Presence <- as.factor(biomass_dat$Phrag_Presence)

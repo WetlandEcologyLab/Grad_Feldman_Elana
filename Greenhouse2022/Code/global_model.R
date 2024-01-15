@@ -25,7 +25,6 @@ mdf <- greenhouse %>%
          Date_Cleaned == "2022-05-16",
          Species != "JUTO" & Species != "JUGE"  & Species != "SCAM" & Species != "BOMA"& Species != "SYCI")
 
-
 mdf$Cover.Native[mdf$Cover.Native == 0] <- 0.005 #make 0s a trace amount - could be half the smallest amount
 mdf$Phrag_Presence <- as.character(mdf$Phrag_Presence)
 mdf$Phrag_Presence[mdf$Phrag_Presence == "W"] <- "Present"

@@ -22,16 +22,7 @@ biomass$Phrag_Presence <- factor(biomass$Phrag_Presence, levels = c("WO", "W"),
 #JUTO LW 2, SCAM LWO 2, SCAM LW 2, JUTO HW 2, JUGE LWO 2, JUTO HWO 3, BOMA LW 3, JUTO LW 3,
 #JUTO LWO 3, SCAM LWO 3, BOMA HW 3, BOMA LWO 3, BOMA HWO 2, JUGE LW 3
 
-#Graphs to look quickly at species####
-
-#how each species changes over time by density and presence of phrag - up close for each species
-greenhouse %>%
-  filter(!is.na(Density), Species == "SYCI") %>% #everything that is not NA for density 
-  ggplot(aes(x = Date, y = Cover.Native, col = Block, group = Block)) +
-  geom_point() + geom_line() +
-  facet_wrap(~Density + Phrag_Presence)
-#will need to do this individually for each species
-
+#Graphs to look quickly at species#### - Need to update the species name for each species of interest
 #how each species changes over time by density and presence of phrag - up close for each species
 biomass %>%
   filter(!is.na(Density), Species == "RUMA") %>% #everything that is not NA for density 
@@ -39,63 +30,6 @@ biomass %>%
   geom_point() + geom_line() +
   facet_wrap(~Density + Phrag_Presence)
 #will need to do this individually for each species
-
-#Example of how to model####
-#use glmmtmb because will eventually use beta 
-
-#this is for the type of test - needed for Type III test - also required you to use Anova () in car package
-options(contrasts = c("contr.sum", "contr.poly"))
-
-##Example
-#model for a single species - the mean of native height WO and W, and Date
-henu <- greenhouse %>%
-  filter(Species == "HENU", !is.na(Density),
-         Date == "2022-05-16" | Date == "2022-05-17")
-
-henu.m1 <- glmmTMB(log(Height.Native) ~ Phrag_Presence * Density #* for interaction
-                   + (1|Block),
-                   data = henu,
-                   family = gaussian
-)
-summary(henu.m1)
-#model specification probably okay because 12 obs and 3 blocks
-
-
-simulateResiduals(henu.m1, plot = T) #not a great fit, but only 12 obs
-plotResiduals(henu.m1, form= henu$Phrag_Presence) #unequal variances, median is below so distribution is skewed
-#some evidence that the residuals are not normal and the residuals are not even
-#we can take the log to address this - but it didn't help in this case
-
-library(car)
-Anova(henu.m1) #no evidence of significant differences
-emmip(henu.m1, Phrag_Presence~Density, CIs = T)
-#looks like there is an interaction, but not once we add confidence intervals
-
-#so appears that there is no difference on the last date between density or when there is or is not phrag
-#but there isn't much power
- 
-#Model to run for Height ####
-#Use this to go through all the species - results saved on google doc 
-
-mdf <- greenhouse %>%
-  filter(Species == "EPCI", !is.na(Density),
-         Date_Cleaned == "2022-05-16")
-
-mdf.m1 <- glmmTMB(Height.Native ~ Phrag_Presence * Density #* for interaction
-                  + (1|Block),
-                  data = mdf,
-                  family = gaussian)
-
-summary(mdf.m1)
-#model specification probably okay because 12 obs and 3 blocks
-
-
-simulateResiduals(mdf.m1, plot = T) #not a great fit, but only 12 obs
-plotResiduals(mdf.m1, form= mdf$Phrag_Presence)
-
-#library(car)
-Anova(mdf.m1) 
-emmip(mdf.m1, Phrag_Presence~Density, CIs = T)
 
 #Model to run for Cover ####
 mdf <- greenhouse %>%
@@ -121,13 +55,13 @@ mdf.m1 <- glmmTMB(Cover.Native ~ Phrag_Presence * Density #* for interaction
 #The tests and estimates themselves seem reasonable so it is okay
 
 #library(car)
-Anova(mdf.m1) 
+Anova(mdf.m1, type = 2) #switch between type 2 and type 3 depending on whether there are interactions 
 emmip(mdf.m1, Phrag_Presence~Density, CIs = T)
 emmip(mdf.m1, Density ~ Phrag_Presence, CIs = T)
 
-#Model to run for biomass ####
+#Model to run for biomass #### 
 mdf <- biomass %>%
-  filter(Species == "BICE", !is.na(Density))
+  filter(Species == "PUNU", !is.na(Density))
 
 mdf.m1 <- glmmTMB(sqrt(Native.Biomass) ~ Phrag_Presence * Density #* for interaction
                   + (1|Block),
@@ -142,8 +76,8 @@ mdf.m1 <- glmmTMB(sqrt(Native.Biomass) ~ Phrag_Presence * Density #* for interac
 #plotResiduals(mdf.m1, form= mdf$Phrag_Presence)
 
 #library(car)
-Anova(mdf.m1) 
-emmip(mdf.m1, Phrag_Presence~Density, CIs = T)
+Anova(mdf.m1, type = 3) #switch between type 2 and type 3 depending on whether there are interactions 
+#emmip(mdf.m1, Phrag_Presence~Density, CIs = T)
 
 emmeans(mdf.m1, pairwise ~ Density|Phrag_Presence)
 emmeans(mdf.m1, pairwise ~ Phrag_Presence|Density)
@@ -618,20 +552,9 @@ mdf.m1 <- glmmTMB(sqrt(Native.Biomass) ~ Phrag_Presence * Density #* for interac
                   data = mdf,
                   family = gaussian
 )
-Anova(mdf.m1)
 
 emm <- emmeans(mdf.m1, pairwise ~ Phrag_Presence * Density, adjust = "tukey", type= "response")
 data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
-data1$Density <- factor(data1$Density,
-                          levels= c("L", "H"),
-                          labels = c("Low", "High"))
-
-data1$Phrag_Presence <- factor(data1$Phrag_Presence,
-                                 levels= c("WO", "W"),
-                                 labels = c("Absent", "Present"))
-
-data1
-
 
 ((BICE_b <- ggplot(data = data1, aes(x = Phrag_Presence, y = response, color = Density)) +
   geom_point(size=2, position = position_dodge(width = 0.5)) +
@@ -659,11 +582,9 @@ mdf.m2 <- glmmTMB(sqrt(Native.Biomass) ~ Phrag_Presence * Density #* for interac
                   data = mdf,
                   family = gaussian
 )
-Anova(mdf.m2)
 
 emm <- emmeans(mdf.m2, pairwise ~ Phrag_Presence * Density, adjust = "tukey", type = "response")
 data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
-data2
 
 ((DISP_b <- ggplot(data = data2, aes(x = Phrag_Presence, y = response, color = Density)) +
     geom_point(size=2, position = position_dodge(width = 0.5)) +
@@ -691,11 +612,9 @@ mdf.m3 <- glmmTMB(sqrt(Native.Biomass) ~ Phrag_Presence * Density #* for interac
                   data = mdf,
                   family = gaussian
 )
-Anova(mdf.m3)
 
 emm <- emmeans(mdf.m3, pairwise ~ Phrag_Presence * Density, adjust = "tukey", type = "response")
 data3 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
-data3
 str_3 <- gsub(" ", "", data3$.group)
 
 ((EPCI_b <- ggplot(data = data3, aes(x = Phrag_Presence, y = response, color = Density)) +

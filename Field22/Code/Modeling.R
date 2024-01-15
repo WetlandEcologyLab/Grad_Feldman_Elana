@@ -1,6 +1,10 @@
+#Load data and packages
 load("clean_dfs.RData")
+
+#All package version saved in renv.lock 
+#renv::init, renv::restore
 library(tidyverse)
-library(glmmTMB) #allows us to use a beta distribution
+library(glmmTMB) 
 library(DHARMa)
 library(emmeans)
 library(car)
@@ -8,17 +12,21 @@ library(multcompView)
 library(gridExtra)
 library(multcomp)
 library(patchwork)
+
+#Run these options in case we decide to do a type-iii ANOVA
 options(contrasts = c("contr.sum", "contr.poly"))
 
+#make everything a factor that needs to be
+glimpse(fb)
+glimpse(ul)
 fb$Group <- as.factor(fb$Group)
 fb$Density <- as.factor(fb$Density)
 
 ul$Group <- as.factor(ul$Group)
 ul$Density <- as.factor(ul$Density)
 
-#FB ####
-# These first 2 are good examples to follow
-
+#Farmington Bay 2022 Models####
+##Models of total native and invasive cover ####
 #only need the last date
 mdf <- fb %>%
   filter(Date == "2022-09-16") %>%
@@ -28,100 +36,69 @@ useData <- filter(mdf, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-##FB Native ####
-mdf.m1 <- glmmTMB(Native.Cover ~ Group * Density #* for interaction
+###FB Native Cover ~ Functional Group x Density####
+mdf.m1 <- glmmTMB(Native.Cover ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T) #great!
-plotResiduals(mdf.m1, form= useData$Density) #must have data for every factor level
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T) 
+plotResiduals(mdf.m1, form= useData$Density)
 
-emmip(mdf.m1, Group~Density, CIs = T) #looks significant without CI but the CI shows it isn't
 car::Anova(mdf.m1) #no interaction but at least one group different from another
-#seems like 1 + 2 are same, 3+4 are the same, and they are different from each other, 5 probably in the middle 
 
-emmip(mdf.m1, Group~Density, CIs = T, type = "response") #shows on the level of the response
+emmip(mdf.m1, Group~Density, CIs = T, type = "response")
 
 emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey') #not significant when adjusted for the tukey test
-emmeans(mdf.m1, pairwise~Group, adjust = "none") #a more liberal test shows what we expected above with the groups
-#there is some suggestion that there might be some differences but the study fails to support these differences - suggestion without support
 
-##FB native trt vs ctl ####
-mdf$gd <- factor(mdf$Group:mdf$Density)
-mdf.m3 <- glmmTMB(Native.Cover ~ gd #* for interaction
+###FB Native Cover Dunnett's Test ####
+mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
+mdf.m3 <- glmmTMB(Native.Cover ~ gd 
                   + (1|Block),
                   data = mdf,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m3) #don't use this summary
-simulateResiduals(mdf.m3, plot = T)  #pretty good!
+summary(mdf.m3) 
+simulateResiduals(mdf.m3, plot = T)  
 plotResiduals(mdf.m3, form= mdf$gd)
 
 emmeans(mdf.m3, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
 #no significant differences between treatment and control 
 
-##FB Invasive trt vs ctl ####
-mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(Invasive.Cover ~ gd #* for interaction
-                  + (1|Block),
-                  data = mdf,
-                  family = beta_family, #because cover
-                  control = glmmTMBControl(optimizer = optim, 
-                                           optArgs = list(method="BFGS"))
-)
-
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #pretty good! 
-plotResiduals(mdf.m2, form= mdf$gd)
-
-#Dunnetts test - type 1 error control, comparing the control to each of 10 other means
-#We have inflated type 1 error because we use the control mean 10 times
-#We could use a tukeys but that would control for 55 tests and we only need 10 - we will lose all power
-#Allows us to just look at control against every other treatment - only the comparisons we want
-emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
-#4L is the closest to being different, but nothing else
-#4L is the largest mean and 10C is pretty small, so that's why they are different
-
-#so nothing is different from the control so doesn't necessarily seem like any differences are related to treatment
-
-##FB Invasive ####
-mdf.m4 <- glmmTMB(Invasive.Cover ~ Group * Density #* for interaction
+###FB Invasive Cover ~ Functional Group * Density ####
+mdf.m4 <- glmmTMB(Invasive.Cover ~ Group * Density
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
 summary(mdf.m4)
-simulateResiduals(mdf.m4, plot = T)  #great!
+simulateResiduals(mdf.m4, plot = T) 
 plotResiduals(mdf.m4, form= useData$Density) 
 
 
-emmip(mdf.m4, Group~Density, CIs = T) #looks significant without CI but the CI shows it isn't
 car::Anova(mdf.m4) #no interaction but densities different and at least one group different
 
 emmip(mdf.m4, Group~Density, CIs = T, type = "response") #shows on the level of the response
 
 emmeans(mdf.m4, pairwise~Group, type = "response") #only 4 and 5 different when adjusted for tukey
-emmeans(mdf.m4, pairwise~Group, adjust = "none", type = "response") #same as with the tukey
-#seems like trt 4 had higher cover overall compared to trt 5 but neither are different from the control so idk
+emmeans(mdf.m4, pairwise~Density, type = "response") #marginally significant when adjusted for with tukey
 
-emmeans(mdf.m4, pairwise~Density, type = "response") #not significant but almost significant when adjusted for with tukey
-emmeans(mdf.m4, pairwise~Density, adjust = "none") #same p-value with the more liberal test
-#also, low density seems to have higher invasive cover than high density, but again neither different from the control 
-
+####Graph of the model means####
+#Graph of the functional groups
 emm4a <- emmeans(mdf.m4, pairwise~Group, type = "response", adjust = 'tukey')
 data4a <- multcomp::cld(emm4a, alpha = 0.1, Letters = letters)
 
+#re-factor everything to help with graphing
 data4a$Group <- factor(data4a$Group,
          levels = c(5, 4, 3, 2, 1),
          labels = c("Annual Forb", "Bulrush", "Grass",
@@ -141,9 +118,11 @@ mix <- ggplot(data = data4a, aes(x = Group, y = response)) +
         plot.title = element_text(size = 9)) +
   coord_cartesian(ylim = c(0, 1))
 
+#graph of the densities
 emm4b <- emmeans(mdf.m4, pairwise~Density, type = "response", adjust = 'tukey')
 data4b <- multcomp::cld(emm4b, alpha = 0.1, Letters = letters)
 
+#re-factor everything to help with the graphing 
 data4b$Density <- factor(data4b$Density,
                          levels = c("L", "H"),
                          labels = c("Low", "High"))
@@ -163,265 +142,161 @@ density <- ggplot(data = data4b, aes(x = Density, y = response, color= Density))
         plot.title = element_text(size = 9))+
   coord_cartesian(ylim = c(0, 1))
 
-
+#make a compoint figure 
 mix + density + plot_layout(width = c(2, 1))
-ggsave("model_means_fb_invasive_mix_density.jpeg")
+#ggsave("model_means_fb_invasive_mix_density.jpeg")
 
-#UL ####
-mdf1 <- ul %>%
-  filter(Date == "2022-09-16")
-
-useData <- filter(mdf1, Density != "C") #to make the plotResiduals work
-useData$Group <- factor(useData$Group)
-useData$Density <- factor(useData$Density)
-
-##UL Invasive trt vs ctl ####
-mdf1$gd <- factor(mdf1$Group:mdf1$Density) #compares every combination of treatment and control
-mdf.m5 <- glmmTMB(Invasive.Cover ~ gd #* for interaction
+###FB Invasive Cover Dunnett's Test ####
+mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
+mdf.m2 <- glmmTMB(Invasive.Cover ~ gd 
                   + (1|Block),
-                  data = mdf1,
-                  family = beta_family, #because cover
+                  data = mdf,
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m5) #don't use this summary 
-simulateResiduals(mdf.m5, plot = T)  #pretty good!
-plotResiduals(mdf.m5, form= mdf$gd)
+summary(mdf.m2) 
+simulateResiduals(mdf.m2, plot = T) 
+plotResiduals(mdf.m2, form= mdf$gd)
 
-emmeans(mdf.m5, specs = trt.vs.ctrlk~gd,ref = 3) #reference group is the third option (10:C)
-#no significant differences, just a slight different with 4H
+emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
+#nothing significant
 
-
-##UL Invasive ####
-mdf.m6 <- glmmTMB(Invasive.Cover ~ Group * Density #* for interaction
-                  + (1|Block),
-                  data = useData,
-                  family = beta_family, #because cover
-                  control = glmmTMBControl(optimizer = optim, 
-                                           optArgs = list(method="BFGS"))
-)
-
-summary(mdf.m6)
-simulateResiduals(mdf.m6, plot = T) 
-plotResiduals(mdf.m6, form= useData$Density)
-
-emmip(mdf.m6, Group~Density, CIs = T) 
-car::Anova(mdf.m6) #nothing significant
-
-## UL Native ####
-#compare a model where you nudge the 100s down to one where you just do a log normal and see if there is a difference
-
-###Log normal ####
-#this log normal one is good enough and shows nothing significant 
-mdf.m7 <- glmmTMB(log(Native.Cover) ~ Group * Density #* for interaction
-                  + (1|Block),
-                  data = useData,
-                  family = gaussian, #because cover
-                  control = glmmTMBControl(optimizer = optim, 
-                                           optArgs = list(method="BFGS"))
-)
-
-
-summary(mdf.m7)
-simulateResiduals(mdf.m7, plot = T) #pretty good!
-plotResiduals(mdf.m7, form= useData$Density)
-car::Anova(mdf.m7) #nothing significant
-
-emmip(mdf.m7, Group~Density, CIs = T)
-
-###Beta with nudged values ####
-useData$Native.Cover[useData$Native.Cover >= 1] <- .999
-mdf.m8 <- glmmTMB(Native.Cover ~ Group * Density #* for interaction
-                  + (1|Block),
-                  data = useData,
-                  family = beta_family, #because cover
-                  control = glmmTMBControl(optimizer = optim, 
-                                           optArgs = list(method="BFGS"))
-)
-
-summary(mdf.m8)
-simulateResiduals(mdf.m8, plot = T) #residuals look a little worse so I am inclined to use the log normal
-plotResiduals(mdf.m8, form= useData$Density)
-
-emmip(mdf.m8, Group~Density, CIs = T)
-car::Anova(mdf.m8) #however, this does show a significant interaction
-
-emmip(mdf.m8, Group~Density, CIs = T, type = "response") #shows on the level of the response
-
-mdf.m8.emm <- emmeans(mdf.m8, ~Group * Density)
-pairs(mdf.m8.emm, simple = "Density") #looks like Group 3 has the interaction, higher native cover in the low density
-
-##UL Native trt vs ctl ####
-### Dunnetts gaussian ####
-mdf1$gd <- factor(mdf1$Group:mdf1$Density) #compares every combination of treatment and control
-mdf.m9 <- glmmTMB(log(Native.Cover) ~ gd #* for interaction
-                  + (1|Block),
-                  data = mdf1,
-                  family = gaussian,
-                  control = glmmTMBControl(optimizer = optim, 
-                                           optArgs = list(method="BFGS"))
-)
-
-summary(mdf.m9) #don't use this summary 
-simulateResiduals(mdf.m9, plot = T) #pretty good!
-plotResiduals(mdf.m9, form= mdf1$gd)
-
-emmeans(mdf.m9, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
-#no significant differences, 5H and 2H seem kind of different 
-
-###Dunnetts beta ####
-mdf1$gd <- factor(mdf1$Group:mdf1$Density) #compares every combination of treatment and control
-mdf1$Native.Cover[mdf1$Native.Cover >= 1] <- .999
-
-mdf.m10 <- glmmTMB(Native.Cover ~ gd #* for interaction
-                  + (1|Block),
-                  data = mdf1,
-                  family = beta_family,
-                  control = glmmTMBControl(optimizer = optim, 
-                                           optArgs = list(method="BFGS"))
-)
-
-summary(mdf.m10) #don't use this summary 
-simulateResiduals(mdf.m10, plot = T)#residuals look pretty bad, don't use
-plotResiduals(mdf.m10, form= mdf$gd)
-
-emmeans(mdf.m10, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
-#no significant differences
-
-# Modeling only seeded species ####
-
-##Fb ####
+##Models of only seeded species####
 
 ### Perennial forbs ####
+#select only the perennial forbs and only the last date
 fb_pf <- fb %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, EUOC, EUMA) %>% 
   rowwise() %>% 
   mutate(cover_pf = sum(EUOC, EUMA))
 
-#nudge 0s into a trace amount
+#nudge 0s into a trace amount so we can use the beta distribution
 fb_pf$cover_pf[fb_pf$cover_pf == 0] <- 0.0025 #one half the smallest amount recorded
 
-####trts####
+####Perennial forbs ~ Functional Group * Density####
 useData <- filter(fb_pf, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_pf ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_pf ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #terrible with both beta and log normal
-plotResiduals(mdf.m1, form= useData$Density)#not good - I think not enough data
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T) 
+plotResiduals(mdf.m1, form= useData$Density)
 
-#can't get to fit, don't use
+#Could not get to fit with either the beta or the log normal - Do not use
 
-####Dunnetts####
+####Dunnett's test####
 fb_pf$gd <- factor(fb_pf$Group:fb_pf$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_pf ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_pf ~ gd 
                   + (1|Block),
                   data = fb_pf,
-                  family = beta_family, #because cover
+                  family = beta_family,
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #not great
-plotResiduals(mdf.m2, form= fb_pf$gd) #fine
+summary(mdf.m2)
+simulateResiduals(mdf.m2, plot = T) 
+plotResiduals(mdf.m2, form= fb_pf$gd) 
 
-#can't get to fit, don't use
+#Could not get to fit - Do not use
 
 ### Annual forbs ####
+#select only the annual forbs and only the last sampling date
 fb_af <- fb %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, SYCI, BICE, RUMA, BIFR) %>% 
   rowwise() %>% 
   mutate(cover_af = sum(SYCI, BICE, RUMA, BIFR))
 
-#nudge 0s into a trace amount
+#nudge 0s into a trace amount so we can use the beta distribution
 fb_af$cover_af[fb_af$cover_af == 0] <- 0.0025 #one half the smallest amount recorded
 
-####trts####
+####Annual forbs ~ Functional Group * Density####
 useData <- filter(fb_af, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_af ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_af ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #terrible both ways
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T)  
 plotResiduals(mdf.m1, form= useData$Density) 
 
-#cant get to fit, don't use
+#Could not get to fit model - Do not use
 
-####Dunnetts####
+####Dunnett's test####
 fb_af$gd <- factor(fb_af$Group:fb_af$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_af ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_af ~ gd
                   + (1|Block),
                   data = fb_af,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #not good, better with beta
+summary(mdf.m2) 
+simulateResiduals(mdf.m2, plot = T) 
 plotResiduals(mdf.m2, form= fb_pf$gd) 
-#cant get to fit, don't use
+#Could not get to fit - Do not use
 
 ### Bulrushes ####
+#select only the bulrushes and the last sampling date
 fb_b <- fb %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, BOMA, SCAC, SCAM) %>% 
   rowwise() %>% 
   mutate(cover_b = sum(BOMA, SCAC, SCAM))
 
-#nudge 0s into a trace amount
+#nudge 0s into a trace amount so we can use the beta distribution
 fb_b$cover_b[fb_b$cover_b == 0] <- 0.0025 #one half the smallest amount recorded
 
-####trts####
+####Bulrushes ~ Functional Group * Density####
 useData <- filter(fb_b, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_b ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_b ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family,
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #great!
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T) 
 plotResiduals(mdf.m1, form= useData$Density) 
 
-emmip(mdf.m1, Group~Density, CIs = T) 
+
 car::Anova(mdf.m1) #at least one group is significantly different from another
 
-emmip(mdf.m1, Group~Density, CIs = T, type = "response") #shows on the level of the response
+emmip(mdf.m1, Group~Density, CIs = T, type = "response") 
 
 emmeans(mdf.m1, pairwise~Group, type = "response")
 #tukey test shows us a significant difference between Group1/4, Group2/4, Group3/4, and Group4/5
-#So looks like group 4 had a lot more cover than the others groups
-#This is actually really important because that was my bulrush group!!
 
+#####Graph of the model means####
 emm1a <- emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey')
 data1a <- multcomp::cld(emm1a, alpha = 0.1, Letters = letters)
 
+#re-factor everything to help with graphing
 data1a$Group <- factor(data1a$Group,
                        levels = c(5, 4, 3, 2, 1),
                        labels = c("Annual Forb", "Bulrush", "Grass",
@@ -442,38 +317,38 @@ a <- ggplot(data = data1a, aes(x = Group, y = response)) +
         plot.title = element_text(size = 9)) +
   coord_cartesian(ylim = c(0, 1))
 
-#ggsave("model_means_bulrush_fb.jpeg")
-
-####Dunnetts####
+####Dunnett's Test####
 fb_b$gd <- factor(fb_b$Group:fb_b$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_b ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_b ~ gd 
                   + (1|Block),
                   data = fb_b,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #looks fine!
+summary(mdf.m2)
+simulateResiduals(mdf.m2, plot = T) 
 plotResiduals(mdf.m2, form= fb_b$gd) 
 
 
 emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") 
-#the only one significantly higher than the control is 4H and 4L!!!
+#the only one significantly higher than the control is 4H and 4L
 
+#####Graph of the model means####
 emm2a <- emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") 
 data2a <- multcomp::cld(emm2a, alpha = 0.1, Letters = letters)
 
+#re-factor everything to help with graphing
 data2a$gd <- factor(data2a$gd,
-                       levels = c("10:C","5:H", "5:L", "4:H", "4:L", 
-                                  "3:H", "3:L", "2:H", "2:L", 
-                                  "1:H", "1:L"),
-                       labels = c("Control","Annual Forb High", "Annual Forb Low", 
-                                  "Bulrush High", "Bulrush Low",
-                                  "Grass High", "Grass Low",
-                                  "Rush High", "Rush Low", 
-                                  "Perennial Forb High", "Perennial Forb Low"))
+                    levels = c("10:C","5:H", "5:L", "4:H", "4:L", 
+                               "3:H", "3:L", "2:H", "2:L", 
+                               "1:H", "1:L"),
+                    labels = c("Control","Annual Forb High", "Annual Forb Low", 
+                               "Bulrush High", "Bulrush Low",
+                               "Grass High", "Grass Low",
+                               "Rush High", "Rush Low", 
+                               "Perennial Forb High", "Perennial Forb Low"))
 
 b <- ggplot(data = data2a, aes(x = gd, y = response)) +
   geom_point(size=2) +
@@ -490,124 +365,171 @@ b <- ggplot(data = data2a, aes(x = gd, y = response)) +
         plot.title = element_text(size = 9)) +
   coord_cartesian(ylim = c(0, 1))
 
-#ggsave("dunnetts_fb_bulrush.jpeg")
-
 a + b +plot_layout(width = c(1, 2))
-ggsave("fb_bulrush_both.jpeg")
 
 ### Grasses ####
+#select only the bulrushes and the last sampling date
 fb_g <- fb %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, MUAS, DISP) %>% 
   rowwise() %>% 
   mutate(cover_g = sum(MUAS, DISP))
 
-#nudge 0s into a trace amount
+#nudge 0s into a trace amount so we can use the beta distribution
 fb_g$cover_g[fb_g$cover_g == 0] <- 0.0025
 
-####trts####
+####Grasses ~ Functional Group * Density####
 useData <- filter(fb_g, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(log(cover_g) ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(log(cover_g) ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = gaussian, #because cover
+                  family = gaussian, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #fine - better with log normal
-plotResiduals(mdf.m1, form= useData$Density) #still not great
+summary(mdf.m1)
+simulateResiduals(mdf.m1, plot = T)  
+plotResiduals(mdf.m1, form= useData$Density) 
+#log normal distribution fit better than the beta distribution
 
-emmip(mdf.m1, Group~Density, CIs = T) 
-car::Anova(mdf.m1) #interaction between group and density!
+
+car::Anova(mdf.m1, type = 3) #interaction between group and density
 
 emmip(mdf.m1, Group~Density, CIs = T, type = "response") #shows on the level of the response
-#from this, looks like the interaction with group 3 H vs L
 
 emmeans(mdf.m1, pairwise~Group*Density, type = "response")
-#kind of weird results, only things that are marginally significant
-#2H / 3H, 3H / 4H, 3H / 5H, 3H / 5L - 3H being higher than the others
-#a lot of grass grew in 3H but not 3L, so there's an interaction
-#shows that we need high density for grasses?
+#2H / 3H, 3H / 4H, 3H / 5H, 3H / 5L - 3H being higher than the others, marginally significant
 
-emm1a <- emmeans(mdf.m1, pairwise~Group*Density, type = "response", adjust = 'tukey')
-data1a <- multcomp::cld(emm1a, alpha = 0.1, Letters = letters)
-
-data1a$Group <- factor(data1a$Group,
-                       levels = c(5, 4, 3, 2, 1),
-                       labels = c("Annual Forb", "Bulrush", "Grass",
-                                  "Rush", "Perennial Forb"))
-data1a$Density <- factor(data1a$Density,
-                         levels = c("L", "H"),
-                         labels = c("Low", "High"))
-
-ggplot(data = data1a, aes(x = Group, y = response, color = Density)) +
-  geom_point(size=2, position = position_dodge(width = .5)) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5,
-                position = position_dodge(width = .5)) +
-  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Grass Cover") +
-  geom_text(aes(label = .group,  y = response, group = Density),
-            position = position_dodge(width = .5),
-           color = "black",
-             vjust = -1) +
-  scale_color_manual(values = c("darkblue", "red3")) +
-  theme(axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
-  coord_cartesian(ylim = c(0,1))
-
-ggsave("model_means_grass_fb.jpeg")
-
-####Dunnetts####
+####Dunnett's Test####
 fb_g$gd <- factor(fb_g$Group:fb_g$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(log(cover_g) ~ gd #* for interaction
+mdf.m2 <- glmmTMB(log(cover_g) ~ gd 
                   + (1|Block),
                   data = fb_g,
-                  family = gaussian, #because cover
+                  family = gaussian, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #fine - better with log normal
-plotResiduals(mdf.m2, form= fb_g$gd) #looks fine!
-
+summary(mdf.m2) 
+simulateResiduals(mdf.m2, plot = T)
+plotResiduals(mdf.m2, form= fb_g$gd)
+#log normal fits better than the beta
 
 emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") 
-#none of them significantly different from control, sad
-#but 3H definitely the closest
+#none of them significantly different from control
 
-##Ul ####
+#Utah Lake 2022 Models####
+##Models of total native and invasive cover ####
+#only need data from the final date of sampling
+mdf1 <- ul %>%
+  filter(Date == "2022-09-16")
 
+useData <- filter(mdf1, Density != "C") #to make the plotResiduals work
+useData$Group <- factor(useData$Group)
+useData$Density <- factor(useData$Density)
+
+
+
+###UL Native Cover ~ Functional Group * Density####
+#I tested both the log normal and the beta, and log normal fit better
+mdf.m7 <- glmmTMB(log(Native.Cover) ~ Group * Density 
+                  + (1|Block),
+                  data = useData,
+                  family = gaussian, 
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+
+summary(mdf.m7)
+simulateResiduals(mdf.m7, plot = T)
+plotResiduals(mdf.m7, form= useData$Density)
+car::Anova(mdf.m7) #nothing significant
+
+emmip(mdf.m7, Group~Density, CIs = T)
+
+###UL Native Cover Dunnett's Test ####
+####Dunnetts gaussian ####
+#I tried the log normal and the beta but the log normal fit better
+mdf1$gd <- factor(mdf1$Group:mdf1$Density) #compares every combination of treatment and control
+mdf.m9 <- glmmTMB(log(Native.Cover) ~ gd #* for interaction
+                  + (1|Block),
+                  data = mdf1,
+                  family = gaussian,
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m9) 
+simulateResiduals(mdf.m9, plot = T) 
+plotResiduals(mdf.m9, form= mdf1$gd)
+
+emmeans(mdf.m9, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
+#no significant differences
+
+###UL Invasive Cover ~ Functional Group * Density ####
+mdf.m6 <- glmmTMB(Invasive.Cover ~ Group * Density 
+                  + (1|Block),
+                  data = useData,
+                  family = beta_family, 
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m6)
+simulateResiduals(mdf.m6, plot = T) 
+plotResiduals(mdf.m6, form= useData$Density)
+
+emmip(mdf.m6, Group~Density, CIs = T) 
+car::Anova(mdf.m6) #nothing significant
+
+###UL Invasive Dunnett's Test ####
+mdf1$gd <- factor(mdf1$Group:mdf1$Density) #compares every combination of treatment and control
+mdf.m5 <- glmmTMB(Invasive.Cover ~ gd 
+                  + (1|Block),
+                  data = mdf1,
+                  family = beta_family, 
+                  control = glmmTMBControl(optimizer = optim, 
+                                           optArgs = list(method="BFGS"))
+)
+
+summary(mdf.m5) 
+simulateResiduals(mdf.m5, plot = T)  
+plotResiduals(mdf.m5, form= mdf$gd)
+
+emmeans(mdf.m5, specs = trt.vs.ctrlk~gd,ref = 3) #reference group is the third option (10:C)
+#no significant differences
+
+##Models of only seeded species####
 ### Annual forbs ####
+#only select annual forbs and the last date of sampling
 ul_af <- ul %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, EUOC) %>% 
   mutate(cover_af = EUOC)
 
-#nudge 0s into a trace amount
+#nudge 0s into a trace amount so we can use the beta
 ul_af$cover_af[ul_af$cover_af == 0] <- 0.0025 #one half the smallest amount recorded
 
-####trts####
+####Annual forbs ~ Functional Group * Density####
 useData <- filter(ul_af, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_af ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_af ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #fine
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T)
 plotResiduals(mdf.m1, form= useData$Density)#fine
 
 emmip(mdf.m1, Group~Density, CIs = T) 
@@ -615,198 +537,129 @@ car::Anova(mdf.m1) #at least one group significantly different
 
 emmeans(mdf.m1, pairwise~Group, type = "response")
 #Group1/3, Group3/4, Group3/5 - with three much higher than the others
-#doesn't make sense because isn't my forb group
-#maybe the grass helped the forbs grow somehow?
+#These results do not make sense with the treatments. Acknowledge in results
 
-emm1a <- emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey')
-data1a <- multcomp::cld(emm1a, alpha = 0.1, Letters = letters)
-
-data1a$Group <- factor(data1a$Group,
-                       levels = c(5, 4, 3, 2, 1),
-                       labels = c("Annual Forb", "Bulrush", "Grass",
-                                  "Rush", "Perennial Forb"))
-
-ggplot(data = data1a, aes(x = Group, y = response)) +
-  geom_point(size=2) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5) +
-  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Annual Forb Cover") +
-  geom_text(aes(label = .group,  y = response),
-            color = "black",
-            hjust = 0.05) +
-  theme(axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 45, hjust = 0.9))
-
-ggsave("model_means_annual_ul.jpeg")
-
-####Dunnetts####
+####Dunnett's Test####
 ul_af$gd <- factor(ul_af$Group:ul_af$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(log(cover_af) ~ gd #* for interaction
+mdf.m2 <- glmmTMB(log(cover_af) ~ gd 
                   + (1|Block),
                   data = ul_af,
-                  family = gaussian, #because cover
+                  family = gaussian, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #much better log normal
+summary(mdf.m2) 
+simulateResiduals(mdf.m2, plot = T)
 plotResiduals(mdf.m2, form= ul_af$gd)
-
+#log normal fits better than the beta
 
 emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") 
 #differences between 2L, 3H, 3L, 4L
-#this doesn't make any sense because those aren't my forbs, so must just be random in the field
-#with C much lower
+#This does not make sense with the treatments. Acknowledge in the results
 
 ### Perennial forbs ####
+#only select perennial forbs and last date of sampling
 ul_pf <- ul %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, SYCI, BICE, RUMA) %>% 
   rowwise() %>% 
   mutate(cover_pf = sum(SYCI, BICE, RUMA))
 
-#nudge 0s into a trace amount
+#nudge 0s into a trace amount so we can use the beta
 ul_pf$cover_pf[ul_pf$cover_pf == 0] <- 0.0025 #one half the smallest amount recorded
 
-####trts####
+####Perennial forbs ~ Functional Group * Density####
 useData <- filter(ul_pf, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_pf ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_pf ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #fine
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T) 
 plotResiduals(mdf.m1, form= useData$Density) 
 
-emmip(mdf.m1, Group~Density, CIs = T) 
-car::Anova(mdf.m1) #at least one group significant
+
+car::Anova(mdf.m1) #at least one group different
 
 emmip(mdf.m1, Group~Density, CIs = T, type = "response")
-#kind of just looks like everything was 0 except 5H was higher 
 
 emmeans(mdf.m1, pairwise~Group, type = "response")
-#only between 3/5 - which doesn't make any sense - with 5 higher 
+#only between 3/5
+#Results do not make sense with the treatments. Acknowledge in results
 
-emm1a <- emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey')
-data1a <- multcomp::cld(emm1a, alpha = 0.1, Letters = letters)
-
-data1a$Group <- factor(data1a$Group,
-                       levels = c(5, 4, 3, 2, 1),
-                       labels = c("Annual Forb", "Bulrush", "Grass",
-                                  "Rush", "Perennial Forb"))
-
-ggplot(data = data1a, aes(x = Group, y = response)) +
-  geom_point(size=2) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5) +
-  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Perennial Forb Cover") +
-  geom_text(aes(label = .group,  y = response),
-            color = "black",
-            hjust = 0.05) +
-  theme(axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
-  coord_cartesian(ylim = c(0, 1))
-
-ggsave("model_means_perennial_ul.jpeg")
-
-####Dunnetts####
+####Dunnett's test####
 ul_pf$gd <- factor(ul_pf$Group:ul_pf$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_pf ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_pf ~ gd 
                   + (1|Block),
                   data = ul_pf,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #fine
+summary(mdf.m2)
+simulateResiduals(mdf.m2, plot = T) 
 plotResiduals(mdf.m2, form= ul_pf$gd) 
-
 
 emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") 
 #no significant differences
 
 ### Bulrushes ####
+#only select bulrushes and the last date of sampling
 ul_b <- ul %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, BOMA, SCAC, SCAM) %>% 
   rowwise() %>% 
   mutate(cover_b = sum(BOMA, SCAC, SCAM))
 
-#nudge 0s into a trace amount
+#nudge 0s into a trace amount so we can use the beta
 ul_b$cover_b[ul_b$cover_b == 0] <- 0.0025 #one half the smallest amount recorded
 
-####trts####
+####Bulrushes ~ Functional Group * Density####
 useData <- filter(ul_b, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_b ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_b ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #fine
+summary(mdf.m1)
+simulateResiduals(mdf.m1, plot = T)  
 plotResiduals(mdf.m1, form= useData$Density) 
 
-emmip(mdf.m1, Group~Density, CIs = T) 
+
 car::Anova(mdf.m1) #at least one group is significantly different from another
 
-emmip(mdf.m1, Group~Density, CIs = T, type = "response") #shows on the level of the response
+emmip(mdf.m1, Group~Density, CIs = T, type = "response")
 
 emmeans(mdf.m1, pairwise~Group, type = "response")
-#only between 3/4 - with 3 much lower, don't know what that means
+#only between 3/4 - with 3 much lower
 
-emm1a <- emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey')
-data1a <- multcomp::cld(emm1a, alpha = 0.1, Letters = letters)
-
-data1a$Group <- factor(data1a$Group,
-                       levels = c(5, 4, 3, 2, 1),
-                       labels = c("Annual Forb", "Bulrush", "Grass",
-                                  "Rush", "Perennial Forb"))
-
-ggplot(data = data1a, aes(x = Group, y = response)) +
-  geom_point(size=2) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5) +
-  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Bulrush Cover") +
-  geom_text(aes(label = .group,  y = response),
-            color = "black",
-            hjust = 0.05) +
-  theme(axis.title.y = ggtext::element_markdown(),
-        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
-  coord_cartesian(ylim = c(0, 1))
-
-ggsave("model_means_bulrush_ul.jpeg", width = 3, height = 4, units = "in")
-
-####Dunnetts####
+####Dunnett's test####
 ul_b$gd <- factor(ul_b$Group:ul_b$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_b ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_b ~ gd 
                   + (1|Block),
                   data = ul_b,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #looks fine!
+summary(mdf.m2) 
+simulateResiduals(mdf.m2, plot = T)
 plotResiduals(mdf.m2, form= ul_b$gd) 
 
 
@@ -814,60 +667,53 @@ emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response")
 #no significant differences
 
 ### Grasses ####
+#only select grasses and the last sampling date
 ul_g <- ul %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block:Density, DISP) %>% 
   rowwise() %>% 
   mutate(cover_g = DISP)
 
-#nudge 0s into a trace amount
+#nudge 0s into a trace amount so we can use the beta
 ul_g$cover_g[ul_g$cover_g == 0] <- 0.0025
 
-####trts####
+####Grasses ~ Functional Group * Density####
 useData <- filter(ul_g, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_g ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_g ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #terrible with both 
+summary(mdf.m1)
+simulateResiduals(mdf.m1, plot = T) 
 plotResiduals(mdf.m1, form= useData$Density)
 
-#can't get to fit, don't use
+#Cannot get model to fit - Do not use
 
-####Dunnetts####
+####Dunnett's test####
 ul_g$gd <- factor(ul_g$Group:ul_g$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_g ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_g ~ gd
                   + (1|Block),
                   data = ul_g,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #terrible with both
+summary(mdf.m2) 
+simulateResiduals(mdf.m2, plot = T) 
 plotResiduals(mdf.m2, form= ul_g$gd) 
 
-#can't get to fit, don't use
+#Cannot get model to fit - Do not use
 
-mdf2 <- dplyr::select(mdf1, c(Plot, EUOC))
-
-mdf2 %>% 
-  ggplot(aes(x = Plot, y = EUOC)) + #x is plot, y is cover
-  stat_summary(aes(group = Plot), #calculate means of the total cover
-               fun = mean, geom = "bar", size = 1) +
-  stat_summary(aes(group = Plot, width = 0), #calculate error bars
-               fun.data = mean_se, geom = "errorbar", size = .5) 
-
-# 2023 ####
+# Farmington Bay 2023 Models ####
+##Models of total native and invasive cover ####
 fb23$Group <- as.factor(fb23$Group)
 fb23$Density <- as.factor(fb23$Density)
 
@@ -880,198 +726,200 @@ useData <- filter(mdf, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-##FB Native ####
-mdf.m1 <- glmmTMB(Native.Cover ~ Group * Density #* for interaction
+###FB Native Cover ~ Functional Group * Density ####
+mdf.m1 <- glmmTMB(Native.Cover ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T) #not good but better than log normal
-plotResiduals(mdf.m1, form= useData$Density) #fine
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T)
+plotResiduals(mdf.m1, form= useData$Density) 
+#beta distribution fit better than the log normal
 
-emmip(mdf.m1, Group~Density, CIs = T) #nothing looks significant
+emmip(mdf.m1, Group~Density, CIs = T)
 car::Anova(mdf.m1) #nothing significant
-#no effect of the presence of natives
 
-##FB native trt vs ctl ####
-mdf$gd <- factor(mdf$Group:mdf$Density)
-mdf.m3 <- glmmTMB(log(Native.Cover) ~ gd #* for interaction
+###FB Native Cover Dunnett's Test ####
+mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
+mdf.m3 <- glmmTMB(log(Native.Cover) ~ gd 
                   + (1|Block),
                   data = mdf,
-                  family = gaussian, #because cover
+                  family = gaussian, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m3) #don't use this summary
-simulateResiduals(mdf.m3, plot = T)  #log normal much better
+summary(mdf.m3)
+simulateResiduals(mdf.m3, plot = T)
 plotResiduals(mdf.m3, form= mdf$gd)
+#log normal fits better than the beta
 
 emmeans(mdf.m3, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #reference group is the third option (10:C)
 #no significant differences between treatment and control 
 
-##FB Invasive ####
-mdf.m4 <- glmmTMB(Invasive.Cover ~ Group * Density #* for interaction
+###FB Invasive Cover ~ Functional Group * Density ####
+mdf.m4 <- glmmTMB(Invasive.Cover ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family,
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
 summary(mdf.m4)
-simulateResiduals(mdf.m4, plot = T)  #great!
+simulateResiduals(mdf.m4, plot = T) 
 plotResiduals(mdf.m4, form= useData$Density) 
-
 
 emmip(mdf.m4, Group~Density, CIs = T)
 car::Anova(mdf.m4) #nothing significant
 
 
-##FB Invasive trt vs ctl ####
+###FB Invasive Cover Dunnett's Test####
 mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(Invasive.Cover ~ gd #* for interaction
+mdf.m2 <- glmmTMB(Invasive.Cover ~ gd
                   + (1|Block),
                   data = mdf,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #pretty good! 
+summary(mdf.m2)
+simulateResiduals(mdf.m2, plot = T)
 plotResiduals(mdf.m2, form= mdf$gd)
 
 emmeans(mdf.m2, specs = trt.vs.ctrlk~gd,ref = 3, type = "response") #nothing significant
-#nothing different from the control
 
-##2023 seeded ####
+##Models of only seeded species####
 
 ### Annual forbs ####
+#select only annual forbs and the last date of sampling
 fb23_af <- fb23 %>% 
   filter(Date == "2023-09-11") %>% 
   dplyr::select(Block:Density, RUMA) %>% 
   rowwise() %>% 
   mutate(cover_af = sum(RUMA))
 
-####trts####
+####Annual forbs ~ Functional Group * Density####
 useData <- filter(fb23_af, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_af ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_af ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #terrible both ways
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T) 
 plotResiduals(mdf.m1, form= useData$Density) 
 
-#cant get to fit, don't use
+#Cannot get to fit - Do not use
 
-####Dunnetts####
+####Dunnett's test####
 fb23_af$gd <- factor(fb23_af$Group:fb23_af$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_af ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_af ~ gd 
                   + (1|Block),
                   data = fb23_af,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #terrible both ways
+summary(mdf.m2) 
+simulateResiduals(mdf.m2, plot = T) 
 plotResiduals(mdf.m2, form= fb23_af$gd) 
-#cant get to fit, don't use
+#Cannot get to fit - Do not use
 
 ### Bulrushes ####
+#select only bulrushes and the last date of sampling
 fb23_b <- fb23 %>% 
   filter(Date == "2023-09-11") %>% 
   dplyr::select(Block:Density, BOMA, SCAC, SCAM) %>% 
   rowwise() %>% 
   mutate(cover_b = sum(BOMA, SCAC, SCAM))
 
-####trts####
+####Bulrushes ~ Functional Group * Density####
 useData <- filter(fb23_b, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_b ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_b ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  #bad both ways
+summary(mdf.m1)
+simulateResiduals(mdf.m1, plot = T)  
 plotResiduals(mdf.m1, form= useData$Density) 
 
-#cannot get to fit, don't use
+#Cannot get to fit - Do not use
 
-####Dunnetts####
+####Dunnett's Test####
 fb23_b$gd <- factor(fb23_b$Group:fb23_b$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_b ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_b ~ gd 
                   + (1|Block),
                   data = fb23_b,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #terrible both ways
+summary(mdf.m2)
+simulateResiduals(mdf.m2, plot = T)
 plotResiduals(mdf.m2, form= fb_b$gd) 
 
-#cant get to fit, don't use
+#Cannot get to fit - Do not use
 
 ## Grasses ####
+#only select grasses and last date of sampling
 fb23_g <- fb23 %>% 
   filter(Date == "2023-09-11") %>% 
   dplyr::select(Block:Density, DISP) %>% 
   rowwise() %>% 
   mutate(cover_g = sum(DISP))
 
-####trts####
+####Grasses ~ Functional Group * Density####
 useData <- filter(fb23_g, Density != "C") #to make the plotResiduals work
 useData$Group <- factor(useData$Group)
 useData$Density <- factor(useData$Density)
 
-mdf.m1 <- glmmTMB(cover_g ~ Group * Density #* for interaction
+mdf.m1 <- glmmTMB(cover_g ~ Group * Density 
                   + (1|Block),
                   data = useData,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m1) #don't use this summary
-simulateResiduals(mdf.m1, plot = T)  ##bad both ways
-plotResiduals(mdf.m1, form= useData$Density) #still not great
+summary(mdf.m1) 
+simulateResiduals(mdf.m1, plot = T) 
+plotResiduals(mdf.m1, form= useData$Density) 
 
-#cannot fit, do not use
+#Cannot get to fit - Do not use
 
-####Dunnetts####
+####Dunnett's test####
 fb23_g$gd <- factor(fb23_g$Group:fb23_g$Density) #compares every combination of treatment and control
-mdf.m2 <- glmmTMB(cover_g ~ gd #* for interaction
+mdf.m2 <- glmmTMB(cover_g ~ gd 
                   + (1|Block),
                   data = fb23_g,
-                  family = beta_family, #because cover
+                  family = beta_family, 
                   control = glmmTMBControl(optimizer = optim, 
                                            optArgs = list(method="BFGS"))
 )
 
-summary(mdf.m2) #don't use this summary 
-simulateResiduals(mdf.m2, plot = T) #terrible both ways 
+summary(mdf.m2)
+simulateResiduals(mdf.m2, plot = T) 
 plotResiduals(mdf.m2, form= fb23_g$gd) 
 
-#does not fit, do not use
+#Cannot get to fit - Do not use
