@@ -1,42 +1,25 @@
-#set working directory
+#Import everything ####
+greenhouse <- read.csv("Cleaned_Data/Greenhouse2022_clean.csv")
+biomass <- read.csv("Cleaned_Data/Biomass_Cleaned.csv")
 
-path.wd <- "/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Greenhouse2022/Cleaned_Data/"
-setwd(path.wd)
-
-greenhouse <- read.csv("Greenhouse2022_clean.csv")
-
+#All package version saved in renv.lock 
+#renv::init, renv::restore
 library(dplyr)
 library(magrittr)
+library(lubridate)
 
-#dplyr::glimpse(greenhouse)
+#Clean cover data ####
+glimpse(greenhouse)
 
-#clean data to look at it
 greenhouse[greenhouse==""] <-NA #make the blanks in the cover columns NA
 
-#make sure categories came out right for tubs
-#unique(greenhouse$Species)
-#unique(greenhouse$Density)
-#unique(greenhouse$Phrag_Presence)
+#make sure categories look about right
+unique(greenhouse$Species)
+unique(greenhouse$Density)
+unique(greenhouse$Phrag_Presence)
 
-#check that everything makes sense
-#max(greenhouse$Height.Native.1, na.rm = TRUE)
-#min(greenhouse$Height.Native.1, na.rm = TRUE)
-
-#max(greenhouse$Height.Native.2, na.rm = TRUE)
-#min(greenhouse$Height.Native.2, na.rm = TRUE)
-
-#max(greenhouse$Height.Native.3, na.rm = TRUE)
-#min(greenhouse$Height.Native.3, na.rm = TRUE)
-
-#max(greenhouse$Height.Phrag.1, na.rm = TRUE)
-#min(greenhouse$Height.Phrag.1, na.rm = TRUE)
-
-#max(greenhouse$Height.Phrag.2, na.rm = TRUE)
-#min(greenhouse$Height.Phrag.2, na.rm = TRUE)
-
-#max(greenhouse$Height.Phrag.3, na.rm = TRUE)
-#min(greenhouse$Height.Phrag.3, na.rm = TRUE)
-
+#change all cover values to midpoint, make double, make a decimal
+#unique(greenhouse$Cover.Native)
 greenhouse$Cover.Native[greenhouse$Cover.Native == "<1"] <- "0.5"
 greenhouse$Cover.Native[greenhouse$Cover.Native == ">99"] <- "99.5"
 greenhouse$Cover.Native[greenhouse$Cover.Native == 1.00] <- 5.00
@@ -51,8 +34,8 @@ greenhouse$Cover.Native[greenhouse$Cover.Native == 80.00] <- 85.00
 greenhouse$Cover.Native[greenhouse$Cover.Native == 90.00] <- 95.00
 greenhouse$Cover.Native <- as.double(greenhouse$Cover.Native)
 greenhouse$Cover.Native <- greenhouse$Cover.Native/100
-#unique(greenhouse$Cover.Native)
 
+#unique(greenhouse$Cover.Phrag)
 greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 1.00] <- 5.00
 greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 10.00] <- 15.00
 greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 20.00] <- 25.00
@@ -60,46 +43,41 @@ greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 30.00] <- 35.00
 greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 40.00] <- 45.00
 greenhouse$Cover.Phrag <- as.double(greenhouse$Cover.Phrag)
 greenhouse$Cover.Phrag <- greenhouse$Cover.Phrag/100
-#unique(greenhouse$Cover.Phrag)
+
+#make all 0s a trace amount so we can use the beta
+greenhouse$Cover.Native[greenhouse$Cover.Native == 0] <- 0.005 
 
 #convert the dates
-library(lubridate)
 greenhouse$Date <- lubridate::mdy(greenhouse$Date)
 greenhouse$Date_Cleaned <- lubridate::mdy(greenhouse$Date_Cleaned)
 
-#make the Block into a factor
+#make the everything a factor and relabel
+glimpse(greenhouse)
 greenhouse$Block <- as.factor(greenhouse$Block)
-#glimpse(greenhouse)
+greenhouse$Species <- as.factor(greenhouse$Species)
+greenhouse$Density <- factor(greenhouse$Density, levels = c("L", "H"),
+                             labels = c("Low", "High"))
+greenhouse$Phrag_Presence <- factor(greenhouse$Phrag_Presence, levels = c("WO", "W"),
+                                    labels = c("Absent", "Present"))
 
-#average all the heights together
-library(tidyverse)
-df <- greenhouse %>% 
-  select(Height.Native.1, Height.Native.2, Height.Native.3)  %>%              
-  mutate(Height.Native = rowMeans(.,na.rm = T))
+#Clean the biomass data ####
 
-greenhouse$Height.Native <- df$Height.Native 
+glimpse(biomass)
 
-df1 <- greenhouse %>% 
-  select(Height.Phrag.1, Height.Phrag.2, Height.Phrag.3)  %>%              
-  mutate(Height.Phrag = rowMeans(.,na.rm = T))
-
-greenhouse$Height.Phrag <- df1$Height.Phrag
-
-#now the biomass data sheet
-biomass <- read.csv("Biomass_Cleaned.csv")
-#glimpse(biomass)
-
+#make block a factor
 biomass$Block <- as.factor(biomass$Block)
+biomass$Species <- as.factor(biomass$Species)
+biomass$Phrag_Presence <- factor(biomass$Phrag_Presence, levels = c("WO", "W"),
+                                 labels = c("Absent", "Present"))
+biomass$Density <- factor(biomass$Density, levels = c("L", "H"),
+                          labels = c("Low", "High"))
 
-#max(biomass$Native.Biomass, na.rm = TRUE)
-#min(biomass$Native.Biomass, na.rm = TRUE)
+#double check that the numbers make sense
+max(biomass$Native.Biomass, na.rm = TRUE)
+min(biomass$Native.Biomass, na.rm = TRUE)
 
-#max(biomass$Phrag.Biomass, na.rm = TRUE)
-#min(biomass$Phrag.Biomass, na.rm = TRUE)
+max(biomass$Phrag.Biomass, na.rm = TRUE)
+min(biomass$Phrag.Biomass, na.rm = TRUE)
 
-#now the grouping sheet
-func_grp <- read.csv("Groups_Final.csv")
-
-#Save the objects
-
-save(biomass, greenhouse, func_grp, file = "main_dfs.RData")
+#Save the objects ####
+save(biomass, greenhouse, file = "main_dfs.RData")

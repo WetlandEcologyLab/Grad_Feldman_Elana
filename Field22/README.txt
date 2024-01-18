@@ -12,3 +12,38 @@ Overview of data cleaning process:
 -Plot values were separated into Group and Density columns
 -More forms of cleaning were completed in the DataCleaning.R file: values were changed to mid-points, 0s for cover estimates were nudged to a trace value, column names were fixed 
 
+Species codes used in scripts:
+ALPR = Alopecurus pratensis 
+ASIN = Asclepias incarnata 
+BASC = Bassia scoparia 
+BICE = Bidens cernua 
+BOMA = Bolboschoenus maritimus 
+BY = Echinochloa crus-galli 
+Cheno = Chenopodium sp. 
+CYDA = Cynodon dactylon 
+CYER = Cyperus erythrorhizos 
+DISP = Distichlis spicata 
+EUMA = Eutrochium maculatum 
+EUOC = Euthamia occidentalis 
+JUAR = Juncus arcticus 
+JUGE = Juncus gerardii 
+JUTO = Juncus torreyi 
+LASE = Lactuca serriola 
+LEFY = Leptochloa fusca 
+MUAS = Muhlenbergia asperifolia 
+PHAU = Phragmites australis 
+POFR = Populus fremontii 
+POPE = Polygonum persicaria 
+PUNU = Puccinellia nuttalliana 
+RACY = Ranunculus cymbalaria 
+RUST = Rumex stenophyllus 
+RUMA = Rumex maritimus 
+SAAM = Salix amygdaloides 
+SARU = Salicornia rubra 
+SCAC = Schoenoplectus acutus 
+SCAM = Schoenoplectus americanus 
+SCPU = Schoenoplectus pungens 
+SOCA = Solidago canadensis 
+SYCI = Symphyotrichum ciliatum 
+Tamarisk = Tamarix chinensis 
+TYPHA = Typha sp. 

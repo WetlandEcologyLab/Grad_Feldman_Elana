@@ -1,37 +1,248 @@
 #Load objects
 load("main_dfs.RData")
+
+#Load packages
+#All package version saved in renv.lock 
+#renv::init, renv::restore
 library(tidyverse)
-library(glmmTMB) #allows us to use a beta distribution
+library(glmmTMB) 
 library(DHARMa)
 library(emmeans)
 library(car)
 library(patchwork)
+library(multcompView)
+library(gridExtra)
 
-greenhouse$Density <- as.factor(greenhouse$Density)
-greenhouse$Phrag_Presence <- factor(greenhouse$Phrag_Presence, levels = c("WO", "W"),
-                                    labels = c("Absent", "Present"))
-greenhouse$Species <- as.factor(greenhouse$Species)
+options(contrasts = c("contr.sum", "contr.poly")) #in case we want to run a Type III Anova
 
-biomass$Phrag_Presence <- factor(biomass$Phrag_Presence, levels = c("WO", "W"),
-                                    labels = c("Absent", "Present"))
+# Global model that includes all species ####
+# colors to use for graphing
+color1 <- c("orange", "purple4")
+color2 <- c("darkblue", "red3")
 
-#check <- greenhouse %>%
-#filter(Date_Cleaned == "2022-05-16",
-#       Cover.Native < 5.0)
-#Species that did not really grow: JUTO LWO 1, JUGE LW 1, SYCI HW 1, SCAM LWO 1, 
-#JUTO LW 2, SCAM LWO 2, SCAM LW 2, JUTO HW 2, JUGE LWO 2, JUTO HWO 3, BOMA LW 3, JUTO LW 3,
-#JUTO LWO 3, SCAM LWO 3, BOMA HW 3, BOMA LWO 3, BOMA HWO 2, JUGE LW 3
+##Native cover~Phrag Presence * Density * Species####
+mdf <- greenhouse %>%
+  dplyr::filter(!is.na(Density), #removes all the PHAU controls
+                Date_Cleaned == "2022-05-16", #only need the last date of sampling
+                Species != "JUTO" & Species != "JUGE"  & Species != "SCAM" & Species != "BOMA"& Species != "SYCI")
+                #removed these 5 species from analyses because not enough replicates
 
-#Graphs to look quickly at species#### - Need to update the species name for each species of interest
-#how each species changes over time by density and presence of phrag - up close for each species
-biomass %>%
-  filter(!is.na(Density), Species == "RUMA") %>% #everything that is not NA for density 
-  ggplot(aes(x = Density, y = Native.Biomass, col = Block, group = Block)) +
-  geom_point() + geom_line() +
-  facet_wrap(~Density + Phrag_Presence)
-#will need to do this individually for each species
 
-#Model to run for Cover ####
+#Run the model 
+mdf.m1<- glmmTMB(Cover.Native ~ Phrag_Presence * Density * Species
+                 + (1|Block),
+                 data = mdf,
+                 family = beta_family)
+
+summary(mdf.m1)
+mdf.m1_res <- simulateResiduals(mdf.m1, plot = T)
+
+Anova(mdf.m1, type = 3) 
+emmip(mdf.m1, Species~Density|Phrag_Presence, CIs = T)
+emmip(mdf.m1, Phrag_Presence~Density|Species, CIs = T)
+
+###Graph of models means for phrag presence####
+emm <- emmeans(mdf.m1, pairwise ~ Phrag_Presence, adjust = "tukey", type = "response")
+data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
+
+#remove the spaces in the group label so easier to graph
+str_1 <- data1$.group
+str_2 <- gsub(" ", "", str_1)
+
+ggplot(data = data1, aes(x = Phrag_Presence, y = response * 100,
+                         color = Phrag_Presence)) +
+  geom_point(size=2) +
+  geom_errorbar(aes(ymin = 100*(response - SE),
+                    ymax = 100*(response+SE)),
+                width=0, size=0.5) +
+  labs(x="Presence of *Phragmites*", y = "Model Predicted Native Cover (%)",
+       title = "(a)") +
+  geom_text(aes(label = str_2,  y = response * 100),
+            nudge_x = 0.1, color = "black") +
+  theme(axis.title.x = ggtext::element_markdown(),
+        plot.title = element_text(size = 9),
+        legend.position = "none") +
+  scale_color_manual(values = color1)
+
+###Graph of model means for Density * Species####
+emm <- emmeans(mdf.m1, pairwise ~ Species * Density, adjust = "tukey", type = "response")
+data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
+
+#remove the spaces in the group label so easier to graph
+str_3 <- data2$.group
+str_4 <- gsub(" ", "", str_3)
+
+ggplot(data = data2, aes(x = reorder(Species,response), y = response * 100, color = Density)) +
+  geom_point(size=2) +
+  geom_errorbar(aes(ymin = 100*(response - SE),
+                    ymax = 100*(response+SE)),
+                width=0, size=0.5) +
+  labs(x="Species", y = "Model Predicted Native Cover (%)",
+       title = '(b)') +
+  geom_text(aes(label = str_4,
+                vjust = .9, hjust = "left"),
+            nudge_x = .15,
+            check_overlap = TRUE,
+            color = "black") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        axis.title.y = ggtext::element_markdown(),
+        plot.title = element_text(size = 9)) +
+  scale_color_manual(values = color2)
+
+##Native biomass~Phrag Presence * Density * Species####
+mdf <- biomass %>%
+  dplyr::filter(!is.na(Density), #remove the phau controls
+                Species != "JUTO" & Species != "JUGE"  & Species != "SCAM" & Species != "BOMA" & Species != "SYCI") %>%
+                #remove these 5 species from analyses because not enough replicates
+  dplyr::mutate(Species = factor(Species)) #need to remove the factor levels (species) that were removed
+
+#use this to fix the modeling problems due to an extra replicate in BICE
+table(mdf$Species)
+with(mdf, table(Species, Density, Phrag_Presence, useNA = "ifany"))
+mdf_avg <- mdf %>% 
+  dplyr::group_by(Block, Phrag_Presence, Density, Species) %>%
+  dplyr::summarize(Native.Biomass = mean(Native.Biomass), 
+                   nobs = dplyr::n()) %>%#to average the BICE where there is an extra observation
+  dplyr::ungroup() 
+table(mdf_avg$nobs) #double check to make sure BICE is the only one with 2 observations
+summary(mdf_avg$Native.Biomass) 
+
+#Now run the model
+mdf.m1 <- glmmTMB(sqrt(Native.Biomass) ~ Phrag_Presence * Density * Species 
+                  + (1|Block),
+                  data = mdf_avg
+)
+
+summary(mdf.m1)
+mdf.m1_res <- simulateResiduals(mdf.m1, plot = T)
+#sqrt fit better than log or nothing
+
+useData <- drop_na(mdf_avg) #need to get rid of NAs to use plotResiduals function
+plotResiduals(mdf.m1_res, form= useData$Phrag_Presence)
+plotResiduals(mdf.m1_res, form= useData$Density)
+plotResiduals(mdf.m1_res, form= useData$Species)
+
+Anova(mdf.m1, type = 3) 
+#there is evidence of a significant 3-way interaction - other interactions not interpretable because of 3 way
+emmip(mdf.m1, Species~Density|Phrag_Presence, CIs = T)
+emmip(mdf.m1, Phrag_Presence~Density|Species, CIs = T)
+
+## Phrag cover~Species * Density####
+mdf <- greenhouse %>%
+  filter(Species != "PHAU" , #remove PHAU control
+         Phrag_Presence == "Present",  #only look at tubs with PHAU included
+         Date_Cleaned == "2022-05-16") #only need the last date of sampling 
+
+#Use this to remove all NAs so plotResiduals function works 
+mdf %>% 
+  select(Cover.Phrag, Species, Density, Block) %>%
+  summarise_all(list(~sum(is.na(.))))
+#drop observations with NA Cover.Phrag and refactor so that level is dropped
+with(mdf, table(Species, useNA = "ifany")) #no observations for PHAU
+mdf <- mdf %>%
+  drop_na(Cover.Phrag) %>%
+  mutate(Species = factor(Species)) #so it also drops those factor levels
+with(mdf, table(Species, useNA = "ifany")) #note absence of Phrag level
+
+#Run the model
+mdf.m5 <- glmmTMB(Cover.Phrag ~ Species * Density
+                  + (1|Block),
+                  data = mdf,
+                  family = beta_family 
+)
+
+summary(mdf.m5)
+simulateResiduals(mdf.m5, plot = T) 
+plotResiduals(mdf.m5, form= mdf$Species) 
+
+car::Anova(mdf.m5) 
+emmip(mdf.m5, Species~Density, CIs = T)
+
+###Graph of model means for species####
+emm <- emmeans(mdf.m5, pairwise ~ Species, adjust = "tukey", type = "response")
+data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
+
+ggplot(data = data1, aes(x = reorder(Species, response), y = response * 100)) +
+  geom_point(size=2) +
+  ylim(c(0, 40)) +
+  geom_errorbar(aes(ymin = 100*(response - SE),
+                    ymax = 100*(response+SE)),
+                width=0, size=0.5) +
+  labs(x="Species", y = "Model Predicted *Phragmites* Cover (%)") +
+  geom_text(aes(label = .group,  y = response * 100),
+            nudge_y = 4, nudge_x = .3, size = 3) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        axis.title.y = ggtext::element_markdown())
+
+###Graph of model means for density####
+emm <- emmeans(mdf.m5, pairwise ~ Density, adjust = "tukey", type = "response")
+data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
+
+ggplot(data = data2, aes(x = Density, y = response * 100, color = Density)) +
+  ylim(c(0, 30)) +
+  geom_point(size=2) +
+  geom_errorbar(aes(ymin = 100*(response - SE),
+                    ymax = 100*(response+SE)),
+                width=0, size=0.5) +
+  labs(x="Density", y = "Model Predicted *Phragmites* Cover (%)") +
+  geom_text(aes(label = .group,  y = response * 100),
+            nudge_x = .2, color = "black") +
+  theme(axis.title.y = ggtext::element_markdown()) +
+  scale_color_manual(values = color2)
+
+##Phrag biomass ~ Species * Density####
+mdf <- biomass %>%
+  filter(Species != "PHAU", #remove PHAU control
+         Phrag_Presence == "Present") #only include tubs with PHAU present
+
+#run the model
+mdf.m6 <- glmmTMB(sqrt(Phrag.Biomass) ~ Species * Density #* for interaction
+                  + (1|Block),
+                  data = mdf,
+                  family = gaussian
+)
+
+summary(mdf.m6)
+simulateResiduals(mdf.m6, plot = T) 
+plotResiduals(mdf.m6, form= mdf$Density)
+
+Anova(mdf.m6) 
+emmip(mdf.m6, Species~Density, CIs = T)
+
+###Model means graph of species####
+emm <- emmeans(mdf.m6, pairwise ~ Species, adjust = "tukey", type = "response")
+data3 <- multcomp::cld(emm$emmeans, alpha = 0.05, Letters = letters)
+
+ggplot(data = data3, aes(x = reorder(Species, response), y = response)) +
+  geom_point(size=2) +
+  geom_errorbar(aes(ymin = (response - SE),
+                    ymax = (response+SE)),
+                width=0, size=0.5) +
+  labs(x="Species", y = "Model Predicted *Phragmites* Biomass (g)") +
+  geom_text(aes(label = .group,  y = response),
+            nudge_y = 3.5, size = 3) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        axis.title.y = ggtext::element_markdown())
+
+###Model means graph of density####
+emm <- emmeans(mdf.m6, pairwise ~ Density, adjust = "tukey", type = "response")
+data4 <- multcomp::cld(emm$emmeans, alpha = 0.05, Letters = letters)
+
+ggplot(data = data4, aes(x = Density, y = response)) +
+  ylim(c(0, 20)) +
+  geom_point(size=2) +
+  geom_errorbar(aes(ymin = (response - SE),
+                    ymax = (response+SE)),
+                width=0, size=0.5) +
+  labs(x="Density", y = "Model Predicted *Phragmites* Biomass (g)") +
+  geom_text(aes(label = .group,  y = response),
+            nudge_x = .2) +
+  theme(axis.title.y = ggtext::element_markdown())
+
+#Individual species models to run to help with interpretation####
+#Need to update the species name for each species of interest and run individually for each
+
+##Cover of species X ~ Phrag Presence * Density####
 mdf <- greenhouse %>%
   filter(Species == "SOCA", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -43,23 +254,18 @@ mdf.m1 <- glmmTMB(Cover.Native ~ Phrag_Presence * Density #* for interaction
                   )
 
 
-#summary(mdf.m1)
-#model specification probably okay because 12 obs and 3 blocks
+summary(mdf.m1)
+simulateResiduals(mdf.m1, plot = T) 
+plotResiduals(mdf.m1, form= mdf$Phrag_Presence)
 
-
-#simulateResiduals(mdf.m1, plot = T) 
-#plotResiduals(mdf.m1, form= mdf$Phrag_Presence)
-
-#A lot of the residual estimates look really bad but I checked with Susan and she said it is fine
-#There is not a lot of variation in the data, so there are not a lot of residuals to be checked
-#The tests and estimates themselves seem reasonable so it is okay
-
-#library(car)
-Anova(mdf.m1, type = 2) #switch between type 2 and type 3 depending on whether there are interactions 
+Anova(mdf.m1, type = 2) #type 2 or 3 depending on the results
 emmip(mdf.m1, Phrag_Presence~Density, CIs = T)
 emmip(mdf.m1, Density ~ Phrag_Presence, CIs = T)
 
-#Model to run for biomass #### 
+#emmeans(mdf.m1, pairwise ~ Density|Phrag_Presence) #if anything significant
+#emmeans(mdf.m1, pairwise ~ Phrag_Presence|Density)
+
+##Biomass of species X ~ Phrag Presence * Density#### 
 mdf <- biomass %>%
   filter(Species == "PUNU", !is.na(Density))
 
@@ -69,23 +275,19 @@ mdf.m1 <- glmmTMB(sqrt(Native.Biomass) ~ Phrag_Presence * Density #* for interac
                   family = gaussian
 )
 
-#summary(mdf.m1)
-#model specification probably okay because 12 obs and 3 blocks
+summary(mdf.m1)
+simulateResiduals(mdf.m1, plot = T) 
+plotResiduals(mdf.m1, form= mdf$Phrag_Presence)
 
-#simulateResiduals(mdf.m1, plot = T) 
-#plotResiduals(mdf.m1, form= mdf$Phrag_Presence)
-
-#library(car)
 Anova(mdf.m1, type = 3) #switch between type 2 and type 3 depending on whether there are interactions 
-#emmip(mdf.m1, Phrag_Presence~Density, CIs = T)
+emmip(mdf.m1, Phrag_Presence~Density, CIs = T)
 
-emmeans(mdf.m1, pairwise ~ Density|Phrag_Presence)
-emmeans(mdf.m1, pairwise ~ Phrag_Presence|Density)
+#emmeans(mdf.m1, pairwise ~ Density|Phrag_Presence) #if anything significant
+#emmeans(mdf.m1, pairwise ~ Phrag_Presence|Density)
 
-
-# Graphing ####
-##Cover ####
-###BICE####
+##Graphing ####
+###Cover ####
+####BICE####
 mdf <- greenhouse %>%
   filter(Species == "BICE", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -125,7 +327,7 @@ data1
   scale_color_manual(values = c("darkblue", "red3")) +
   ylim(0, 1.2)
 ))
-###DISP####
+####DISP####
 mdf <- greenhouse %>%
   filter(Species == "DISP", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -165,7 +367,7 @@ str_2 <- gsub(" ", "", data2$.group)
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###EPCI####
+####EPCI####
 mdf <- greenhouse %>%
   filter(Species == "EPCI", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -198,7 +400,7 @@ data3
   scale_color_manual(values = c("darkblue", "red3")) +
   ylim(0, 1.2)
 ))
-###EUOC####
+####EUOC####
 mdf <- greenhouse %>%
   filter(Species == "EUOC", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -232,7 +434,7 @@ str_4 <- gsub(" ", "", data4$.group)
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###EUMA####
+####EUMA####
 mdf <- greenhouse %>%
   filter(Species == "EUMA", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -265,7 +467,7 @@ data5
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###HENU####
+####HENU####
 mdf <- greenhouse %>%
   filter(Species == "HENU", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -299,7 +501,7 @@ str_6 <- gsub(" ", "", data6$.group)
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###JUAR####
+####JUAR####
 mdf <- greenhouse %>%
   filter(Species == "JUAR", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -333,7 +535,7 @@ str_7 <- gsub(" ", "", data7$.group)
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###MUAS####
+####MUAS####
 mdf <- greenhouse %>%
   filter(Species == "MUAS", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -366,7 +568,7 @@ data8
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###PUNU####
+####PUNU####
 mdf <- greenhouse %>%
   filter(Species == "PUNU", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -400,7 +602,7 @@ str_9 <- sub(" ", "", data9$.group)
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###RUMA####
+####RUMA####
 mdf <- greenhouse %>%
   filter(Species == "RUMA", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -433,7 +635,7 @@ data10
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###SCAC####
+####SCAC####
 mdf <- greenhouse %>%
   filter(Species == "SCAC", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -467,7 +669,7 @@ str_11 <- gsub(" ", "", data11$.group)
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###SCPU####
+####SCPU####
 mdf <- greenhouse %>%
   filter(Species == "SCPU", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -500,7 +702,7 @@ data12
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###SOCA####
+####SOCA####
 mdf <- greenhouse %>%
   filter(Species == "SOCA", !is.na(Density),
          Date_Cleaned == "2022-05-16")
@@ -534,16 +736,14 @@ str_13 <- gsub(" ", "", data13$.group)
     scale_color_manual(values = c("darkblue", "red3")) +
     ylim(0, 1.2)
 ))
-###ALL TOGETHER####
+####ALL TOGETHER####
 BICE + DISP + EPCI + EUOC + EUMA + HENU + 
   JUAR + MUAS + PUNU + RUMA + SCAC + SCPU + SOCA +
   guide_area() +
   plot_layout(guides = "collect")
 
-ggsave("two-way_model-means_cover.jpeg")
-
-##Biomass####
-###BICE####
+###Biomass####
+####BICE####
 mdf <- biomass %>%
   filter(Species == "BICE", !is.na(Density))
 
@@ -573,7 +773,7 @@ data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
   scale_color_manual(values = c("darkblue", "red3"))+
   ylim(0, 120)
 ))
-###DISP####
+####DISP####
 mdf <- biomass %>%
   filter(Species == "DISP", !is.na(Density))
 
@@ -603,7 +803,7 @@ data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###EPCI####
+####EPCI####
 mdf <- biomass %>%
   filter(Species == "EPCI", !is.na(Density))
 
@@ -634,7 +834,7 @@ str_3 <- gsub(" ", "", data3$.group)
   scale_color_manual(values = c("darkblue", "red3"))+
   ylim(0, 120)
 ))
-###EUOC####
+####EUOC####
 mdf <- biomass %>%
   filter(Species == "EUOC", !is.na(Density))
 
@@ -667,7 +867,7 @@ str_4 <- gsub(" ", "", data4$.group)
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###EUMA####
+####EUMA####
 mdf <- biomass %>%
   filter(Species == "EUMA", !is.na(Density))
 
@@ -699,7 +899,7 @@ data5
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###HENU####
+####HENU####
 mdf <- biomass %>%
   filter(Species == "HENU", !is.na(Density))
 
@@ -731,7 +931,7 @@ data6
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###JUAR####
+####JUAR####
 mdf <- biomass %>%
   filter(Species == "JUAR", !is.na(Density))
 
@@ -763,7 +963,7 @@ data7
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###MUAS####
+####MUAS####
 mdf <- biomass %>%
   filter(Species == "MUAS", !is.na(Density))
 
@@ -795,7 +995,7 @@ data8
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###PUNU####
+####PUNU####
 mdf <- biomass %>%
   filter(Species == "PUNU", !is.na(Density))
 
@@ -828,7 +1028,7 @@ str_9 <- gsub(" ", "", data9$.group)
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###RUMA####
+####RUMA####
 mdf <- biomass %>%
   filter(Species == "RUMA", !is.na(Density))
 
@@ -860,7 +1060,7 @@ data10
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###SCAC####
+####SCAC####
 mdf <- biomass %>%
   filter(Species == "SCAC", !is.na(Density))
 
@@ -892,7 +1092,7 @@ data11
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###SCPU####
+####SCPU####
 mdf <- biomass %>%
   filter(Species == "SCPU", !is.na(Density))
 
@@ -924,7 +1124,7 @@ data12
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###SOCA####
+####SOCA####
 mdf <- biomass %>%
   filter(Species == "SOCA", !is.na(Density))
 
@@ -957,11 +1157,9 @@ dat_list <- c("a", " ab", " ab", "b")
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
-###ALL TOGETHER####
+####ALL TOGETHER####
 BICE_b + DISP_b + EPCI_b + EUOC_b + EUMA_b + HENU_b + 
   JUAR_b + MUAS_b + PUNU_b + RUMA_b + SCAC_b + SCPU_b + SOCA_b +
   guide_area() +
   plot_layout(guides = "collect")
 
-ggsave("two-way_model-means_biomass.jpeg", height = 5.79, width = 7.24, units = 
-        "in")

@@ -11,7 +11,7 @@ library(multcomp)
 library(patchwork)
 options(contrasts = c("contr.sum", "contr.poly")) #run this in case we want to run a type-iii anova
 
-#Native cover ####
+#Native cover~Phrag Presence * Density * Seed Mix####
 
 #just need the last date
 mdf <- cover_dat %>%
@@ -61,7 +61,7 @@ data1 <- multcomp::cld(emm1, alpha = 0.1, Letters = letters)
   coord_cartesian(ylim = c(0, 1))
 ))
 
-#Phrag Cover ####
+#Phrag Cover~Density * Seed Mix####
 
 #just need the last date
 mdf <- cover_dat %>%
@@ -113,7 +113,7 @@ data2 <- multcomp::cld(emm2, alpha = 0.1, Letters = letters)
           legend.position = "none")
 ))
 
-# Native biomass ####
+# Native biomass~Phrag Presence * Density * Seed Mix####
 mdf <- biomass_dat %>%
   group_by(Mix, Density, Phrag_Presence, Replicate) %>% 
   summarize(PHAU = PHAU, #separate all the data into PHAU and total native categories
@@ -169,7 +169,7 @@ data3 <- multcomp::cld(emm3, alpha = 0.1, Letters = letters)
 ))
 
 
-# Phrag biomass ####
+# Phrag biomass~Density * Seed Mix####
 mdf <- biomass_dat %>%
   dplyr::filter(!is.na(PHAU)) #removes all the natives
 

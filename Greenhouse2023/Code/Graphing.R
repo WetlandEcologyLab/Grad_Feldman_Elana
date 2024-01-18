@@ -269,35 +269,28 @@ h <- biomass_sl %>%
 
 #Reduction graphs####
 ##Cover reduction ####
-#only need the last date of sampling
-gh_final <- cover_dat%>%
-  filter(cover_dat$Date == "2023-03-01") 
+control.value <- cover_dat %>%
+  filter(Mix == "PHAU", #only the control tubs
+         Date == "2023-03-01") %>% #only the last date of sampling
+  dplyr::select(Mix, Replicate, Total) %>% 
+  summarize(Control = mean(Total)) #mean of all of control tubs because no blocking
 
-#I averaged across all the treatments/controls first because this was fully randomized - no blocks
-#get the treatment PHAU values
-b <- gh_final %>%
-  filter(Phrag_Presence == "W") %>%
-  dplyr::select(Mix, Density, Phrag_Presence, Replicate, Phrag)
+#now calculate the data we want
+final.cover.red <- cover_dat %>%
+  filter(Date == "2023-03-01", #only need the last date of sampling
+         Phrag_Presence == "W") %>% #only need tubs with PHAU
+  dplyr::select(Mix, Density, Phrag_Presence, Replicate, Phrag) %>% 
+  mutate(Phrag.Control = control.value$Control) %>% 
+  mutate(P.Cover.Red = ((Phrag - Phrag.Control)/Phrag.Control)*-1) #calculate percent reduction
+ #multiply by -1 to make it positive for graphing
 
-#get the control values
-final.matrix <- gh_final %>% 
-  filter(Mix == "PHAU") %>%
-  dplyr::select(Mix, Replicate, Total)
-
-c <- mean(final.matrix$Total)
-
-#calculate the percent cover across all 
-final.df <- b %>%
-  mutate(P.Cover.Red = (Phrag - c)/c)
-
-#graph it
-cover <- final.df %>%
+cover <- final.cover.red %>%
   mutate(Mix = factor(Mix,
                       levels = c("Bulrush", "Forb", "Grass", "Equal"))) %>% 
   mutate(Density = factor(Density,
                           levels = c("L", "H"),
                           labels = c("Low", "High"))) %>% #change the order and labels
-  ggplot(aes(x = Mix, y = P.Cover.Red * -1, color = Density), size = 1) +
+  ggplot(aes(x = Mix, y = P.Cover.Red, color = Density), size = 1) +
   ylim(0,1)+
   stat_summary(aes(group = interaction(Mix, Density)),
                size = 1,
@@ -314,34 +307,29 @@ cover <- final.df %>%
   labs(y = "Reduction in *P.australis* <br>Proportional Cover", x = "", title = "(a)")+
   scale_color_manual(values = c("darkblue", "red3")) #use manual colors
 
-##Biomass reduction####
-#I averaged across all the treatments/controls first because this was fully randomized - no blocks
+cover
 
-#get the treatment PHAU values
-b <- biomass_dat %>%
-  filter(Phrag_Presence == "W") %>%
-  dplyr::select(Mix, Density, Phrag_Presence, Replicate, PHAU)
+##Biomass Reduction####
+control.value2 <- biomass_dat %>%
+  filter(Mix == "PHAU") %>%  #only the control tubs
+  dplyr::select(PHAU) %>% 
+  summarize(Control = mean(PHAU)) #mean of all of control tubs because no blocking
 
-#get the control values
-final.matrix <- biomass_dat %>% 
-  filter(Mix == "PHAU") %>%
-  dplyr::select(PHAU)
+#now calculate the data we want
+final.biomass.red <- biomass_dat %>%
+  filter(Phrag_Presence == "W") %>% #only need tubs with PHAU
+  dplyr::select(Mix, Density, Phrag_Presence, Replicate, PHAU) %>%  
+  mutate(Phrag.Control = control.value2$Control) %>% 
+  mutate(P.Biomass.Red = ((PHAU - Phrag.Control)/Phrag.Control)*-1) #calculate percent reduction
+ #multiply by -1 to make it positive for graphing
 
-c <- mean(final.matrix$PHAU)
-
-#calculate the percent cover across all 
-final.df <- b %>%
-  mutate(P.Biomass.Red = (PHAU - c)/c) %>% 
-  mutate(Pos.Red = P.Biomass.Red * -1)
-
-#graph
-biomass <- final.df %>% 
+biomass <- final.biomass.red %>% 
   mutate(Mix = factor(Mix,
                       levels = c( "Bulrush", "Forb","Grass", "Equal")),
          Density = factor(Density,
                           levels = c("L", "H"),
                           labels = c("Low", "High"))) %>% #reorder and relabel
-  ggplot(aes(x = Mix, y = Pos.Red, color = Density), size = 1) +
+  ggplot(aes(x = Mix, y = P.Biomass.Red, color = Density), size = 1) +
   scale_y_continuous(name = "Reduction in *P.australis* <br>Biomass", #for some reason ylim was changing the data
                      breaks = seq(-.25, 2, by = .25)) +
   stat_summary(aes(group = interaction(Mix, Density)),
@@ -359,8 +347,7 @@ biomass <- final.df %>%
   labs( x = "", title = "(b)")+
   scale_color_manual(values = c("darkblue", "red3")) #add manual colors
 
-#combine the graphs
-cover/biomass
+biomass
 
 #Raw cover data over time #### 
 ### Native cover ####
