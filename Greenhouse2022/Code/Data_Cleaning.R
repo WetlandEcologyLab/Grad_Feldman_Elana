@@ -19,37 +19,40 @@ unique(greenhouse$Density)
 unique(greenhouse$Phrag_Presence)
 
 #change all cover values to midpoint, make double, make a decimal
-#unique(greenhouse$Cover.Native)
-greenhouse$Cover.Native[greenhouse$Cover.Native == "<1"] <- "0.5"
-greenhouse$Cover.Native[greenhouse$Cover.Native == ">99"] <- "99.5"
-greenhouse$Cover.Native[greenhouse$Cover.Native == 1.00] <- 5.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 10.00] <- 15.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 20.00] <- 25.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 30.00] <- 35.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 40.00] <- 45.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 50.00] <- 55.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 60.00] <- 65.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 70.00] <- 75.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 80.00] <- 85.00
-greenhouse$Cover.Native[greenhouse$Cover.Native == 90.00] <- 95.00
-greenhouse$Cover.Native <- as.double(greenhouse$Cover.Native)
-greenhouse$Cover.Native <- greenhouse$Cover.Native/100
+unique(greenhouse$Cover.Native)
+greenhouse <- greenhouse %>% 
+  mutate(Cover.Native = case_when(
+    Cover.Native == "<1" ~ 0.5,
+    Cover.Native == ">99" ~ 99.5,
+    Cover.Native == "1" ~ 5,
+    Cover.Native == "10" ~ 15,
+    Cover.Native == "20" ~ 25,
+    Cover.Native == "30" ~ 35,
+    Cover.Native == "40" ~ 45,
+    Cover.Native == "50" ~ 55,
+    Cover.Native == "60" ~ 65,
+    Cover.Native == "70" ~ 75,
+    Cover.Native == "80" ~ 85,
+    Cover.Native == "90" ~ 95,
+    Cover.Native == "0" ~ 0.5)) %>% #use a trace amount so we can use the beta
+  mutate(Cover.Native = as.double(Cover.Native)) %>% 
+  mutate(Cover.Native = Cover.Native/100)
 
-#unique(greenhouse$Cover.Phrag)
-greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 1.00] <- 5.00
-greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 10.00] <- 15.00
-greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 20.00] <- 25.00
-greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 30.00] <- 35.00
-greenhouse$Cover.Phrag[greenhouse$Cover.Phrag == 40.00] <- 45.00
-greenhouse$Cover.Phrag <- as.double(greenhouse$Cover.Phrag)
-greenhouse$Cover.Phrag <- greenhouse$Cover.Phrag/100
-
-#make all 0s a trace amount so we can use the beta
-greenhouse$Cover.Native[greenhouse$Cover.Native == 0] <- 0.005 
+unique(greenhouse$Cover.Phrag)
+greenhouse <- greenhouse %>% 
+  mutate(Cover.Phrag = case_when(
+    Cover.Phrag == "1" ~ 5,
+    Cover.Phrag == "10" ~ 15,
+    Cover.Phrag == "20" ~ 25,
+    Cover.Phrag == "30" ~ 35,
+    Cover.Phrag == "40" ~ 45)) %>% 
+  mutate(Cover.Phrag = as.double(Cover.Phrag)) %>% 
+  mutate(Cover.Phrag = Cover.Phrag/100)
 
 #convert the dates
-greenhouse$Date <- lubridate::mdy(greenhouse$Date)
-greenhouse$Date_Cleaned <- lubridate::mdy(greenhouse$Date_Cleaned)
+greenhouse <- greenhouse %>% 
+  mutate(Date = lubridate::mdy(greenhouse$Date), 
+         Date_Cleaned = lubridate::mdy(greenhouse$Date_Cleaned))
 
 #make the everything a factor and relabel
 glimpse(greenhouse)

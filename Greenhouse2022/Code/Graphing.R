@@ -204,7 +204,15 @@ final_data <- biomass %>%  #left join so they match up biomass and cover
   select(Species, Density, Phrag_Presence, Block, Native.Biomass) %>% 
   left_join(cover_final, by = c("Species", "Density", "Phrag_Presence", "Block"))
 
-plot(final_data$Native.Biomass ~ final_data$Cover.Native)
+ggplot(data = final_data, 
+       aes(x = , y = ),
+       geom = "point")
+
+final_data %>% 
+  ggplot(aes(x =Native.Biomass, y = Cover.Native, shape = Phrag_Presence, color = Density)) +
+  geom_point() +
+  facet_wrap(~Species)
+
 
 #correlation
 cor(final_data$Native.Biomass, final_data$Cover.Native, use = "complete.obs")

@@ -1,7 +1,7 @@
 #import data
 fb <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/clean_fb.csv")
 ul <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/clean_ul.csv")
-
+fb23 <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/FB2023-CLEAN.csv")
 
 #All package version saved in renv.lock 
 #renv::init, renv::restore
@@ -18,7 +18,6 @@ glimpse(fb)
 names(fb)[1] <- "Block"
 fb$Block <- as.factor(fb$Block)
 
-
 #change the C in block to 10 so it is easier to keep track of, then make a factor
 fb$Group[fb$Group == "C"] <- 10
 fb$Group <- as.factor(fb$Group)
@@ -34,186 +33,447 @@ fb$Density <- as.factor(fb$Density)
 fb$Date <- lubridate::mdy(fb$Date)
 
 #change cover values to the midpoints, make numeric, and make a decimal
-unique(fb$Total.Cover)
-fb$Total.Cover[fb$Total.Cover == "<1"] <- "0.5"
-fb$Total.Cover[fb$Total.Cover == 1.00] <- 5.00
-fb$Total.Cover[fb$Total.Cover == 10.00] <- 15.00
-fb$Total.Cover[fb$Total.Cover == 20.00] <- 25.00
-fb$Total.Cover[fb$Total.Cover == 30.00] <- 35.00
-fb$Total.Cover[fb$Total.Cover == 40.00] <- 45.00
-fb$Total.Cover[fb$Total.Cover == 50.00] <- 55.00
-fb$Total.Cover[fb$Total.Cover == 60.00] <- 65.00
-fb$Total.Cover[fb$Total.Cover == 70.00] <- 75.00
-fb$Total.Cover <- as.double(fb$Total.Cover)
-fb$Total.Cover <- fb$Total.Cover/100
-
-#all NAs should actually be 0s
-fb$Total.Cover[is.na(fb$Total.Cover) ]<- 0
+fb <- fb %>% 
+  mutate(Total.Cover = case_when(
+    Total.Cover == "<1" ~ 0.5,
+    Total.Cover == ">99" ~ 99.5,
+    Total.Cover == "1" ~ 5,
+    Total.Cover == "10" ~ 15,
+    Total.Cover == "20" ~ 25,
+    Total.Cover == "30" ~ 35,
+    Total.Cover == "40" ~ 45,
+    Total.Cover == "50" ~ 55,
+    Total.Cover == "60" ~ 65,
+    Total.Cover == "70" ~ 75,
+    Total.Cover == "80" ~ 85,
+    Total.Cover == "90" ~ 95,
+    Total.Cover == "0" ~ 0,
+    Total.Cover == "" ~ 0,
+    is.na(Total.Cover) ~ 0)) %>% 
+  mutate(Total.Cover = as.double(Total.Cover)) %>% 
+  mutate(Total.Cover = Total.Cover/100)
 
 #now do it for all the other columns
-unique(fb$PHAU)
-fb$PHAU[fb$PHAU == "<1"] <- "0.5"
-fb$PHAU[fb$PHAU == 1.00] <- 5.00
-fb$PHAU[fb$PHAU == 10.00] <- 15.00
-fb$PHAU <- as.double(fb$PHAU)
-fb$PHAU <- fb$PHAU/100
-fb$PHAU[is.na(fb$PHAU)] <- 0
+fb <- fb %>% 
+  mutate(PHAU = case_when(
+    PHAU == "<1" ~ 0.5,
+    PHAU == ">99" ~ 99.5,
+    PHAU == "1" ~ 5,
+    PHAU == "10" ~ 15,
+    PHAU == "20" ~ 25,
+    PHAU == "30" ~ 35,
+    PHAU == "40" ~ 45,
+    PHAU == "50" ~ 55,
+    PHAU == "60" ~ 65,
+    PHAU == "70" ~ 75,
+    PHAU == "80" ~ 85,
+    PHAU == "90" ~ 95,
+    PHAU == "0" ~ 0,
+    PHAU == "" ~ 0,
+    is.na(PHAU) ~ 0)) %>% 
+  mutate(PHAU = as.double(PHAU)) %>% 
+  mutate(PHAU = PHAU/100)
 
-unique(fb$Cheno)
-fb$Cheno[fb$Cheno == "<1"] <- "0.5"
-fb$Cheno[fb$Cheno == 1.00] <- 5.00
-fb$Cheno[fb$Cheno == 10.00] <- 15.00
-fb$Cheno[fb$Cheno == 20.00] <- 25.00
-fb$Cheno[fb$Cheno == 30.00] <- 35.00
-fb$Cheno <- as.double(fb$Cheno)
-fb$Cheno <- fb$Cheno/100
-fb$Cheno[is.na(fb$Cheno)] <- 0
+fb <- fb %>% 
+  mutate(Cheno = case_when(
+    Cheno == "<1" ~ 0.5,
+    Cheno == ">99" ~ 99.5,
+    Cheno == "1" ~ 5,
+    Cheno == "10" ~ 15,
+    Cheno == "20" ~ 25,
+    Cheno == "30" ~ 35,
+    Cheno == "40" ~ 45,
+    Cheno == "50" ~ 55,
+    Cheno == "60" ~ 65,
+    Cheno == "70" ~ 75,
+    Cheno == "80" ~ 85,
+    Cheno == "90" ~ 95,
+    Cheno == "0" ~ 0,
+    Cheno == "" ~ 0,
+    is.na(Cheno) ~ 0)) %>% 
+  mutate(Cheno = as.double(Cheno)) %>% 
+  mutate(Cheno = Cheno/100)
 
-unique(fb$Typha)
-fb$Typha[fb$Typha == "<1"] <- "0.5"
-fb$Typha[fb$Typha == 1.00] <- 5.00
-fb$Typha[fb$Typha == 10.00] <- 15.00
-fb$Typha <- as.double(fb$Typha)
-fb$Typha <- fb$Typha/100
-fb$Typha[is.na(fb$Typha)] <- 0
+fb <- fb %>% 
+  mutate(Typha = case_when(
+    Typha == "<1" ~ 0.5,
+    Typha == ">99" ~ 99.5,
+    Typha == "1" ~ 5,
+    Typha == "10" ~ 15,
+    Typha == "20" ~ 25,
+    Typha == "30" ~ 35,
+    Typha == "40" ~ 45,
+    Typha == "50" ~ 55,
+    Typha == "60" ~ 65,
+    Typha == "70" ~ 75,
+    Typha == "80" ~ 85,
+    Typha == "90" ~ 95,
+    Typha == "0" ~ 0,
+    Typha == "" ~ 0,
+    is.na(Typha) ~ 0)) %>% 
+  mutate(Typha = as.double(Typha)) %>% 
+  mutate(Typha = Typha/100)
 
-unique(fb$BOMA)
-fb$BOMA[fb$BOMA == "<1"] <- "0.5"
-fb$BOMA[fb$BOMA == 1.00] <- 5.00
-fb$BOMA[fb$BOMA == 10.00] <- 15.00
-fb$BOMA[fb$BOMA == 20.00] <- 25.00
-fb$BOMA <- as.double(fb$BOMA)
-fb$BOMA <- fb$BOMA/100
-fb$BOMA[is.na(fb$BOMA)] <- 0
+fb <- fb %>% 
+  mutate(BOMA = case_when(
+    BOMA == "<1" ~ 0.5,
+    BOMA == ">99" ~ 99.5,
+    BOMA == "1" ~ 5,
+    BOMA == "10" ~ 15,
+    BOMA == "20" ~ 25,
+    BOMA == "30" ~ 35,
+    BOMA == "40" ~ 45,
+    BOMA == "50" ~ 55,
+    BOMA == "60" ~ 65,
+    BOMA == "70" ~ 75,
+    BOMA == "80" ~ 85,
+    BOMA == "90" ~ 95,
+    BOMA == "0" ~ 0,
+    BOMA == "" ~ 0,
+    is.na(BOMA) ~ 0)) %>% 
+  mutate(BOMA = as.double(BOMA)) %>% 
+  mutate(BOMA = BOMA/100)
 
-unique(fb$DISP)
-fb$DISP[fb$DISP == "<1"] <- "0.5"
-fb$DISP[fb$DISP == 1.00] <- 5.00
-fb$DISP[fb$DISP == 10.00] <- 15.00
-fb$DISP[fb$DISP == 20.00] <- 25.00
-fb$DISP[fb$DISP == 30.00] <- 35.00
-fb$DISP[fb$DISP == 40.00] <- 45.00
-fb$DISP[fb$DISP == 50.00] <- 55.00
-fb$DISP[fb$DISP == 60.00] <- 65.00
-fb$DISP <- as.double(fb$DISP)
-fb$DISP <- fb$DISP/100
-fb$DISP[is.na(fb$DISP)] <- 0
+fb <- fb %>% 
+  mutate(DISP = case_when(
+    DISP == "<1" ~ 0.5,
+    DISP == ">99" ~ 99.5,
+    DISP == "1" ~ 5,
+    DISP == "10" ~ 15,
+    DISP == "20" ~ 25,
+    DISP == "30" ~ 35,
+    DISP == "40" ~ 45,
+    DISP == "50" ~ 55,
+    DISP == "60" ~ 65,
+    DISP == "70" ~ 75,
+    DISP == "80" ~ 85,
+    DISP == "90" ~ 95,
+    DISP == "0" ~ 0,
+    DISP == "" ~ 0,
+    is.na(DISP) ~ 0)) %>% 
+  mutate(DISP = as.double(DISP)) %>% 
+  mutate(DISP = DISP/100)
 
-unique(fb$EUMA)
-fb$EUMA[fb$EUMA == "<1"] <- "0.5"
-fb$EUMA[fb$EUMA == 1.00] <- 5.00
-fb$EUMA <- as.double(fb$EUMA)
-fb$EUMA <- fb$EUMA/100
-fb$EUMA[is.na(fb$EUMA)] <- 0
+fb <- fb %>% 
+  mutate(EUMA = case_when(
+    EUMA == "<1" ~ 0.5,
+    EUMA == ">99" ~ 99.5,
+    EUMA == "1" ~ 5,
+    EUMA == "10" ~ 15,
+    EUMA == "20" ~ 25,
+    EUMA == "30" ~ 35,
+    EUMA == "40" ~ 45,
+    EUMA == "50" ~ 55,
+    EUMA == "60" ~ 65,
+    EUMA == "70" ~ 75,
+    EUMA == "80" ~ 85,
+    EUMA == "90" ~ 95,
+    EUMA == "0" ~ 0,
+    EUMA == "" ~ 0,
+    is.na(EUMA) ~ 0)) %>%
+  mutate(EUMA = as.double(EUMA)) %>% 
+  mutate(EUMA = EUMA/100)
 
-unique(fb$SYCI)
-fb$SYCI[fb$SYCI == "<1"] <- "0.5"
-fb$SYCI[fb$SYCI == 1.00] <- 5.00
-fb$SYCI[fb$SYCI == 10.00] <- 15.00
-fb$SYCI <- as.double(fb$SYCI)
-fb$SYCI <- fb$SYCI/100
-fb$SYCI[is.na(fb$SYCI)] <- 0
+fb <- fb %>% 
+  mutate(SYCI = case_when(
+    SYCI == "<1" ~ 0.5,
+    SYCI == ">99" ~ 99.5,
+    SYCI == "1" ~ 5,
+    SYCI == "10" ~ 15,
+    SYCI == "20" ~ 25,
+    SYCI == "30" ~ 35,
+    SYCI == "40" ~ 45,
+    SYCI == "50" ~ 55,
+    SYCI == "60" ~ 65,
+    SYCI == "70" ~ 75,
+    SYCI == "80" ~ 85,
+    SYCI == "90" ~ 95,
+    SYCI == "0" ~ 0,
+    SYCI == "" ~ 0,
+    is.na(SYCI) ~ 0)) %>% 
+  mutate(SYCI = as.double(SYCI)) %>% 
+  mutate(SYCI = SYCI/100)
 
-unique(fb$LEFA)
-fb$LEFA[fb$LEFA == "<1"] <- "0.5"
-fb$LEFA[fb$LEFA == 1.00] <- 5.00
-fb$LEFA[fb$LEFA == 10.00] <- 15.00
-fb$LEFA[fb$LEFA == 20.00] <- 25.00
-fb$LEFA <- as.double(fb$LEFA)
-fb$LEFA <- fb$LEFA/100
-fb$LEFA[is.na(fb$LEFA)] <- 0
+fb <- fb %>% 
+  mutate(LEFA = case_when(
+    LEFA == "<1" ~ 0.5,
+    LEFA == ">99" ~ 99.5,
+    LEFA == "1" ~ 5,
+    LEFA == "10" ~ 15,
+    LEFA == "20" ~ 25,
+    LEFA == "30" ~ 35,
+    LEFA == "40" ~ 45,
+    LEFA == "50" ~ 55,
+    LEFA == "60" ~ 65,
+    LEFA == "70" ~ 75,
+    LEFA == "80" ~ 85,
+    LEFA == "90" ~ 95,
+    LEFA == "0" ~ 0,
+    LEFA == "" ~ 0,
+    is.na(LEFA) ~ 0)) %>% 
+  mutate(LEFA = as.double(LEFA)) %>% 
+  mutate(LEFA = LEFA/100)
 
-unique(fb$SCAC)
-fb$SCAC[fb$SCAC == "<1"] <- "0.5"
-fb$SCAC[fb$SCAC == 1.00] <- 5.00
-fb$SCAC <- as.double(fb$SCAC)
-fb$SCAC <- fb$SCAC/100
-fb$SCAC[is.na(fb$SCAC)] <- 0
+fb <- fb %>% 
+  mutate(SCAC = case_when(
+    SCAC == "<1" ~ 0.5,
+    SCAC == ">99" ~ 99.5,
+    SCAC == "1" ~ 5,
+    SCAC == "10" ~ 15,
+    SCAC == "20" ~ 25,
+    SCAC == "30" ~ 35,
+    SCAC == "40" ~ 45,
+    SCAC == "50" ~ 55,
+    SCAC == "60" ~ 65,
+    SCAC == "70" ~ 75,
+    SCAC == "80" ~ 85,
+    SCAC == "90" ~ 95,
+    SCAC == "0" ~ 0,
+    SCAC == "" ~ 0,
+    is.na(SCAC) ~ 0)) %>% 
+  mutate(SCAC = as.double(SCAC)) %>% 
+  mutate(SCAC = SCAC/100)
 
-unique(fb$BICE)
-fb$BICE[fb$BICE == "<1"] <- "0.5"
-fb$BICE[fb$BICE == 1.00] <- 5.00
-fb$BICE[fb$BICE == 10.00] <- 15.00
-fb$BICE <- as.double(fb$BICE)
-fb$BICE <- fb$BICE/100
-fb$BICE[is.na(fb$BICE)] <- 0
+fb <- fb %>% 
+  mutate(BICE = case_when(
+    BICE == "<1" ~ 0.5,
+    BICE == ">99" ~ 99.5,
+    BICE == "1" ~ 5,
+    BICE == "10" ~ 15,
+    BICE == "20" ~ 25,
+    BICE == "30" ~ 35,
+    BICE == "40" ~ 45,
+    BICE == "50" ~ 55,
+    BICE == "60" ~ 65,
+    BICE == "70" ~ 75,
+    BICE == "80" ~ 85,
+    BICE == "90" ~ 95,
+    BICE == "0" ~ 0,
+    BICE == "" ~ 0,
+    is.na(BICE) ~ 0)) %>% 
+  mutate(BICE = as.double(BICE)) %>% 
+  mutate(BICE = BICE/100)
 
-unique(fb$BIFR)
-fb$BIFR[fb$BIFR == "<1"] <- "0.5"
-fb$BIFR[fb$BIFR == 1.00] <- 5.00
-fb$BIFR <- as.double(fb$BIFR)
-fb$BIFR <- fb$BIFR/100
-fb$BIFR[is.na(fb$BIFR)] <- 0
+fb <- fb %>% 
+  mutate(BIFR = case_when(
+    BIFR == "<1" ~ 0.5,
+    BIFR == ">99" ~ 99.5,
+    BIFR == "1" ~ 5,
+    BIFR == "10" ~ 15,
+    BIFR == "20" ~ 25,
+    BIFR == "30" ~ 35,
+    BIFR == "40" ~ 45,
+    BIFR == "50" ~ 55,
+    BIFR == "60" ~ 65,
+    BIFR == "70" ~ 75,
+    BIFR == "80" ~ 85,
+    BIFR == "90" ~ 95,
+    BIFR == "0" ~ 0,
+    BIFR == "" ~ 0,
+    is.na(BIFR) ~ 0)) %>% 
+  mutate(BIFR = as.double(BIFR)) %>% 
+  mutate(BIFR = BIFR/100)
 
-unique(fb$EUOC)
-fb$EUOC[fb$EUOC == 1.00] <- 5.00
-fb$EUOC <- as.double(fb$EUOC)
-fb$EUOC <- fb$EUOC/100
-fb$EUOC[is.na(fb$EUOC)] <- 0
+fb <- fb %>% 
+  mutate(EUOC = case_when(
+    EUOC == "<1" ~ 0.5,
+    EUOC == ">99" ~ 99.5,
+    EUOC == "1" ~ 5,
+    EUOC == "10" ~ 15,
+    EUOC == "20" ~ 25,
+    EUOC == "30" ~ 35,
+    EUOC == "40" ~ 45,
+    EUOC == "50" ~ 55,
+    EUOC == "60" ~ 65,
+    EUOC == "70" ~ 75,
+    EUOC == "80" ~ 85,
+    EUOC == "90" ~ 95,
+    EUOC == "0" ~ 0,
+    EUOC == "" ~ 0,
+    is.na(EUOC) ~ 0)) %>% 
+  mutate(EUOC = as.double(EUOC)) %>% 
+  mutate(EUOC = EUOC/100)
 
-unique(fb$MUAS)
-fb$MUAS[fb$MUAS == 1.00] <- 5.00
-fb$MUAS[fb$MUAS == 10.00] <- 15.00
-fb$MUAS <- as.double(fb$MUAS)
-fb$MUAS <- fb$MUAS/100
-fb$MUAS[is.na(fb$MUAS)] <- 0
+fb <- fb %>% 
+  mutate(MUAS = case_when(
+    MUAS == "<1" ~ 0.5,
+    MUAS == ">99" ~ 99.5,
+    MUAS == "1" ~ 5,
+    MUAS == "10" ~ 15,
+    MUAS == "20" ~ 25,
+    MUAS == "30" ~ 35,
+    MUAS == "40" ~ 45,
+    MUAS == "50" ~ 55,
+    MUAS == "60" ~ 65,
+    MUAS == "70" ~ 75,
+    MUAS == "80" ~ 85,
+    MUAS == "90" ~ 95,
+    MUAS == "0" ~ 0,
+    MUAS == "" ~ 0,
+    is.na(MUAS) ~ 0)) %>% 
+  mutate(MUAS = as.double(MUAS)) %>% 
+  mutate(MUAS = MUAS/100)
 
-unique(fb$SCAM)
-fb$SCAM[fb$SCAM == 1.00] <- 5.00
-fb$SCAM <- as.double(fb$SCAM)
-fb$SCAM <- fb$SCAM/100
-fb$SCAM[is.na(fb$SCAM)] <- 0
+fb <- fb %>% 
+  mutate(SCAM = case_when(
+    SCAM == "<1" ~ 0.5,
+    SCAM == ">99" ~ 99.5,
+    SCAM == "1" ~ 5,
+    SCAM == "10" ~ 15,
+    SCAM == "20" ~ 25,
+    SCAM == "30" ~ 35,
+    SCAM == "40" ~ 45,
+    SCAM == "50" ~ 55,
+    SCAM == "60" ~ 65,
+    SCAM == "70" ~ 75,
+    SCAM == "80" ~ 85,
+    SCAM == "90" ~ 95,
+    SCAM == "0" ~ 0,
+    SCAM == "" ~ 0,
+    is.na(SCAM) ~ 0)) %>% 
+  mutate(SCAM = as.double(SCAM)) %>% 
+  mutate(SCAM = SCAM/100)
 
-unique(fb$RUMA)
-fb$RUMA[fb$RUMA == "<1"] <- "0.5"
-fb$RUMA[fb$RUMA == 1.00] <- 5.00
-fb$RUMA <- as.double(fb$RUMA)
-fb$RUMA <- fb$RUMA/100
-fb$RUMA[is.na(fb$RUMA)] <- 0
+fb <- fb %>% 
+  mutate(RUMA = case_when(
+    RUMA == "<1" ~ 0.5,
+    RUMA == ">99" ~ 99.5,
+    RUMA == "1" ~ 5,
+    RUMA == "10" ~ 15,
+    RUMA == "20" ~ 25,
+    RUMA == "30" ~ 35,
+    RUMA == "40" ~ 45,
+    RUMA == "50" ~ 55,
+    RUMA == "60" ~ 65,
+    RUMA == "70" ~ 75,
+    RUMA == "80" ~ 85,
+    RUMA == "90" ~ 95,
+    RUMA == "0" ~ 0,
+    RUMA == "" ~ 0,
+    is.na(RUMA) ~ 0)) %>% 
+  mutate(RUMA = as.double(RUMA)) %>% 
+  mutate(RUMA = RUMA/100)
 
-unique(fb$RUST)
-fb$RUST[fb$RUST == "<1"] <- "0.5"
-fb$RUST[fb$RUST == 1.00] <- 5.00
-fb$RUST[fb$RUST == 10.00] <- 15.00
-fb$RUST <- as.double(fb$RUST)
-fb$RUST <- fb$RUST/100
-fb$RUST[is.na(fb$RUST)] <- 0
+fb <- fb %>% 
+  mutate(RUST = case_when(
+    RUST == "<1" ~ 0.5,
+    RUST == ">99" ~ 99.5,
+    RUST == "1" ~ 5,
+    RUST == "10" ~ 15,
+    RUST == "20" ~ 25,
+    RUST == "30" ~ 35,
+    RUST == "40" ~ 45,
+    RUST == "50" ~ 55,
+    RUST == "60" ~ 65,
+    RUST == "70" ~ 75,
+    RUST == "80" ~ 85,
+    RUST == "90" ~ 95,
+    RUST == "0" ~ 0,
+    RUST == "" ~ 0,
+    is.na(RUST) ~ 0)) %>% 
+  mutate(RUST = as.double(RUST)) %>% 
+  mutate(RUST = RUST/100)
 
-unique(fb$Unk_Forb)
-fb$Unk_Forb[fb$Unk_Forb == "<1"] <- "0.5"
-fb$Unk_Forb[fb$Unk_Forb == 1.00] <- 5.00
-fb$Unk_Forb <- as.double(fb$Unk_Forb)
-fb$Unk_Forb <- fb$Unk_Forb/100
-fb$Unk_Forb[is.na(fb$Unk_Forb)] <- 0
+fb <- fb %>% 
+  mutate(Unk_Forb = case_when(
+    Unk_Forb == "<1" ~ 0.5,
+    Unk_Forb == ">99" ~ 99.5,
+    Unk_Forb == "1" ~ 5,
+    Unk_Forb == "10" ~ 15,
+    Unk_Forb == "20" ~ 25,
+    Unk_Forb == "30" ~ 35,
+    Unk_Forb == "40" ~ 45,
+    Unk_Forb == "50" ~ 55,
+    Unk_Forb == "60" ~ 65,
+    Unk_Forb == "70" ~ 75,
+    Unk_Forb == "80" ~ 85,
+    Unk_Forb == "90" ~ 95,
+    Unk_Forb == "0" ~ 0,
+    Unk_Forb == "" ~ 0,
+    is.na(Unk_Forb) ~ 0)) %>% 
+  mutate(Unk_Forb = as.double(Unk_Forb)) %>% 
+  mutate(Unk_Forb = Unk_Forb/100)
 
-unique(fb$Unk_Grass)
-fb$Unk_Grass[fb$Unk_Grass == "<1"] <- "0.5"
-fb$Unk_Grass[fb$Unk_Grass == 1.00] <- 5.00
-fb$Unk_Grass <- as.double(fb$Unk_Grass)
-fb$Unk_Grass <- fb$Unk_Grass/100
-fb$Unk_Grass[is.na(fb$Unk_Grass)] <- 0
+fb <- fb %>% 
+  mutate(Unk_Grass = case_when(
+    Unk_Grass == "<1" ~ 0.5,
+    Unk_Grass == ">99" ~ 99.5,
+    Unk_Grass == "1" ~ 5,
+    Unk_Grass == "10" ~ 15,
+    Unk_Grass == "20" ~ 25,
+    Unk_Grass == "30" ~ 35,
+    Unk_Grass == "40" ~ 45,
+    Unk_Grass == "50" ~ 55,
+    Unk_Grass == "60" ~ 65,
+    Unk_Grass == "70" ~ 75,
+    Unk_Grass == "80" ~ 85,
+    Unk_Grass == "90" ~ 95,
+    Unk_Grass == "0" ~ 0,
+    Unk_Grass == "" ~ 0,
+    is.na(Unk_Grass) ~ 0)) %>% 
+  mutate(Unk_Grass = as.double(Unk_Grass)) %>% 
+  mutate(Unk_Grass = Unk_Grass/100)
 
-unique(fb$Unk_Rush)
-fb$Unk_Rush[fb$Unk_Rush == "<1"] <- "0.5"
-fb$Unk_Rush[fb$Unk_Rush == 1.00] <- 5.00
-fb$Unk_Rush <- as.double(fb$Unk_Rush)
-names(fb)[25] <- "Unk_Bulrush"
-fb$Unk_Bulrush <- fb$Unk_Bulrush/100
-fb$Unk_Bulrush[is.na(fb$Unk_Bulrush)] <- 0
+fb <- fb %>% 
+  mutate(Unk_Rush = case_when(
+    Unk_Rush == "<1" ~ 0.5,
+    Unk_Rush == ">99" ~ 99.5,
+    Unk_Rush == "1" ~ 5,
+    Unk_Rush == "10" ~ 15,
+    Unk_Rush == "20" ~ 25,
+    Unk_Rush == "30" ~ 35,
+    Unk_Rush == "40" ~ 45,
+    Unk_Rush == "50" ~ 55,
+    Unk_Rush == "60" ~ 65,
+    Unk_Rush == "70" ~ 75,
+    Unk_Rush == "80" ~ 85,
+    Unk_Rush == "90" ~ 95,
+    Unk_Rush == "0" ~ 0,
+    Unk_Rush == "" ~ 0,
+    is.na(Unk_Rush) ~ 0)) %>% 
+  mutate(Unk_Rush = as.double(Unk_Rush)) %>% 
+  mutate(Unk_Rush = Unk_Rush/100) %>% 
+  rename(Unk_Bulrush = Unk_Rush) #and change name
 
-unique(fb$SARU)
-fb$SARU[fb$SARU == "<1"] <- "0.5"
-fb$SARU[fb$SARU == 1.00] <- 5.00
-fb$SARU <- as.double(fb$SARU)
-fb$SARU <- fb$SARU/100
-fb$SARU[is.na(fb$SARU)] <- 0
+fb <- fb %>% 
+  mutate(SARU = case_when(
+    SARU == "<1" ~ 0.5,
+    SARU == ">99" ~ 99.5,
+    SARU == "1" ~ 5,
+    SARU == "10" ~ 15,
+    SARU == "20" ~ 25,
+    SARU == "30" ~ 35,
+    SARU == "40" ~ 45,
+    SARU == "50" ~ 55,
+    SARU == "60" ~ 65,
+    SARU == "70" ~ 75,
+    SARU == "80" ~ 85,
+    SARU == "90" ~ 95,
+    SARU == "0" ~ 0,
+    SARU == "" ~ 0,
+    is.na(SARU) ~ 0)) %>% 
+  mutate(SARU = as.double(SARU)) %>% 
+  mutate(SARU = SARU/100)
 
-unique(fb$Tamarisk)
-fb$Tamarisk[fb$Tamarisk == "<1"] <- "0.5"
-fb$Tamarisk[fb$Tamarisk == 1.00] <- 5.00
-fb$Tamarisk <- as.double(fb$Tamarisk)
-fb$Tamarisk <- fb$Tamarisk/100
-fb$Tamarisk[is.na(fb$Tamarisk)] <- 0
+fb <- fb %>% 
+  mutate(Tamarisk = case_when(
+    Tamarisk == "<1" ~ 0.5,
+    Tamarisk == ">99" ~ 99.5,
+    Tamarisk == "1" ~ 5,
+    Tamarisk == "10" ~ 15,
+    Tamarisk == "20" ~ 25,
+    Tamarisk == "30" ~ 35,
+    Tamarisk == "40" ~ 45,
+    Tamarisk == "50" ~ 55,
+    Tamarisk == "60" ~ 65,
+    Tamarisk == "70" ~ 75,
+    Tamarisk == "80" ~ 85,
+    Tamarisk == "90" ~ 95,
+    Tamarisk == "0" ~ 0,
+    Tamarisk == "" ~ 0,
+    is.na(Tamarisk) ~ 0)) %>% 
+  mutate(Tamarisk = as.double(Tamarisk)) %>% 
+  mutate(Tamarisk = Tamarisk/100)
 
 glimpse(fb)
 
@@ -228,17 +488,12 @@ min(fb$Measurement.3)
 max(fb$Measurement.3)
 
 #Add a new section for invasives and natives
-df <- fb %>%
-  dplyr::select("PHAU", "Typha", "RUST", "Tamarisk") %>%
-  mutate(Invasive = rowSums(.,na.rm = T))
-df1 <- fb %>%
-  dplyr::select("Cheno", "BOMA", "DISP", "EUMA", "SYCI", "LEFA", "SCAC",
-         "BICE", "BIFR", "EUOC", "MUAS", "SCAM", "RUMA", "Unk_Bulrush", 
-         "SARU") %>%
-  mutate(Native = rowSums(.,na.rm = T))
-
-fb$Invasive.Cover <- df$Invasive
-fb$Native.Cover <- df1$Native
+fb <- fb %>% 
+  rowwise() %>% 
+  mutate(Invasive.Cover = sum(PHAU, Typha, RUST, Tamarisk, na.rm = T),
+         Native.Cover = sum(Cheno, BOMA, DISP, EUMA, SYCI, LEFA, SCAC,
+                            BICE, BIFR, EUOC, MUAS, SCAM, RUMA, Unk_Bulrush, 
+                            SARU, na.rm = T))
 
 #check to make sure the new sections make sense
 max(fb$Invasive.Cover, na.rm = T)
@@ -273,256 +528,588 @@ ul$Density <- as.factor(ul$Density)
 ul$Date <- lubridate::mdy(ul$Date)
 
 #change cover values to the midpoints, make numeric, and make a decimal
-unique(ul$Total.Cover)
-ul$Total.Cover[ul$Total.Cover == "<1"] <- "0.5"
-ul$Total.Cover[ul$Total.Cover == ">1"] <- "0.5"
-ul$Total.Cover[ul$Total.Cover == 1.00] <- 5.00
-ul$Total.Cover[ul$Total.Cover == 10.00] <- 15.00
-ul$Total.Cover[ul$Total.Cover == 20.00] <- 25.00
-ul$Total.Cover[ul$Total.Cover == 30.00] <- 35.00
-ul$Total.Cover[ul$Total.Cover == 40.00] <- 45.00
-ul$Total.Cover[ul$Total.Cover == 50.00] <- 55.00
-ul$Total.Cover[ul$Total.Cover == 60.00] <- 65.00
-ul$Total.Cover[ul$Total.Cover == 70.00] <- 75.00
-ul$Total.Cover[ul$Total.Cover == 80.00] <- 85.00
-ul$Total.Cover[ul$Total.Cover == 90.00] <- 95.00
-ul$Total.Cover <- as.double(ul$Total.Cover)
-ul$Total.Cover <- ul$Total.Cover/100
-ul$Total.Cover[is.na(ul$Total.Cover)] <- 0
+ul <- ul %>% 
+  mutate(Total.Cover = case_when(
+    Total.Cover == "<1" ~ 0.5,
+    Total.Cover == ">1" ~ 0.5,
+    Total.Cover == ">99" ~ 99.5,
+    Total.Cover == "1" ~ 5,
+    Total.Cover == "10" ~ 15,
+    Total.Cover == "20" ~ 25,
+    Total.Cover == "30" ~ 35,
+    Total.Cover == "40" ~ 45,
+    Total.Cover == "50" ~ 55,
+    Total.Cover == "60" ~ 65,
+    Total.Cover == "70" ~ 75,
+    Total.Cover == "80" ~ 85,
+    Total.Cover == "90" ~ 95,
+    Total.Cover == "0" ~ 0,
+    Total.Cover == "" ~ 0,
+    is.na(Total.Cover) ~ 0)) %>%
+  mutate(Total.Cover = as.double(Total.Cover)) %>% 
+  mutate(Total.Cover = Total.Cover/100)
 
 names(ul)[7] <- "Unk_Forb" #fix the name
-unique(ul$Unk_Forb)
-ul$Unk_Forb[ul$Unk_Forb == "<1"] <- "0.5"
-ul$Unk_Forb[ul$Unk_Forb == 1.00] <- 5.00
-ul$Unk_Forb <- as.double(ul$Unk_Forb)
-ul$Unk_Forb <- ul$Unk_Forb/100
-ul$Unk_Forb[is.na(ul$Unk_Forb)] <- 0
+ul <- ul %>% 
+  mutate(Unk_Forb = case_when(
+    Unk_Forb == "<1" ~ 0.5,
+    Unk_Forb == ">99" ~ 99.5,
+    Unk_Forb == "1" ~ 5,
+    Unk_Forb == "10" ~ 15,
+    Unk_Forb == "20" ~ 25,
+    Unk_Forb == "30" ~ 35,
+    Unk_Forb == "40" ~ 45,
+    Unk_Forb == "50" ~ 55,
+    Unk_Forb == "60" ~ 65,
+    Unk_Forb == "70" ~ 75,
+    Unk_Forb == "80" ~ 85,
+    Unk_Forb == "90" ~ 95,
+    Unk_Forb == "0" ~ 0,
+    Unk_Forb == "" ~ 0,
+    is.na(Unk_Forb) ~ 0)) %>% 
+  mutate(Unk_Forb = as.double(Unk_Forb)) %>% 
+  mutate(Unk_Forb = Unk_Forb/100)
 
-unique(ul$PHAU)
-ul$PHAU[ul$PHAU == "<1"] <- "0.5"
-ul$PHAU[ul$PHAU == 1.00] <- 5.00
-ul$PHAU[ul$PHAU == 10.00] <- 15.00
-ul$PHAU <- as.double(ul$PHAU)
-ul$PHAU <- ul$PHAU/100
-ul$PHAU[is.na(ul$PHAU)] <- 0
+ul <- ul %>% 
+  mutate(PHAU = case_when(
+    PHAU == "<1" ~ 0.5,
+    PHAU == ">99" ~ 99.5,
+    PHAU == "1" ~ 5,
+    PHAU == "10" ~ 15,
+    PHAU == "20" ~ 25,
+    PHAU == "30" ~ 35,
+    PHAU == "40" ~ 45,
+    PHAU == "50" ~ 55,
+    PHAU == "60" ~ 65,
+    PHAU == "70" ~ 75,
+    PHAU == "80" ~ 85,
+    PHAU == "90" ~ 95,
+    PHAU == "0" ~ 0,
+    PHAU == "" ~ 0,
+    is.na(PHAU) ~ 0)) %>% 
+  mutate(PHAU = as.double(PHAU)) %>% 
+  mutate(PHAU = PHAU/100)
 
-unique(ul$Unk_Sedge)
-ul$Unk_Sedge[ul$Unk_Sedge == "<1"] <- "0.5"
-ul$Unk_Sedge[ul$Unk_Sedge == 1.00] <- 5.00
-ul$Unk_Sedge[ul$Unk_Sedge == 10.00] <- 15.00
-ul$Unk_Sedge[ul$Unk_Sedge == 20.00] <- 25.00
-ul$Unk_Sedge[ul$Unk_Sedge == 30.00] <- 35.00
-ul$Unk_Sedge[ul$Unk_Sedge == 40.00] <- 45.00
-ul$Unk_Sedge <- as.double(ul$Unk_Sedge)
-ul$Unk_Sedge <- ul$Unk_Sedge/100
-ul$Unk_Sedge[is.na(ul$Unk_Sedge)] <- 0
+ul <- ul %>% 
+  mutate(Unk_Sedge = case_when(
+    Unk_Sedge == "<1" ~ 0.5,
+    Unk_Sedge == ">99" ~ 99.5,
+    Unk_Sedge == "1" ~ 5,
+    Unk_Sedge == "10" ~ 15,
+    Unk_Sedge == "20" ~ 25,
+    Unk_Sedge == "30" ~ 35,
+    Unk_Sedge == "40" ~ 45,
+    Unk_Sedge == "50" ~ 55,
+    Unk_Sedge == "60" ~ 65,
+    Unk_Sedge == "70" ~ 75,
+    Unk_Sedge == "80" ~ 85,
+    Unk_Sedge == "90" ~ 95,
+    Unk_Sedge == "0" ~ 0,
+    Unk_Sedge == "" ~ 0,
+    is.na(Unk_Sedge) ~ 0)) %>% 
+  mutate(Unk_Sedge = as.double(Unk_Sedge)) %>% 
+  mutate(Unk_Sedge = Unk_Sedge/100)
 
-unique(ul$BOMA)
-ul$BOMA[ul$BOMA == "<1"] <- "0.5"
-ul$BOMA[ul$BOMA == 1.00] <- 5.00
-ul$BOMA[ul$BOMA == 10.00] <- 15.00
-ul$BOMA[ul$BOMA == 20.00] <- 25.00
-ul$BOMA[ul$BOMA == 30.00] <- 35.00
-ul$BOMA[ul$BOMA == 40.00] <- 45.00
-ul$BOMA[ul$BOMA == 50.00] <- 55.00
-ul$BOMA <- as.double(ul$BOMA)
-ul$BOMA <- ul$BOMA/100
-ul$BOMA[is.na(ul$BOMA)] <- 0
+ul <- ul %>% 
+  mutate(BOMA = case_when(
+    BOMA == "<1" ~ 0.5,
+    BOMA == ">99" ~ 99.5,
+    BOMA == "1" ~ 5,
+    BOMA == "10" ~ 15,
+    BOMA == "20" ~ 25,
+    BOMA == "30" ~ 35,
+    BOMA == "40" ~ 45,
+    BOMA == "50" ~ 55,
+    BOMA == "60" ~ 65,
+    BOMA == "70" ~ 75,
+    BOMA == "80" ~ 85,
+    BOMA == "90" ~ 95,
+    BOMA == "0" ~ 0,
+    BOMA == "" ~ 0,
+    is.na(BOMA) ~ 0)) %>% 
+  mutate(BOMA = as.double(BOMA)) %>% 
+  mutate(BOMA = BOMA/100)
 
-unique(ul$BICE)
-ul$BICE[ul$BICE == 1.00] <- 5.00
-ul$BICE[ul$BICE == 10.00] <- 15.00
-ul$BICE[ul$BICE == 20.00] <- 25.00
-ul$BICE[ul$BICE == 30.00] <- 35.00
-ul$BICE <- as.double(ul$BICE)
-ul$BICE <- ul$BICE/100
-ul$BICE[is.na(ul$BICE)] <- 0
+ul <- ul %>% 
+  mutate(BICE = case_when(
+    BICE == "<1" ~ 0.5,
+    BICE == ">99" ~ 99.5,
+    BICE == "1" ~ 5,
+    BICE == "10" ~ 15,
+    BICE == "20" ~ 25,
+    BICE == "30" ~ 35,
+    BICE == "40" ~ 45,
+    BICE == "50" ~ 55,
+    BICE == "60" ~ 65,
+    BICE == "70" ~ 75,
+    BICE == "80" ~ 85,
+    BICE == "90" ~ 95,
+    BICE == "0" ~ 0,
+    BICE == "" ~ 0,
+    is.na(BICE) ~ 0)) %>% 
+  mutate(BICE = as.double(BICE)) %>% 
+  mutate(BICE = BICE/100)
 
-unique(ul$CYER)
-ul$CYER[ul$CYER == 1.00] <- 5.00
-ul$CYER[ul$CYER == 10.00] <- 15.00
-ul$CYER[ul$CYER == 20.00] <- 25.00
-ul$CYER[ul$CYER == 30.00] <- 35.00
-ul$CYER[ul$CYER == 40.00] <- 45.00
-ul$CYER[ul$CYER == 60.00] <- 65.00
-ul$CYER[ul$CYER == 70.00] <- 75.00
-ul$CYER <- as.double(ul$CYER)
-ul$CYER <- ul$CYER/100
-ul$CYER[is.na(ul$CYER)] <- 0
+ul <- ul %>% 
+  mutate(CYER = case_when(
+    CYER == "<1" ~ 0.5,
+    CYER == ">99" ~ 99.5,
+    CYER == "1" ~ 5,
+    CYER == "10" ~ 15,
+    CYER == "20" ~ 25,
+    CYER == "30" ~ 35,
+    CYER == "40" ~ 45,
+    CYER == "50" ~ 55,
+    CYER == "60" ~ 65,
+    CYER == "70" ~ 75,
+    CYER == "80" ~ 85,
+    CYER == "90" ~ 95,
+    CYER == "0" ~ 0,
+    CYER == "" ~ 0,
+    is.na(CYER) ~ 0)) %>% 
+  mutate(CYER = as.double(CYER)) %>% 
+  mutate(CYER = CYER/100)
 
-unique(ul$RUMA)
-ul$RUMA[ul$RUMA == "<1"] <- "0.5"
-ul$RUMA[ul$RUMA == 1.00] <- 5.00
-ul$RUMA[ul$RUMA == 10.00] <- 15.00
-ul$RUMA[ul$RUMA == 20.00] <- 25.00
-ul$RUMA[ul$RUMA == 30.00] <- 35.00
-ul$RUMA[ul$RUMA == 40.00] <- 45.00
-ul$RUMA[ul$RUMA == 50.00] <- 55.00
-ul$RUMA[ul$RUMA == 60.00] <- 65.00
-ul$RUMA[ul$RUMA == 70.00] <- 75.00
-ul$RUMA[ul$RUMA == 80.00] <- 85.00
-ul$RUMA <- as.double(ul$RUMA)
-ul$RUMA <- ul$RUMA/100
-ul$RUMA[is.na(ul$RUMA)] <- 0
+ul <- ul %>% 
+  mutate(RUMA = case_when(
+    RUMA == "<1" ~ 0.5,
+    RUMA == ">99" ~ 99.5,
+    RUMA == "1" ~ 5,
+    RUMA == "10" ~ 15,
+    RUMA == "20" ~ 25,
+    RUMA == "30" ~ 35,
+    RUMA == "40" ~ 45,
+    RUMA == "50" ~ 55,
+    RUMA == "60" ~ 65,
+    RUMA == "70" ~ 75,
+    RUMA == "80" ~ 85,
+    RUMA == "90" ~ 95,
+    RUMA == "0" ~ 0,
+    RUMA == "" ~ 0,
+    is.na(RUMA) ~ 0)) %>% 
+  mutate(RUMA = as.double(RUMA)) %>% 
+  mutate(RUMA = RUMA/100)
 
-unique(ul$BASC)
-ul$BASC[ul$BASC == 1.00] <- 5.00
-ul$BASC[ul$BASC == 10.00] <- 15.00
-ul$BASC <- as.double(ul$BASC)
-ul$BASC <- ul$BASC/100
-ul$BASC[is.na(ul$BASC)] <- 0
+ul <- ul %>% 
+  mutate(BASC = case_when(
+    BASC == "<1" ~ 0.5,
+    BASC == ">99" ~ 99.5,
+    BASC == "1" ~ 5,
+    BASC == "10" ~ 15,
+    BASC == "20" ~ 25,
+    BASC == "30" ~ 35,
+    BASC == "40" ~ 45,
+    BASC == "50" ~ 55,
+    BASC == "60" ~ 65,
+    BASC == "70" ~ 75,
+    BASC == "80" ~ 85,
+    BASC == "90" ~ 95,
+    BASC == "0" ~ 0,
+    BASC == "" ~ 0,
+    is.na(BASC) ~ 0)) %>% 
+  mutate(BASC = as.double(BASC)) %>% 
+  mutate(BASC = BASC/100)
 
-unique(ul$LASE)
-ul$LASE[ul$LASE == 1.00] <- 5.00
-ul$LASE[ul$LASE == 10.00] <- 15.00
-ul$LASE <- as.double(ul$LASE)
-ul$LASE <- ul$LASE/100
-ul$LASE[is.na(ul$LASE)] <- 0
+ul <- ul %>% 
+  mutate(LASE = case_when(
+    LASE == "<1" ~ 0.5,
+    LASE == ">99" ~ 99.5,
+    LASE == "1" ~ 5,
+    LASE == "10" ~ 15,
+    LASE == "20" ~ 25,
+    LASE == "30" ~ 35,
+    LASE == "40" ~ 45,
+    LASE == "50" ~ 55,
+    LASE == "60" ~ 65,
+    LASE == "70" ~ 75,
+    LASE == "80" ~ 85,
+    LASE == "90" ~ 95,
+    LASE == "0" ~ 0,
+    LASE == "" ~ 0,
+    is.na(LASE) ~ 0)) %>% 
+  mutate(LASE = as.double(LASE)) %>% 
+  mutate(LASE = LASE/100)
 
-unique(ul$Cheno)
-ul$Cheno[ul$Cheno == "<1"] <- "0.5"
-ul$Cheno[ul$Cheno == 1.00] <- 5.00
-ul$Cheno[ul$Cheno == 10.00] <- 15.00
-ul$Cheno[ul$Cheno == 20.00] <- 25.00
-ul$Cheno[ul$Cheno == 30.00] <- 35.00
-ul$Cheno[ul$Cheno == 40.00] <- 45.00
-ul$Cheno[ul$Cheno == 50.00] <- 55.00
-ul$Cheno <- as.double(ul$Cheno)
-ul$Cheno <- ul$Cheno/100
-ul$Cheno[is.na(ul$Cheno)] <- 0
+ul <- ul %>% 
+  mutate(Cheno = case_when(
+    Cheno == "<1" ~ 0.5,
+    Cheno == ">99" ~ 99.5,
+    Cheno == "1" ~ 5,
+    Cheno == "10" ~ 15,
+    Cheno == "20" ~ 25,
+    Cheno == "30" ~ 35,
+    Cheno == "40" ~ 45,
+    Cheno == "50" ~ 55,
+    Cheno == "60" ~ 65,
+    Cheno == "70" ~ 75,
+    Cheno == "80" ~ 85,
+    Cheno == "90" ~ 95,
+    Cheno == "0" ~ 0,
+    Cheno == "" ~ 0,
+    is.na(Cheno) ~ 0)) %>% 
+  mutate(Cheno = as.double(Cheno)) %>% 
+  mutate(Cheno = Cheno/100)
 
-unique(ul$SCAC)
-ul$SCAC[ul$SCAC == "<1"] <- "0.5"
-ul$SCAC[ul$SCAC == 1.00] <- 5.00
-ul$SCAC <- as.double(ul$SCAC)
-ul$SCAC <- ul$SCAC/100
-ul$SCAC[is.na(ul$SCAC)] <- 0
+ul <- ul %>% 
+  mutate(SCAC = case_when(
+    SCAC == "<1" ~ 0.5,
+    SCAC == ">99" ~ 99.5,
+    SCAC == "1" ~ 5,
+    SCAC == "10" ~ 15,
+    SCAC == "20" ~ 25,
+    SCAC == "30" ~ 35,
+    SCAC == "40" ~ 45,
+    SCAC == "50" ~ 55,
+    SCAC == "60" ~ 65,
+    SCAC == "70" ~ 75,
+    SCAC == "80" ~ 85,
+    SCAC == "90" ~ 95,
+    SCAC == "0" ~ 0,
+    SCAC == "" ~ 0,
+    is.na(SCAC) ~ 0)) %>% 
+  mutate(SCAC = as.double(SCAC)) %>% 
+  mutate(SCAC = SCAC/100)
 
-unique(ul$SCPU)
-ul$SCPU[ul$SCPU == "<1"] <- "0.5"
-ul$SCPU[ul$SCPU == 1.00] <- 5.00
-ul$SCPU <- as.double(ul$SCPU)
-ul$SCPU <- ul$SCPU/100
-ul$SCPU[is.na(ul$SCPU)] <- 0
+ul <- ul %>% 
+  mutate(SCPU = case_when(
+    SCPU == "<1" ~ 0.5,
+    SCPU == ">99" ~ 99.5,
+    SCPU == "1" ~ 5,
+    SCPU == "10" ~ 15,
+    SCPU == "20" ~ 25,
+    SCPU == "30" ~ 35,
+    SCPU == "40" ~ 45,
+    SCPU == "50" ~ 55,
+    SCPU == "60" ~ 65,
+    SCPU == "70" ~ 75,
+    SCPU == "80" ~ 85,
+    SCPU == "90" ~ 95,
+    SCPU == "0" ~ 0,
+    SCPU == "" ~ 0,
+    is.na(SCPU) ~ 0)) %>% 
+  mutate(SCPU = as.double(SCPU)) %>% 
+  mutate(SCPU = SCPU/100)
 
-unique(ul$SCAM)
-ul$SCAM[ul$SCAM == "<1"] <- "0.5"
-ul$SCAM[ul$SCAM == 1.00] <- 5.00
-ul$SCAM[ul$SCAM == 10.00] <- 15.00
-ul$SCAM <- as.double(ul$SCAM)
-ul$SCAM <- ul$SCAM/100
-ul$SCAM[is.na(ul$SCAM)] <- 0
+ul <- ul %>% 
+  mutate(SCAM = case_when(
+    SCAM == "<1" ~ 0.5,
+    SCAM == ">99" ~ 99.5,
+    SCAM == "1" ~ 5,
+    SCAM == "10" ~ 15,
+    SCAM == "20" ~ 25,
+    SCAM == "30" ~ 35,
+    SCAM == "40" ~ 45,
+    SCAM == "50" ~ 55,
+    SCAM == "60" ~ 65,
+    SCAM == "70" ~ 75,
+    SCAM == "80" ~ 85,
+    SCAM == "90" ~ 95,
+    SCAM == "0" ~ 0,
+    SCAM == "" ~ 0,
+    is.na(SCAM) ~ 0)) %>% 
+  mutate(SCAM = as.double(SCAM)) %>% 
+  mutate(SCAM = SCAM/100)
 
-unique(ul$DISP)
-ul$DISP[ul$DISP == "<1"] <- "0.5"
-ul$DISP[ul$DISP == 1.00] <- 5.00
-ul$DISP[ul$DISP == 10.00] <- 15.00
-ul$DISP <- as.double(ul$DISP)
-ul$DISP <- ul$DISP/100
-ul$DISP[is.na(ul$DISP)] <- 0
+ul <- ul %>% 
+  mutate(DISP = case_when(
+    DISP == "<1" ~ 0.5,
+    DISP == ">99" ~ 99.5,
+    DISP == "1" ~ 5,
+    DISP == "10" ~ 15,
+    DISP == "20" ~ 25,
+    DISP == "30" ~ 35,
+    DISP == "40" ~ 45,
+    DISP == "50" ~ 55,
+    DISP == "60" ~ 65,
+    DISP == "70" ~ 75,
+    DISP == "80" ~ 85,
+    DISP == "90" ~ 95,
+    DISP == "0" ~ 0,
+    DISP == "" ~ 0,
+    DISP == "  " ~ 0,
+    is.na(DISP) ~ 0)) %>% 
+  mutate(DISP = as.double(DISP)) %>% 
+  mutate(DISP = DISP/100)
 
-unique(ul$RACY)
-ul$RACY[ul$RACY == "<1"] <- "0.5"
-ul$RACY[ul$RACY == 1.00] <- 5.00
-ul$RACY <- as.double(ul$RACY)
-ul$RACY <- ul$RACY/100
-ul$RACY[is.na(ul$RACY)] <- 0
+ul <- ul %>% 
+  mutate(RACY = case_when(
+    RACY == "<1" ~ 0.5,
+    RACY == ">99" ~ 99.5,
+    RACY == "1" ~ 5,
+    RACY == "10" ~ 15,
+    RACY == "20" ~ 25,
+    RACY == "30" ~ 35,
+    RACY == "40" ~ 45,
+    RACY == "50" ~ 55,
+    RACY == "60" ~ 65,
+    RACY == "70" ~ 75,
+    RACY == "80" ~ 85,
+    RACY == "90" ~ 95,
+    RACY == "0" ~ 0,
+    RACY == "" ~ 0,
+    is.na(RACY) ~ 0)) %>% 
+  mutate(RACY = as.double(RACY)) %>% 
+  mutate(RACY = RACY/100)
 
-unique(ul$ASIN)
-ul$ASIN[ul$ASIN == "<1"] <- "0.5"
-ul$ASIN[ul$ASIN == 1.00] <- 5.00
-ul$ASIN <- as.double(ul$ASIN)
-ul$ASIN <- ul$ASIN/100
-ul$ASIN[is.na(ul$ASIN)] <- 0
+ul <- ul %>% 
+  mutate(ASIN = case_when(
+    ASIN == "<1" ~ 0.5,
+    ASIN == ">99" ~ 99.5,
+    ASIN == "1" ~ 5,
+    ASIN == "10" ~ 15,
+    ASIN == "20" ~ 25,
+    ASIN == "30" ~ 35,
+    ASIN == "40" ~ 45,
+    ASIN == "50" ~ 55,
+    ASIN == "60" ~ 65,
+    ASIN == "70" ~ 75,
+    ASIN == "80" ~ 85,
+    ASIN == "90" ~ 95,
+    ASIN == "0" ~ 0,
+    ASIN == "" ~ 0,
+    is.na(ASIN) ~ 0)) %>% 
+  mutate(ASIN = as.double(ASIN)) %>% 
+  mutate(ASIN = ASIN/100)
 
-unique(ul$Unk_Grass)
-ul$Unk_Grass[ul$Unk_Grass == "<1"] <- "0.5"
-ul$Unk_Grass[ul$Unk_Grass == 1.00] <- 5.00
-ul$Unk_Grass[ul$Unk_Grass == 10.00] <- 15.00
-ul$Unk_Grass[ul$Unk_Grass == 20.00] <- 25.00
-ul$Unk_Grass <- as.double(ul$Unk_Grass)
-ul$Unk_Grass <- ul$Unk_Grass/100
-ul$Unk_Grass[is.na(ul$Unk_Grass)] <- 0
+ul <- ul %>% 
+  mutate(Unk_Grass = case_when(
+    Unk_Grass == "<1" ~ 0.5,
+    Unk_Grass == ">99" ~ 99.5,
+    Unk_Grass == "1" ~ 5,
+    Unk_Grass == "10" ~ 15,
+    Unk_Grass == "20" ~ 25,
+    Unk_Grass == "30" ~ 35,
+    Unk_Grass == "40" ~ 45,
+    Unk_Grass == "50" ~ 55,
+    Unk_Grass == "60" ~ 65,
+    Unk_Grass == "70" ~ 75,
+    Unk_Grass == "80" ~ 85,
+    Unk_Grass == "90" ~ 95,
+    Unk_Grass == "0" ~ 0,
+    Unk_Grass == "" ~ 0,
+    is.na(Unk_Grass) ~ 0)) %>% 
+  mutate(Unk_Grass = as.double(Unk_Grass)) %>% 
+  mutate(Unk_Grass = Unk_Grass/100)
 
-unique(ul$ALPR)
-ul$ALPR[ul$ALPR == "<1"] <- "0.5"
-ul$ALPR[ul$ALPR == 1.00] <- 5.00
-ul$ALPR[ul$ALPR == 10.00] <- 15.00
-ul$ALPR[ul$ALPR == 20.00] <- 25.00
-ul$ALPR <- as.double(ul$ALPR)
-ul$ALPR <- ul$ALPR/100
-ul$ALPR[is.na(ul$ALPR)] <- 0
+ul <- ul %>% 
+  mutate(ALPR = case_when(
+    ALPR == "<1" ~ 0.5,
+    ALPR == ">99" ~ 99.5,
+    ALPR == "1" ~ 5,
+    ALPR == "10" ~ 15,
+    ALPR == "20" ~ 25,
+    ALPR == "30" ~ 35,
+    ALPR == "40" ~ 45,
+    ALPR == "50" ~ 55,
+    ALPR == "60" ~ 65,
+    ALPR == "70" ~ 75,
+    ALPR == "80" ~ 85,
+    ALPR == "90" ~ 95,
+    ALPR == "0" ~ 0,
+    ALPR == "" ~ 0,
+    is.na(ALPR) ~ 0)) %>% 
+  mutate(ALPR = as.double(ALPR)) %>% 
+  mutate(ALPR = ALPR/100)
 
-unique(ul$CYDA)
-ul$CYDA[ul$CYDA == 1.00] <- 5.00
-ul$CYDA[ul$CYDA == 10.00] <- 15.00
-ul$CYDA <- as.double(ul$CYDA)
-ul$CYDA <- ul$CYDA/100
-ul$CYDA[is.na(ul$CYDA)] <- 0
+ul <- ul %>% 
+  mutate(CYDA = case_when(
+    CYDA == "<1" ~ 0.5,
+    CYDA == ">99" ~ 99.5,
+    CYDA == "1" ~ 5,
+    CYDA == "10" ~ 15,
+    CYDA == "20" ~ 25,
+    CYDA == "30" ~ 35,
+    CYDA == "40" ~ 45,
+    CYDA == "50" ~ 55,
+    CYDA == "60" ~ 65,
+    CYDA == "70" ~ 75,
+    CYDA == "80" ~ 85,
+    CYDA == "90" ~ 95,
+    CYDA == "0" ~ 0,
+    CYDA == "" ~ 0,
+    is.na(CYDA) ~ 0)) %>% 
+  mutate(CYDA = as.double(CYDA)) %>% 
+  mutate(CYDA = CYDA/100)
 
-unique(ul$POFR)
-ul$POFR[ul$POFR == "<1"] <- "0.5"
-ul$POFR[ul$POFR == 1.00] <- 5.00
-ul$POFR <- as.double(ul$POFR)
-ul$POFR <- ul$POFR/100
-ul$POFR[is.na(ul$POFR)] <- 0
+ul <- ul %>% 
+  mutate(POFR = case_when(
+    POFR == "<1" ~ 0.5,
+    POFR == ">99" ~ 99.5,
+    POFR == "1" ~ 5,
+    POFR == "10" ~ 15,
+    POFR == "20" ~ 25,
+    POFR == "30" ~ 35,
+    POFR == "40" ~ 45,
+    POFR == "50" ~ 55,
+    POFR == "60" ~ 65,
+    POFR == "70" ~ 75,
+    POFR == "80" ~ 85,
+    POFR == "90" ~ 95,
+    POFR == "0" ~ 0,
+    POFR == "" ~ 0,
+    is.na(POFR) ~ 0)) %>% 
+  mutate(POFR = as.double(POFR)) %>% 
+  mutate(POFR = POFR/100)
 
-unique(ul$SAAM)
-ul$SAAM[ul$SAAM == "<1"] <- "0.5"
-ul$SAAM[ul$SAAM == 1.00] <- 5.00
-ul$SAAM <- as.double(ul$SAAM)
-ul$SAAM <- ul$SAAM/100
-ul$SAAM[is.na(ul$SAAM)] <- 0
+ul <- ul %>% 
+  mutate(SAAM = case_when(
+    SAAM == "<1" ~ 0.5,
+    SAAM == ">99" ~ 99.5,
+    SAAM == "1" ~ 5,
+    SAAM == "10" ~ 15,
+    SAAM == "20" ~ 25,
+    SAAM == "30" ~ 35,
+    SAAM == "40" ~ 45,
+    SAAM == "50" ~ 55,
+    SAAM == "60" ~ 65,
+    SAAM == "70" ~ 75,
+    SAAM == "80" ~ 85,
+    SAAM == "90" ~ 95,
+    SAAM == "0" ~ 0,
+    SAAM == "" ~ 0,
+    is.na(SAAM) ~ 0)) %>% 
+  mutate(SAAM = as.double(SAAM)) %>% 
+  mutate(SAAM = SAAM/100)
 
-unique(ul$Unk_Bulrush)
-ul$Unk_Bulrush[ul$Unk_Bulrush == "<1"] <- "0.5"
-ul$Unk_Bulrush[ul$Unk_Bulrush == 1.00] <- 5.00
-ul$Unk_Bulrush <- as.double(ul$Unk_Bulrush)
-ul$Unk_Bulrush <- ul$Unk_Bulrush/100
-ul$Unk_Bulrush[is.na(ul$Unk_Bulrush)] <- 0
+ul <- ul %>% 
+  mutate(Unk_Bulrush = case_when(
+    Unk_Bulrush == "<1" ~ 0.5,
+    Unk_Bulrush == ">99" ~ 99.5,
+    Unk_Bulrush == "1" ~ 5,
+    Unk_Bulrush == "10" ~ 15,
+    Unk_Bulrush == "20" ~ 25,
+    Unk_Bulrush == "30" ~ 35,
+    Unk_Bulrush == "40" ~ 45,
+    Unk_Bulrush == "50" ~ 55,
+    Unk_Bulrush == "60" ~ 65,
+    Unk_Bulrush == "70" ~ 75,
+    Unk_Bulrush == "80" ~ 85,
+    Unk_Bulrush == "90" ~ 95,
+    Unk_Bulrush == "0" ~ 0,
+    Unk_Bulrush == "" ~ 0,
+    is.na(Unk_Bulrush) ~ 0)) %>% 
+  mutate(Unk_Bulrush = as.double(Unk_Bulrush)) %>% 
+  mutate(Unk_Bulrush = Unk_Bulrush/100)
 
-unique(ul$BY)
-ul$BY[ul$BY == 1.00] <- 5.00
-ul$BY <- as.double(ul$BY)
-ul$BY <- ul$BY/100
-ul$BY[is.na(ul$BY)] <- 0
+ul <- ul %>% 
+  mutate(BY = case_when(
+    BY == "<1" ~ 0.5,
+    BY == ">99" ~ 99.5,
+    BY == "1" ~ 5,
+    BY == "10" ~ 15,
+    BY == "20" ~ 25,
+    BY == "30" ~ 35,
+    BY == "40" ~ 45,
+    BY == "50" ~ 55,
+    BY == "60" ~ 65,
+    BY == "70" ~ 75,
+    BY == "80" ~ 85,
+    BY == "90" ~ 95,
+    BY == "0" ~ 0,
+    BY == "" ~ 0,
+    is.na(BY) ~ 0)) %>% 
+  mutate(BY = as.double(BY)) %>% 
+  mutate(BY = BY/100)
 
-unique(ul$SYCI)
-ul$SYCI[ul$SYCI == 1.00] <- 5.00
-ul$SYCI[ul$SYCI == 10.00] <- 15.00
-ul$SYCI <- as.double(ul$SYCI)
-ul$SYCI <- ul$SYCI/100
-ul$SYCI[is.na(ul$SYCI)] <- 0
+ul <- ul %>% 
+  mutate(SYCI = case_when(
+    SYCI == "<1" ~ 0.5,
+    SYCI == ">99" ~ 99.5,
+    SYCI == "1" ~ 5,
+    SYCI == "10" ~ 15,
+    SYCI == "20" ~ 25,
+    SYCI == "30" ~ 35,
+    SYCI == "40" ~ 45,
+    SYCI == "50" ~ 55,
+    SYCI == "60" ~ 65,
+    SYCI == "70" ~ 75,
+    SYCI == "80" ~ 85,
+    SYCI == "90" ~ 95,
+    SYCI == "0" ~ 0,
+    SYCI == "" ~ 0,
+    is.na(SYCI) ~ 0)) %>% 
+  mutate(SYCI = as.double(SYCI)) %>% 
+  mutate(SYCI = SYCI/100)
 
-unique(ul$EUOC)
-ul$EUOC[ul$EUOC == "<1"] <- "0.5"
-ul$EUOC[ul$EUOC == 1.00] <- 5.00
-ul$EUOC[ul$EUOC == 10.00] <- 15.00
-ul$EUOC <- as.double(ul$EUOC)
-ul$EUOC <- ul$EUOC/100
-ul$EUOC[is.na(ul$EUOC)] <- 0
+ul <- ul %>% 
+  mutate(EUOC = case_when(
+    EUOC == "<1" ~ 0.5,
+    EUOC == ">99" ~ 99.5,
+    EUOC == "1" ~ 5,
+    EUOC == "10" ~ 15,
+    EUOC == "20" ~ 25,
+    EUOC == "30" ~ 35,
+    EUOC == "40" ~ 45,
+    EUOC == "50" ~ 55,
+    EUOC == "60" ~ 65,
+    EUOC == "70" ~ 75,
+    EUOC == "80" ~ 85,
+    EUOC == "90" ~ 95,
+    EUOC == "0" ~ 0,
+    EUOC == "" ~ 0,
+    is.na(EUOC) ~ 0)) %>% 
+  mutate(EUOC = as.double(EUOC)) %>% 
+  mutate(EUOC = EUOC/100)
 
-unique(ul$TYPHA)
-ul$TYPHA[ul$TYPHA == "<1"] <- "0.5"
-ul$TYPHA[ul$TYPHA == 1.00] <- 5.00
-ul$TYPHA <- as.double(ul$TYPHA)
-ul$TYPHA <- ul$TYPHA/100
-ul$TYPHA[is.na(ul$TYPHA)] <- 0
+ul <- ul %>% 
+  mutate(TYPHA = case_when(
+    TYPHA == "<1" ~ 0.5,
+    TYPHA == ">99" ~ 99.5,
+    TYPHA == "1" ~ 5,
+    TYPHA == "10" ~ 15,
+    TYPHA == "20" ~ 25,
+    TYPHA == "30" ~ 35,
+    TYPHA == "40" ~ 45,
+    TYPHA == "50" ~ 55,
+    TYPHA == "60" ~ 65,
+    TYPHA == "70" ~ 75,
+    TYPHA == "80" ~ 85,
+    TYPHA == "90" ~ 95,
+    TYPHA == "0" ~ 0,
+    TYPHA == "" ~ 0,
+    is.na(TYPHA) ~ 0)) %>% 
+  mutate(TYPHA = as.double(TYPHA)) %>% 
+  mutate(TYPHA = TYPHA/100)
 
-unique(ul$Tamarisk)
-ul$Tamarisk[ul$Tamarisk == "<1"] <- "0.5"
-ul$Tamarisk[ul$Tamarisk == 1.00] <- 5.00
-ul$Tamarisk[ul$Tamarisk == 10.00] <- 15.00
-ul$Tamarisk <- as.double(ul$Tamarisk)
-ul$Tamarisk <- ul$Tamarisk/100
-ul$Tamarisk[is.na(ul$Tamarisk)] <- 0
+ul <- ul %>% 
+  mutate(Tamarisk = case_when(
+    Tamarisk == "<1" ~ 0.5,
+    Tamarisk == ">99" ~ 99.5,
+    Tamarisk == "1" ~ 5,
+    Tamarisk == "10" ~ 15,
+    Tamarisk == "20" ~ 25,
+    Tamarisk == "30" ~ 35,
+    Tamarisk == "40" ~ 45,
+    Tamarisk == "50" ~ 55,
+    Tamarisk == "60" ~ 65,
+    Tamarisk == "70" ~ 75,
+    Tamarisk == "80" ~ 85,
+    Tamarisk == "90" ~ 95,
+    Tamarisk == "0" ~ 0,
+    Tamarisk == "" ~ 0,
+    is.na(Tamarisk) ~ 0)) %>% 
+  mutate(Tamarisk = as.double(Tamarisk)) %>% 
+  mutate(Tamarisk = Tamarisk/100)
 
-unique(ul$POPE)
-ul$POPE[ul$POPE == "<1"] <- "0.5"
-ul$POPE[ul$POPE == 1.00] <- 5.00
-ul$POPE <- as.double(ul$POPE)
-ul$POPE <- ul$POPE/100
-ul$POPE[is.na(ul$POPE)] <- 0
+ul <- ul %>% 
+  mutate(POPE = case_when(
+    POPE == "<1" ~ 0.5,
+    POPE == ">99" ~ 99.5,
+    POPE == "1" ~ 5,
+    POPE == "10" ~ 15,
+    POPE == "20" ~ 25,
+    POPE == "30" ~ 35,
+    POPE == "40" ~ 45,
+    POPE == "50" ~ 55,
+    POPE == "60" ~ 65,
+    POPE == "70" ~ 75,
+    POPE == "80" ~ 85,
+    POPE == "90" ~ 95,
+    POPE == "0" ~ 0,
+    POPE == "" ~ 0,
+    is.na(POPE) ~ 0)) %>% 
+  mutate(POPE = as.double(POPE)) %>% 
+  mutate(POPE = POPE/100)
 
 glimpse(ul)
 
@@ -538,17 +1125,14 @@ max(ul$Measurement.3, na.rm = TRUE)
 
 
 #Add a new section for invasives and natives
-df <- ul %>%
-  dplyr::select("PHAU", "TYPHA", "Tamarisk", "ALPR", "CYDA", "BY", 
-         "BASC", "LASE") %>%
-  mutate(Invasive = rowSums(.,na.rm = T))
-df1 <- ul %>%
-  dplyr::select("Unk_Bulrush", "BOMA", "BICE", 'CYER', 'RUMA', 'Cheno', 'SCAC', 'SCAM',
-         'SCPU', 'DISP', 'RACY', 'ASIN', 'SYCI', 'EUOC', 'POPE', 'POFR', 'SAAM') %>%
-  mutate(Native = rowSums(.,na.rm = T))
-
-ul$Invasive.Cover <- df$Invasive
-ul$Native.Cover <- df1$Native
+ul <- ul %>% 
+  rowwise() %>% 
+  mutate(Invasive.Cover = sum(PHAU, TYPHA, Tamarisk, ALPR, CYDA, BY, 
+                              BASC, LASE, na.rm = T),
+         Native.Cover = sum(Unk_Bulrush, BOMA, BICE, CYER, RUMA, Cheno, 
+                            SCAC, SCAM,
+                            SCPU, DISP, RACY, ASIN, SYCI, EUOC, POPE, 
+                            POFR, SAAM, na.rm = T))
 
 max(ul$Invasive.Cover, na.rm = TRUE)
 max(ul$Native.Cover, na.rm = TRUE)
@@ -564,8 +1148,6 @@ ul$Native.Cover[is.na(ul$Native.Cover)] <- 0.0025
 ul$Native.Cover[ul$Native.Cover==0] <- 0.0025
 
 #Clean Farmington Bay 2023 Data####
-fb23 <- read.csv("/Users/elanafeldman/Documents/USUClasses/Thesis_Code/Field22/Cleaned-Data/FB2023-CLEAN.csv")
-
 #View(fb23)
 glimpse(fb23)
 
@@ -583,106 +1165,187 @@ fb23$Density <- as.factor(fb23$Density)
 fb23$Date <- lubridate::mdy(fb23$Date)
 
 #change cover values to the midpoints, make numeric, and make a decimal
-unique(fb23$Total.Cover)
-fb23$Total.Cover[fb23$Total.Cover == "<1"] <- 0.5
-fb23$Total.Cover[fb23$Total.Cover == 0] <- 0.25
-fb23$Total.Cover[fb23$Total.Cover == 1.00] <- 5.00
-fb23$Total.Cover[fb23$Total.Cover == 10.00] <- 15.00
-fb23$Total.Cover[fb23$Total.Cover == 20.00] <- 25.00
-fb23$Total.Cover[fb23$Total.Cover == 30.00] <- 35.00
-fb23$Total.Cover[fb23$Total.Cover == 40.00] <- 45.00
-fb23$Total.Cover[fb23$Total.Cover == 50.00] <- 55.00
-fb23$Total.Cover[fb23$Total.Cover == 60.00] <- 65.00
-fb23$Total.Cover[fb23$Total.Cover == 70.00] <- 75.00
-fb23$Total.Cover[fb23$Total.Cover == 80.00] <- 85.00
-fb23$Total.Cover[fb23$Total.Cover == 90.00] <- 95.00
-fb23$Total.Cover <- as.double(fb23$Total.Cover)
-fb23$Total.Cover <- fb23$Total.Cover/100
+fb23 <- fb23 %>% 
+  mutate(Total.Cover = case_when(
+    Total.Cover == "<1" ~ 0.5,
+    Total.Cover == ">99" ~ 99.5,
+    Total.Cover == "1" ~ 5,
+    Total.Cover == "10" ~ 15,
+    Total.Cover == "20" ~ 25,
+    Total.Cover == "30" ~ 35,
+    Total.Cover == "40" ~ 45,
+    Total.Cover == "50" ~ 55,
+    Total.Cover == "60" ~ 65,
+    Total.Cover == "70" ~ 75,
+    Total.Cover == "80" ~ 85,
+    Total.Cover == "90" ~ 95,
+    Total.Cover == "0" ~ 0.25, #add in a trace amount
+    Total.Cover == "" ~ 0.25,
+    is.na(Total.Cover) ~ 0.25)) %>% 
+  mutate(Total.Cover = as.double(Total.Cover)) %>% 
+  mutate(Total.Cover = Total.Cover/100)
 
 #now do it for all the other columns
-unique(fb23$PHAU)
-fb23$PHAU[fb23$PHAU == ""] <- 0
-fb23$PHAU[fb23$PHAU == "<1"] <- 0.5
-fb23$PHAU[fb23$PHAU == 0] <- 0.25
-fb23$PHAU[fb23$PHAU == 1.00] <- 5.00
-fb23$PHAU[fb23$PHAU == 10.00] <- 15.00
-fb23$PHAU[fb23$PHAU == 20.00] <- 25.00
-fb23$PHAU[fb23$PHAU == 30.00] <- 35.00
-fb23$PHAU[fb23$PHAU == 40.00] <- 45.00
-fb23$PHAU[fb23$PHAU == 50.00] <- 55.00
-fb23$PHAU[fb23$PHAU == 60.00] <- 65.00
-fb23$PHAU[fb23$PHAU == 70.00] <- 75.00
-fb23$PHAU[fb23$PHAU == 80.00] <- 85.00
-fb23$PHAU[fb23$PHAU == 90.00] <- 95.00
-fb23$PHAU <- as.double(fb23$PHAU)
-fb23$PHAU <- fb23$PHAU/100
+fb23 <- fb23 %>% 
+  mutate(PHAU = case_when(
+    PHAU == "<1" ~ 0.5,
+    PHAU == ">99" ~ 99.5,
+    PHAU == "1" ~ 5,
+    PHAU == "10" ~ 15,
+    PHAU == "20" ~ 25,
+    PHAU == "30" ~ 35,
+    PHAU == "4" ~ 45, #fix a mistake in the data
+    PHAU == "40" ~ 45,
+    PHAU == "50" ~ 55,
+    PHAU == "60" ~ 65,
+    PHAU == "70" ~ 75,
+    PHAU == "80" ~ 85,
+    PHAU == "90" ~ 95,
+    PHAU == "0" ~ 0.25, #add in a trace amount
+    PHAU == "" ~ 0.25,
+    is.na(PHAU) ~ 0.25)) %>% 
+  mutate(PHAU = as.double(PHAU)) %>% 
+  mutate(PHAU = PHAU/100)
 
-unique(fb23$Typha)
-fb23$Typha[fb23$Typha == ""] <- 0
-fb23$Typha[fb23$Typha == "<1"] <- 0.5
-fb23$Typha[fb23$Typha == 0] <- 0.25
-fb23$Typha[fb23$Typha == 1.00] <- 5.00
-fb23$Typha[fb23$Typha == 10.00] <- 15.00
-fb23$Typha[fb23$Typha == 20.00] <- 25.00
-fb23$Typha[fb23$Typha == 30.00] <- 35.00
-fb23$Typha[fb23$Typha == 40.00] <- 45.00
-fb23$Typha <- as.double(fb23$Typha)
-fb23$Typha <- fb23$Typha/100
+fb23 <- fb23 %>% 
+  mutate(Typha = case_when(
+    Typha == "<1" ~ 0.5,
+    Typha == ">99" ~ 99.5,
+    Typha == "1" ~ 5,
+    Typha == "10" ~ 15,
+    Typha == "20" ~ 25,
+    Typha == "30" ~ 35,
+    Typha == "40" ~ 45,
+    Typha == "50" ~ 55,
+    Typha == "60" ~ 65,
+    Typha == "70" ~ 75,
+    Typha == "80" ~ 85,
+    Typha == "90" ~ 95,
+    Typha == "0" ~ 0.25, #add in a trace amount
+    Typha == "" ~ 0.25,
+    is.na(Typha) ~ 0.25)) %>% 
+  mutate(Typha = as.double(Typha)) %>% 
+  mutate(Typha = Typha/100)
 
-unique(fb23$BOMA)
-fb23$BOMA[fb23$BOMA == ""] <- 0
-fb23$BOMA[fb23$BOMA == "<1"] <- 0.5
-fb23$BOMA[fb23$BOMA == 0] <- 0.25
-fb23$BOMA[fb23$BOMA == 1.00] <- 5.00
-fb23$BOMA <- as.double(fb23$BOMA)
-fb23$BOMA <- fb23$BOMA/100
+fb23 <- fb23 %>% 
+  mutate(BOMA = case_when(
+    BOMA == "<1" ~ 0.5,
+    BOMA == ">99" ~ 99.5,
+    BOMA == "1" ~ 5,
+    BOMA == "10" ~ 15,
+    BOMA == "20" ~ 25,
+    BOMA == "30" ~ 35,
+    BOMA == "40" ~ 45,
+    BOMA == "50" ~ 55,
+    BOMA == "60" ~ 65,
+    BOMA == "70" ~ 75,
+    BOMA == "80" ~ 85,
+    BOMA == "90" ~ 95,
+    BOMA == "0" ~ 0.25, #add in a trace amount
+    BOMA == "" ~ 0.25,
+    is.na(BOMA) ~ 0.25)) %>% 
+  mutate(BOMA = as.double(BOMA)) %>% 
+  mutate(BOMA = BOMA/100)
 
-unique(fb23$DISP)
-fb23$DISP[fb23$DISP == ""] <- 0
-fb23$DISP[fb23$DISP == "<1"] <- 0.5
-fb23$DISP[fb23$DISP == 0] <- 0.25
-fb23$DISP[fb23$DISP == 1.00] <- 5.00
-fb23$DISP[fb23$DISP == 10.00] <- 15.00
-fb23$DISP <- as.double(fb23$DISP)
-fb23$DISP <- fb23$DISP/100
+fb23 <- fb23 %>% 
+  mutate(DISP = case_when(
+    DISP == "<1" ~ 0.5,
+    DISP == ">99" ~ 99.5,
+    DISP == "1" ~ 5,
+    DISP == "10" ~ 15,
+    DISP == "20" ~ 25,
+    DISP == "30" ~ 35,
+    DISP == "40" ~ 45,
+    DISP == "50" ~ 55,
+    DISP == "60" ~ 65,
+    DISP == "70" ~ 75,
+    DISP == "80" ~ 85,
+    DISP == "90" ~ 95,
+    DISP == "0" ~ 0.25, #add in a trace amount
+    DISP == "" ~ 0.25,
+    is.na(DISP) ~ 0.25)) %>% 
+  mutate(DISP = as.double(DISP)) %>% 
+  mutate(DISP = DISP/100)
 
-unique(fb23$SCAC)
-fb23$SCAC[is.na(fb23$SCAC)] <- 0
-fb23$SCAC[fb23$SCAC == 1.00] <- 5.00
-fb23$SCAC[fb23$SCAC == 0] <- 0.25
-fb23$SCAC[fb23$SCAC == 10.00] <- 15.00
-fb23$SCAC[fb23$SCAC == 20.00] <- 25.00
-fb23$SCAC <- as.double(fb23$SCAC)
-fb23$SCAC <- fb23$SCAC/100
+fb23 <- fb23 %>% 
+  mutate(SCAC = case_when(
+    SCAC == "<1" ~ 0.5,
+    SCAC == ">99" ~ 99.5,
+    SCAC == "1" ~ 5,
+    SCAC == "10" ~ 15,
+    SCAC == "20" ~ 25,
+    SCAC == "30" ~ 35,
+    SCAC == "40" ~ 45,
+    SCAC == "50" ~ 55,
+    SCAC == "60" ~ 65,
+    SCAC == "70" ~ 75,
+    SCAC == "80" ~ 85,
+    SCAC == "90" ~ 95,
+    SCAC == "0" ~ 0.25, #add in a trace amount
+    SCAC == "" ~ 0.25,
+    is.na(SCAC) ~ 0.25)) %>% 
+  mutate(SCAC = as.double(SCAC)) %>% 
+  mutate(SCAC = SCAC/100)
 
-unique(fb23$SCAM)
-fb23$SCAM[fb23$SCAM == ""] <- 0
-fb23$SCAM[fb23$SCAM == "<1"] <- 0.5
-fb23$SCAM[fb23$SCAM == 0] <- 0.25
-fb23$SCAM[fb23$SCAM == 1.00] <- 5.00
-fb23$SCAM[fb23$SCAM == 10.00] <- 15.00
-fb23$SCAM[fb23$SCAM == 30.00] <- 35.00
-fb23$SCAM <- as.double(fb23$SCAM)
-fb23$SCAM <- fb23$SCAM/100
+fb23 <- fb23 %>% 
+  mutate(SCAM = case_when(
+    SCAM == "<1" ~ 0.5,
+    SCAM == ">99" ~ 99.5,
+    SCAM == "1" ~ 5,
+    SCAM == "10" ~ 15,
+    SCAM == "20" ~ 25,
+    SCAM == "30" ~ 35,
+    SCAM == "40" ~ 45,
+    SCAM == "50" ~ 55,
+    SCAM == "60" ~ 65,
+    SCAM == "70" ~ 75,
+    SCAM == "80" ~ 85,
+    SCAM == "90" ~ 95,
+    SCAM == "0" ~ 0.25, #add in a trace amount
+    SCAM == "" ~ 0.25,
+    is.na(SCAM) ~ 0.25)) %>% 
+  mutate(SCAM = as.double(SCAM)) %>% 
+  mutate(SCAM = SCAM/100)
 
-unique(fb23$RUMA)
-fb23$RUMA[is.na(fb23$RUMA)] <- 0
-fb23$RUMA[fb23$RUMA == 1.00] <- 5.00
-fb23$RUMA[fb23$RUMA == 0] <- 0.25
-fb23$RUMA[fb23$RUMA == 20.00] <- 25.00
-fb23$RUMA[fb23$RUMA == 10.00] <- 15.00
-fb23$RUMA[fb23$RUMA == 30.00] <- 35.00
-fb23$RUMA[fb23$RUMA == 40.00] <- 45.00
-fb23$RUMA[fb23$RUMA == 50.00] <- 55.00
-fb23$RUMA <- as.double(fb23$RUMA)
-fb23$RUMA <- fb23$RUMA/100
+fb23 <- fb23 %>% 
+  mutate(RUMA = case_when(
+    RUMA == "<1" ~ 0.5,
+    RUMA == ">99" ~ 99.5,
+    RUMA == "1" ~ 5,
+    RUMA == "10" ~ 15,
+    RUMA == "20" ~ 25,
+    RUMA == "30" ~ 35,
+    RUMA == "40" ~ 45,
+    RUMA == "50" ~ 55,
+    RUMA == "60" ~ 65,
+    RUMA == "70" ~ 75,
+    RUMA == "80" ~ 85,
+    RUMA == "90" ~ 95,
+    RUMA == "0" ~ 0.25, #add in a trace amount
+    RUMA == "" ~ 0.25,
+    is.na(RUMA) ~ 0.25)) %>% 
+  mutate(RUMA = as.double(RUMA)) %>% 
+  mutate(RUMA = RUMA/100)
 
-unique(fb23$RUST)
-fb23$RUST[is.na(fb23$RUST)] <- 0
-fb23$RUST[fb23$RUST == 1.00] <- 5.00
-fb23$RUST[fb23$RUST == 0] <- 0.25
-fb23$RUST <- as.double(fb23$RUST)
-fb23$RUST <- fb23$RUST/100
+fb23 <- fb23 %>% 
+  mutate(RUST = case_when(
+    RUST == "<1" ~ 0.5,
+    RUST == ">99" ~ 99.5,
+    RUST == "1" ~ 5,
+    RUST == "10" ~ 15,
+    RUST == "20" ~ 25,
+    RUST == "30" ~ 35,
+    RUST == "40" ~ 45,
+    RUST == "50" ~ 55,
+    RUST == "60" ~ 65,
+    RUST == "70" ~ 75,
+    RUST == "80" ~ 85,
+    RUST == "90" ~ 95,
+    RUST == "0" ~ 0.25, #add in a trace amount
+    RUST == "" ~ 0.25,
+    is.na(RUST) ~ 0.25)) %>% 
+  mutate(RUST = as.double(RUST)) %>% 
+  mutate(RUST = RUST/100)
 
 glimpse(fb23)
 
@@ -697,17 +1360,10 @@ min(fb23$Measurement.3)
 max(fb23$Measurement.3)
 
 #Add a new section for invasives and natives
-df <- fb23 %>%
-  dplyr::select("PHAU", "Typha", "RUST") %>%
-  mutate(Invasive = rowSums(.,na.rm = T))
-df1 <- fb23 %>%
-  dplyr::select("BOMA", "SCAC",
-         "SCAM",  "RUMA", 
-         "DISP") %>%
-  mutate(Native = rowSums(.,na.rm = T))
-
-fb23$Invasive.Cover <- df$Invasive
-fb23$Native.Cover <- df1$Native
+fb23 <- fb23 %>% 
+  rowwise() %>% 
+  mutate(Invasive.Cover = sum(PHAU, Typha, RUST, na.rm = T),
+         Native.Cover = sum(BOMA, SCAC, SCAM, RUMA, DISP, na.rm = T))
 
 max(fb23$Invasive.Cover, na.rm = T)
 max(fb23$Native.Cover, na.rm = T)

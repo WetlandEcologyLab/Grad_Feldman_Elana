@@ -14,207 +14,212 @@ glimpse(cover_dat)
 #0s are nudged to a trace value and 100s are nudged to .995 so we can use the beta distribution
 
 #TOTAL
-unique(cover_dat$Total)
-cover_dat$Total[cover_dat$Total == "<1"] <- 0.005
-cover_dat$Total[cover_dat$Total == "1"] <- .05
-cover_dat$Total[cover_dat$Total == "10"] <- .15
-cover_dat$Total[cover_dat$Total == "20"] <- .25
-cover_dat$Total[cover_dat$Total == "30"] <- .35
-cover_dat$Total[cover_dat$Total == "40"] <- .45
-cover_dat$Total[cover_dat$Total == "50"] <- .55
-cover_dat$Total[cover_dat$Total == "60"] <- .65
-cover_dat$Total[cover_dat$Total == "70"] <- .75
-cover_dat$Total[cover_dat$Total == "80"] <- .85
-cover_dat$Total[cover_dat$Total == "90"] <- .95
-cover_dat$Total[cover_dat$Total == ">99"] <- .995
-cover_dat$Total <- as.numeric(cover_dat$Total)
-unique(cover_dat$Total)
+cover_dat <- cover_dat %>% 
+  mutate(Total = case_when(
+    Total == "<1" ~ 0.005,
+    Total == ">99" ~ .995,
+    Total == "1" ~ .05,
+    Total == "10" ~ .15,
+    Total == "20" ~ .25,
+    Total == "30" ~ .35,
+    Total == "40" ~ .45,
+    Total == "50" ~ .55,
+    Total == "60" ~ .65,
+    Total == "70" ~ .75,
+    Total == "80" ~ .85,
+    Total == "90" ~ .95,
+    Total == "0" ~ 0)) %>% 
+  mutate(Total = as.double(Total))
 
 #PHRAG
-unique(cover_dat$Phrag)
-cover_dat$Phrag[cover_dat$Phrag == "<1"] <- 0.005
-cover_dat$Phrag[cover_dat$Phrag == "1"] <- .05
-cover_dat$Phrag[cover_dat$Phrag == "10"] <- .15
-cover_dat$Phrag[cover_dat$Phrag == "20"] <- .25
-cover_dat$Phrag[cover_dat$Phrag == "30"] <- .35
-cover_dat$Phrag[cover_dat$Phrag == "40"] <- .45
-cover_dat$Phrag[cover_dat$Phrag == "50"] <- .55
-cover_dat$Phrag[cover_dat$Phrag == "60"] <- .65
-cover_dat$Phrag[cover_dat$Phrag == "70"] <- .75
-cover_dat$Phrag[cover_dat$Phrag == "80"] <- .85
-cover_dat$Phrag[cover_dat$Phrag == "90"] <- .95
-cover_dat$Phrag[cover_dat$Phrag == ">99"] <- .995
-cover_dat$Phrag <- as.numeric(cover_dat$Phrag)
-unique(cover_dat$Phrag)
+cover_dat <- cover_dat %>% 
+  mutate(Phrag = case_when(
+    Phrag == "<1" ~ 0.005,
+    Phrag == ">99" ~ .995,
+    Phrag == "1" ~ .05,
+    Phrag == "10" ~ .15,
+    Phrag == "20" ~ .25,
+    Phrag == "30" ~ .35,
+    Phrag == "40" ~ .45,
+    Phrag == "50" ~ .55,
+    Phrag == "60" ~ .65,
+    Phrag == "70" ~ .75,
+    Phrag == "80" ~ .85,
+    Phrag == "90" ~ .95,
+    Phrag == "0" ~ 0)) %>% 
+  mutate(Phrag = as.double(Phrag))
 
 #EUMA
-unique(cover_dat$EUMA)
-cover_dat$EUMA[cover_dat$EUMA == "<1"] <- 0.005
-cover_dat$EUMA[cover_dat$EUMA == "1"] <- .05
-cover_dat$EUMA[cover_dat$EUMA == "10"] <- .15
-cover_dat$EUMA[cover_dat$EUMA == "20"] <- .25
-cover_dat$EUMA[cover_dat$EUMA == "30"] <- .35
-cover_dat$EUMA[cover_dat$EUMA == "40"] <- .45
-cover_dat$EUMA[cover_dat$EUMA == "50"] <- .55
-cover_dat$EUMA[cover_dat$EUMA == "60"] <- .65
-cover_dat$EUMA[cover_dat$EUMA == "70"] <- .75
-cover_dat$EUMA[cover_dat$EUMA == "80"] <- .85
-cover_dat$EUMA[cover_dat$EUMA == "90"] <- .95
-cover_dat$EUMA[cover_dat$EUMA == ">99"] <- .995
-cover_dat$EUMA <- as.numeric(cover_dat$EUMA)
-unique(cover_dat$EUMA)
+cover_dat <- cover_dat %>% 
+  mutate(EUMA = case_when(
+    EUMA == "<1" ~ 0.005,
+    EUMA == ">99" ~ .995,
+    EUMA == "1" ~ .05,
+    EUMA == "10" ~ .15,
+    EUMA == "20" ~ .25,
+    EUMA == "30" ~ .35,
+    EUMA == "40" ~ .45,
+    EUMA == "50" ~ .55,
+    EUMA == "60" ~ .65,
+    EUMA == "70" ~ .75,
+    EUMA == "80" ~ .85,
+    EUMA == "90" ~ .95,
+    EUMA == "0" ~ 0)) %>% 
+  mutate(EUMA = as.double(EUMA))
 
 #SOCA
-unique(cover_dat$SOCA)
-cover_dat$SOCA[cover_dat$SOCA == "<1"] <- 0.005
-cover_dat$SOCA[cover_dat$SOCA == "1"] <- .05
-cover_dat$SOCA[cover_dat$SOCA == "10"] <- .15
-cover_dat$SOCA[cover_dat$SOCA == "20"] <- .25
-cover_dat$SOCA[cover_dat$SOCA == "30"] <- .35
-cover_dat$SOCA[cover_dat$SOCA == "40"] <- .45
-cover_dat$SOCA[cover_dat$SOCA == "50"] <- .55
-cover_dat$SOCA[cover_dat$SOCA == "60"] <- .65
-cover_dat$SOCA[cover_dat$SOCA == "70"] <- .75
-cover_dat$SOCA[cover_dat$SOCA == "80"] <- .85
-cover_dat$SOCA[cover_dat$SOCA == "90"] <- .95
-cover_dat$SOCA[cover_dat$SOCA == ">99"] <- .995
-cover_dat$SOCA <- as.numeric(cover_dat$SOCA)
-unique(cover_dat$SOCA)
+cover_dat <- cover_dat %>% 
+  mutate(SOCA = case_when(
+    SOCA == "<1" ~ 0.005,
+    SOCA == ">99" ~ .995,
+    SOCA == "1" ~ .05,
+    SOCA == "10" ~ .15,
+    SOCA == "20" ~ .25,
+    SOCA == "30" ~ .35,
+    SOCA == "40" ~ .45,
+    SOCA == "50" ~ .55,
+    SOCA == "60" ~ .65,
+    SOCA == "70" ~ .75,
+    SOCA == "80" ~ .85,
+    SOCA == "90" ~ .95,
+    SOCA == "0" ~ 0)) %>% 
+  mutate(SOCA = as.double(SOCA))
 
 #EUOC
-unique(cover_dat$EUOC)
-cover_dat$EUOC[cover_dat$EUOC == "<1"] <- 0.005
-cover_dat$EUOC[cover_dat$EUOC == "1"] <- .05
-cover_dat$EUOC[cover_dat$EUOC == "10"] <- .15
-cover_dat$EUOC[cover_dat$EUOC == "20"] <- .25
-cover_dat$EUOC[cover_dat$EUOC == "30"] <- .35
-cover_dat$EUOC[cover_dat$EUOC == "40"] <- .45
-cover_dat$EUOC[cover_dat$EUOC == "50"] <- .55
-cover_dat$EUOC[cover_dat$EUOC == "60"] <- .65
-cover_dat$EUOC[cover_dat$EUOC == "70"] <- .75
-cover_dat$EUOC[cover_dat$EUOC == "80"] <- .85
-cover_dat$EUOC[cover_dat$EUOC == "90"] <- .95
-cover_dat$EUOC[cover_dat$EUOC == ">99"] <- .995
-cover_dat$EUOC <- as.numeric(cover_dat$EUOC)
-unique(cover_dat$EUOC)
+cover_dat <- cover_dat %>% 
+  mutate(EUOC = case_when(
+    EUOC == "<1" ~ 0.005,
+    EUOC == ">99" ~ .995,
+    EUOC == "1" ~ .05,
+    EUOC == "10" ~ .15,
+    EUOC == "20" ~ .25,
+    EUOC == "30" ~ .35,
+    EUOC == "40" ~ .45,
+    EUOC == "50" ~ .55,
+    EUOC == "60" ~ .65,
+    EUOC == "70" ~ .75,
+    EUOC == "80" ~ .85,
+    EUOC == "90" ~ .95,
+    EUOC == "0" ~ 0)) %>% 
+  mutate(EUOC = as.double(EUOC))
 
 #BOMA
-unique(cover_dat$BOMA)
-cover_dat$BOMA[cover_dat$BOMA == "<1"] <- 0.005
-cover_dat$BOMA[cover_dat$BOMA == "1"] <- .05
-cover_dat$BOMA[cover_dat$BOMA == "10"] <- .15
-cover_dat$BOMA[cover_dat$BOMA == "20"] <- .25
-cover_dat$BOMA[cover_dat$BOMA == "30"] <- .35
-cover_dat$BOMA[cover_dat$BOMA == "40"] <- .45
-cover_dat$BOMA[cover_dat$BOMA == "50"] <- .55
-cover_dat$BOMA[cover_dat$BOMA == "60"] <- .65
-cover_dat$BOMA[cover_dat$BOMA == "70"] <- .75
-cover_dat$BOMA[cover_dat$BOMA == "80"] <- .85
-cover_dat$BOMA[cover_dat$BOMA == "90"] <- .95
-cover_dat$BOMA[cover_dat$BOMA == ">99"] <- .995
-cover_dat$BOMA <- as.numeric(cover_dat$BOMA)
-unique(cover_dat$BOMA)
+cover_dat <- cover_dat %>% 
+  mutate(BOMA = case_when(
+    BOMA == "<1" ~ 0.005,
+    BOMA == ">99" ~ .995,
+    BOMA == "1" ~ .05,
+    BOMA == "10" ~ .15,
+    BOMA == "20" ~ .25,
+    BOMA == "30" ~ .35,
+    BOMA == "40" ~ .45,
+    BOMA == "50" ~ .55,
+    BOMA == "60" ~ .65,
+    BOMA == "70" ~ .75,
+    BOMA == "80" ~ .85,
+    BOMA == "90" ~ .95,
+    BOMA == "0" ~ 0)) %>% 
+  mutate(BOMA = as.double(BOMA))
 
 #SCAC
-unique(cover_dat$SCAC)
-cover_dat$SCAC[cover_dat$SCAC == "<1"] <- 0.005
-cover_dat$SCAC[cover_dat$SCAC == "1"] <- .05
-cover_dat$SCAC[cover_dat$SCAC == "10"] <- .15
-cover_dat$SCAC[cover_dat$SCAC == "20"] <- .25
-cover_dat$SCAC[cover_dat$SCAC == "30"] <- .35
-cover_dat$SCAC[cover_dat$SCAC == "40"] <- .45
-cover_dat$SCAC[cover_dat$SCAC == "50"] <- .55
-cover_dat$SCAC[cover_dat$SCAC == "60"] <- .65
-cover_dat$SCAC[cover_dat$SCAC == "70"] <- .75
-cover_dat$SCAC[cover_dat$SCAC == "80"] <- .85
-cover_dat$SCAC[cover_dat$SCAC == "90"] <- .95
-cover_dat$SCAC[cover_dat$SCAC == ">99"] <- .995
-cover_dat$SCAC[cover_dat$SCAC == " <1"] <- 0.05
-cover_dat$SCAC <- as.numeric(cover_dat$SCAC)
-unique(cover_dat$SCAC)
+cover_dat$SCAC[cover_dat$SCAC == " <1"] <- "<1"
+cover_dat <- cover_dat %>% 
+  mutate(SCAC = case_when(
+    SCAC == "<1" ~ 0.005,
+    SCAC == ">99" ~ .995,
+    SCAC == "1" ~ .05,
+    SCAC == "10" ~ .15,
+    SCAC == "20" ~ .25,
+    SCAC == "30" ~ .35,
+    SCAC == "40" ~ .45,
+    SCAC == "50" ~ .55,
+    SCAC == "60" ~ .65,
+    SCAC == "70" ~ .75,
+    SCAC == "80" ~ .85,
+    SCAC == "90" ~ .95,
+    SCAC == "0" ~ 0)) %>% 
+  mutate(SCAC = as.double(SCAC))
 
 #SCAM
-unique(cover_dat$SCAM)
-cover_dat$SCAM[cover_dat$SCAM == "<1"] <- 0.005
-cover_dat$SCAM[cover_dat$SCAM == "1"] <- .05
-cover_dat$SCAM[cover_dat$SCAM == "10"] <- .15
-cover_dat$SCAM[cover_dat$SCAM == "20"] <- .25
-cover_dat$SCAM[cover_dat$SCAM == "30"] <- .35
-cover_dat$SCAM[cover_dat$SCAM == "40"] <- .45
-cover_dat$SCAM[cover_dat$SCAM == "50"] <- .55
-cover_dat$SCAM[cover_dat$SCAM == "60"] <- .65
-cover_dat$SCAM[cover_dat$SCAM == "70"] <- .75
-cover_dat$SCAM[cover_dat$SCAM == "80"] <- .85
-cover_dat$SCAM[cover_dat$SCAM == "90"] <- .95
-cover_dat$SCAM[cover_dat$SCAM == ">99"] <- .995
-cover_dat$SCAM[cover_dat$SCAM == " <1"] <- 0.05
-cover_dat$SCAM <- as.numeric(cover_dat$SCAM)
-unique(cover_dat$SCAM)
+cover_dat <- cover_dat %>% 
+  mutate(SCAM = case_when(
+    SCAM == "<1" ~ 0.005,
+    SCAM == ">99" ~ .995,
+    SCAM == "1" ~ .05,
+    SCAM == "10" ~ .15,
+    SCAM == "20" ~ .25,
+    SCAM == "30" ~ .35,
+    SCAM == "40" ~ .45,
+    SCAM == "50" ~ .55,
+    SCAM == "60" ~ .65,
+    SCAM == "70" ~ .75,
+    SCAM == "80" ~ .85,
+    SCAM == "90" ~ .95,
+    SCAM == "0" ~ 0)) %>% 
+  mutate(SCAM = as.double(SCAM))
 
 #DISP
-unique(cover_dat$DISP)
-cover_dat$DISP[cover_dat$DISP == "<1"] <- 0.005
-cover_dat$DISP[cover_dat$DISP == "1"] <- .05
-cover_dat$DISP[cover_dat$DISP == "10"] <- .15
-cover_dat$DISP[cover_dat$DISP == "20"] <- .25
-cover_dat$DISP[cover_dat$DISP == "30"] <- .35
-cover_dat$DISP[cover_dat$DISP == "40"] <- .45
-cover_dat$DISP[cover_dat$DISP == "50"] <- .55
-cover_dat$DISP[cover_dat$DISP == "60"] <- .65
-cover_dat$DISP[cover_dat$DISP == "70"] <- .75
-cover_dat$DISP[cover_dat$DISP == "80"] <- .85
-cover_dat$DISP[cover_dat$DISP == "90"] <- .95
-cover_dat$DISP[cover_dat$DISP == ">99"] <- .995
-cover_dat$DISP[cover_dat$DISP == " <1"] <- 0.05
-cover_dat$DISP <- as.numeric(cover_dat$DISP)
-unique(cover_dat$DISP)
+cover_dat <- cover_dat %>% 
+  mutate(DISP = case_when(
+    DISP == "<1" ~ 0.005,
+    DISP == ">99" ~ .995,
+    DISP == "1" ~ .05,
+    DISP == "10" ~ .15,
+    DISP == "20" ~ .25,
+    DISP == "30" ~ .35,
+    DISP == "40" ~ .45,
+    DISP == "50" ~ .55,
+    DISP == "60" ~ .65,
+    DISP == "70" ~ .75,
+    DISP == "80" ~ .85,
+    DISP == "90" ~ .95,
+    DISP == "0" ~ 0)) %>% 
+  mutate(DISP = as.double(DISP))
 
 #MUAS
-unique(cover_dat$MUAS)
-cover_dat$MUAS[cover_dat$MUAS == "<1"] <- 0.005
-cover_dat$MUAS[cover_dat$MUAS == "1"] <- .05
-cover_dat$MUAS[cover_dat$MUAS == "10"] <- .15
-cover_dat$MUAS[cover_dat$MUAS == "20"] <- .25
-cover_dat$MUAS[cover_dat$MUAS == "30"] <- .35
-cover_dat$MUAS[cover_dat$MUAS == "40"] <- .45
-cover_dat$MUAS[cover_dat$MUAS == "50"] <- .55
-cover_dat$MUAS[cover_dat$MUAS == "60"] <- .65
-cover_dat$MUAS[cover_dat$MUAS == "70"] <- .75
-cover_dat$MUAS[cover_dat$MUAS == "80"] <- .85
-cover_dat$MUAS[cover_dat$MUAS == "90"] <- .95
-cover_dat$MUAS[cover_dat$MUAS == ">99"] <- .995
-cover_dat$MUAS[cover_dat$MUAS == " <1"] <- 0.05
-cover_dat$MUAS <- as.numeric(cover_dat$MUAS)
-unique(cover_dat$MUAS)
+cover_dat$MUAS[cover_dat$MUAS == " <1"] <- "<1"
+cover_dat <- cover_dat %>% 
+  mutate(MUAS = case_when(
+    MUAS == "<1" ~ 0.005,
+    MUAS == ">99" ~ .995,
+    MUAS == "1" ~ .05,
+    MUAS == "10" ~ .15,
+    MUAS == "20" ~ .25,
+    MUAS == "30" ~ .35,
+    MUAS == "40" ~ .45,
+    MUAS == "50" ~ .55,
+    MUAS == "60" ~ .65,
+    MUAS == "70" ~ .75,
+    MUAS == "80" ~ .85,
+    MUAS == "90" ~ .95,
+    MUAS == "0" ~ 0)) %>% 
+  mutate(MUAS = as.double(MUAS))
 
 #PUNU
-unique(cover_dat$PUNU)
-cover_dat$PUNU[cover_dat$PUNU == "<1"] <- 0.005
-cover_dat$PUNU[cover_dat$PUNU == "1"] <- .05
-cover_dat$PUNU[cover_dat$PUNU == "10"] <- .15
-cover_dat$PUNU[cover_dat$PUNU == "20"] <- .25
-cover_dat$PUNU[cover_dat$PUNU == "30"] <- .35
-cover_dat$PUNU[cover_dat$PUNU == "40"] <- .45
-cover_dat$PUNU[cover_dat$PUNU == "50"] <- .55
-cover_dat$PUNU[cover_dat$PUNU == "60"] <- .65
-cover_dat$PUNU[cover_dat$PUNU == "70"] <- .75
-cover_dat$PUNU[cover_dat$PUNU == "80"] <- .85
-cover_dat$PUNU[cover_dat$PUNU == "90"] <- .95
-cover_dat$PUNU[cover_dat$PUNU == ">99"] <- .995
-cover_dat$PUNU[cover_dat$PUNU == " <1"] <- 0.05
-cover_dat$PUNU <- as.numeric(cover_dat$PUNU)
-unique(cover_dat$PUNU)
+cover_dat <- cover_dat %>% 
+  mutate(PUNU = case_when(
+    PUNU == "<1" ~ 0.005,
+    PUNU == ">99" ~ .995,
+    PUNU == "1" ~ .05,
+    PUNU == "10" ~ .15,
+    PUNU == "20" ~ .25,
+    PUNU == "30" ~ .35,
+    PUNU == "40" ~ .45,
+    PUNU == "50" ~ .55,
+    PUNU == "60" ~ .65,
+    PUNU == "70" ~ .75,
+    PUNU == "80" ~ .85,
+    PUNU == "90" ~ .95,
+    PUNU == "0" ~ 0)) %>% 
+  mutate(PUNU = as.double(PUNU))
 
 #make the date a date
 cover_dat$Date <- lubridate::mdy(cover_dat$Date)
 
 #Split tub column into mix, density, and phrag presence
 cover_dat <- cover_dat %>% 
-  separate(col = "Tub", into = c("Mix", "Other"))
-
-cover_dat <- cover_dat %>% 
+  separate(col = "Tub", into = c("Mix", "Other")) %>% 
   separate(col = "Other", into = c("Density", "Phrag_Presence"), sep=1)
-
 
 #check it
 unique(cover_dat$Mix)
@@ -228,10 +233,13 @@ cover_dat <- cover_dat %>%
   mutate(Phrag = ifelse(Mix == "PHAU", Total, Phrag))
 
 #Name the mixes
-cover_dat$Mix[cover_dat$Mix == 1] <- "Forb"
-cover_dat$Mix[cover_dat$Mix == 2] <- "Grass"
-cover_dat$Mix[cover_dat$Mix == 3] <- "Bulrush"
-cover_dat$Mix[cover_dat$Mix == 4] <- "Equal"
+cover_dat <- cover_dat %>% 
+  mutate(Mix = case_when(
+    Mix == 1 ~ "Forb",
+    Mix == 2 ~ "Grass",
+    Mix == 3 ~ "Bulrush",
+    Mix == 4 ~ "Equal",
+    Mix == "PHAU" ~ "PHAU"))
 
 #Make everything factors
 cover_dat$Mix <- as.factor(cover_dat$Mix)
@@ -244,7 +252,6 @@ glimpse(biomass_dat)
 #change column name
 colnames(biomass_dat)[4] <- "Weight"
 
-
 #add a trace value to my "T" values and then make numeric
 biomass_dat$Weight[biomass_dat$Weight == "T"] <- 0.5
 biomass_dat$Weight <- as.numeric(biomass_dat$Weight)
@@ -254,9 +261,7 @@ biomass_dat$Species[biomass_dat$Species == "PHAU "] <- "PHAU"
 
 #split the tub column into mix, density, and phrag presence
 biomass_dat <- biomass_dat %>% 
-  separate(col = "Tub", into = c("Mix", "Other"))
-
-biomass_dat <- biomass_dat %>% 
+  separate(col = "Tub", into = c("Mix", "Other")) %>% 
   separate(col = "Other", into = c("Density", "Phrag_Presence"), sep=1)
 
 # make wide so each species is a different column
@@ -273,10 +278,13 @@ biomass_dat %>%
 biomass_dat[60, 5] <- 0 #should be a 
 
 # Name the mixes
-biomass_dat$Mix[biomass_dat$Mix == 1] <- "Forb"
-biomass_dat$Mix[biomass_dat$Mix == 2] <- "Grass"
-biomass_dat$Mix[biomass_dat$Mix == 3] <- "Bulrush"
-biomass_dat$Mix[biomass_dat$Mix == 4] <- "Equal"
+biomass_dat <- biomass_dat %>% 
+  mutate(Mix = case_when(
+    Mix == 1 ~ "Forb",
+    Mix == 2 ~ "Grass",
+    Mix == 3 ~ "Bulrush",
+    Mix == 4 ~ "Equal",
+    Mix == "PHAU" ~ "PHAU"))
 
 #make everything a factor
 biomass_dat$Mix <- as.factor(biomass_dat$Mix)

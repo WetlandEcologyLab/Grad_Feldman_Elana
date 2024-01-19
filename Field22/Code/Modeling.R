@@ -777,7 +777,6 @@ plotResiduals(mdf.m4, form= useData$Density)
 emmip(mdf.m4, Group~Density, CIs = T)
 car::Anova(mdf.m4) #nothing significant
 
-
 ###FB Invasive Cover Dunnett's Test####
 mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
 mdf.m2 <- glmmTMB(Invasive.Cover ~ gd
