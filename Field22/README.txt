@@ -10,7 +10,7 @@ renv, renv.lock - renv library of all the packages as they were when these analy
 Overview of data cleaning process:
 -0s were entered as needed in the Measurement columns
 -Plot values were separated into Group and Density columns
--More forms of cleaning were completed in the DataCleaning.R file: values were changed to mid-points, 0s for cover estimates were nudged to a trace value, column names were fixed 
+-More forms of cleaning were completed in the DataCleaning.R file: values were changed to mid-points and made decimals, trace values were added to the 0s for the beta distribution, values greater than 99% were made .995 for the beta distribution, some column names were changed
 
 Species codes used in scripts:
 ALPR = Alopecurus pratensis 
