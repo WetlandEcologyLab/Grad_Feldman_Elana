@@ -1,7 +1,7 @@
 #Load everything ####
 
 #load data
-load("Data/main_dfs.RData")
+load("main_dfs.RData")
 
 #load packages 
 #All package version saved in renv.lock 
@@ -2548,7 +2548,7 @@ upr.r1
 #Now graph the quantile regression of relationship between r and PHAU cover
 
 #load data
-values <- read.csv("Data/r_values.csv") #this csv was made by manually entering all the results from above into a spreadsheet
+values <- read.csv("r_values.csv") #this csv was made by manually entering all the results from above into a spreadsheet
 
 #Clean up the sheet
 dat <- values %>% 
@@ -2558,12 +2558,18 @@ dat <- values %>%
                values_to = "r_value") %>% 
   separate(col = "Tub",
            into = c("Density", "Phrag_Presence"),
-           sep = 1) 
+           sep = 1)
+
+#Refactor so all the values match greenhouse
+dat$Phrag_Presence <- factor(dat$Phrag_Presence, levels = c("W", "WO"),
+         labels = c("Present", "Absent")) 
+dat$Density <- factor(dat$Density, levels = c("L", "H"),
+                             labels = c("Low", "High")) 
 
 #First, we need to make a table that includes both of these values
 dat2 <- greenhouse %>%
   filter(Date_Cleaned == "2022-05-16",
-         Phrag_Presence == "W") %>%
+         Phrag_Presence == "Present") %>%
   select(Species, Density, Phrag_Presence, Block, Cover.Phrag) %>%
   left_join(dat, by = c("Species", "Density", "Phrag_Presence"))
 
@@ -2582,7 +2588,7 @@ dat2 %>%
                 aes(color = factor(..quantile..)),
                 size = 1) +
   xlab("Intrinsic Rate of Growth (*r*)") +
-  ylab("Proportional *P.australis* Cover") +
+  ylab("Proportional *P. australis* Cover") +
   labs(color = "Quantiles") +
   theme(axis.title.y = ggtext::element_markdown(),
         axis.title.x = ggtext::element_markdown()) +

@@ -49,15 +49,15 @@ data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 str_1 <- data1$.group
 str_2 <- gsub(" ", "", str_1)
 
-ggplot(data = data1, aes(x = Phrag_Presence, y = response * 100,
+ggplot(data = data1, aes(x = Phrag_Presence, y = response,
                          color = Phrag_Presence)) +
   geom_point(size=2) +
-  geom_errorbar(aes(ymin = 100*(response - SE),
-                    ymax = 100*(response+SE)),
+  geom_errorbar(aes(ymin = (response - SE),
+                    ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Presence of *Phragmites*", y = "Model Predicted Native Cover (%)",
+  labs(x="Presence of *Phragmites*", y = "Model Predicted Proportional Native Cover",
        title = "(a)") +
-  geom_text(aes(label = str_2,  y = response * 100),
+  geom_text(aes(label = str_2,  y = response),
             nudge_x = 0.1, color = "black") +
   theme(axis.title.x = ggtext::element_markdown(),
         plot.title = element_text(size = 9),
@@ -72,12 +72,12 @@ data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 str_3 <- data2$.group
 str_4 <- gsub(" ", "", str_3)
 
-ggplot(data = data2, aes(x = reorder(Species,response), y = response * 100, color = Density)) +
+ggplot(data = data2, aes(x = reorder(Species,response), y = response, color = Density)) +
   geom_point(size=2) +
-  geom_errorbar(aes(ymin = 100*(response - SE),
-                    ymax = 100*(response+SE)),
+  geom_errorbar(aes(ymin = (response - SE),
+                    ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Species", y = "Model Predicted Native Cover (%)",
+  labs(x="Species", y = "Model Predicted Proportional Native Cover",
        title = '(b)') +
   geom_text(aes(label = str_4,
                 vjust = .9, hjust = "left"),
@@ -162,33 +162,38 @@ emmip(mdf.m5, Species~Density, CIs = T)
 emm <- emmeans(mdf.m5, pairwise ~ Species, adjust = "tukey", type = "response")
 data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 
-ggplot(data = data1, aes(x = reorder(Species, response), y = response * 100)) +
+ggplot(data = data1, aes(x = reorder(Species, response), y = response)) +
   geom_point(size=2) +
-  ylim(c(0, 40)) +
-  geom_errorbar(aes(ymin = 100*(response - SE),
-                    ymax = 100*(response+SE)),
+  ylim(c(0, .5)) +
+  geom_errorbar(aes(ymin = (response - SE),
+                    ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Species", y = "Model Predicted *Phragmites* Cover (%)") +
-  geom_text(aes(label = .group,  y = response * 100),
-            nudge_y = 4, nudge_x = .3, size = 3) +
+  labs(x="Native Species Identity", y = "",
+       title = "(b)") +
+  geom_text(aes(label = .group,  y = response),
+            nudge_y = .05, size = 3) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
-        axis.title.y = ggtext::element_markdown())
+        axis.title.y = ggtext::element_markdown(size = 11),
+        plot.title = element_text(size = 9))
 
 ###Graph of model means for density####
 emm <- emmeans(mdf.m5, pairwise ~ Density, adjust = "tukey", type = "response")
 data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 
-ggplot(data = data2, aes(x = Density, y = response * 100, color = Density)) +
-  ylim(c(0, 30)) +
+ggplot(data = data2, aes(x = Density, y = response, color = Density)) +
+  ylim(c(0, .3)) +
   geom_point(size=2) +
-  geom_errorbar(aes(ymin = 100*(response - SE),
-                    ymax = 100*(response+SE)),
+  geom_errorbar(aes(ymin = (response - SE),
+                    ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Density", y = "Model Predicted *Phragmites* Cover (%)") +
-  geom_text(aes(label = .group,  y = response * 100),
+  labs(x="Density", y = "Model Predicted <br> Proportional *P. australis* Cover",
+       title = "(a)") +
+  geom_text(aes(label = .group,  y = response),
             nudge_x = .2, color = "black") +
-  theme(axis.title.y = ggtext::element_markdown()) +
-  scale_color_manual(values = color2)
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = element_text(size = 9),
+        legend.position = "none") +
+  scale_color_manual(values = color2) 
 
 ##Phrag biomass ~ Species * Density####
 mdf <- biomass %>%
@@ -218,26 +223,32 @@ ggplot(data = data3, aes(x = reorder(Species, response), y = response)) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Species", y = "Model Predicted *Phragmites* Biomass (g)") +
+  labs(x="Native Species Identity", y = "",
+       title = "(d)") +
   geom_text(aes(label = .group,  y = response),
             nudge_y = 3.5, size = 3) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
-        axis.title.y = ggtext::element_markdown())
+        axis.title.y = ggtext::element_markdown(size = 11),
+        plot.title = element_text(size = 9))
 
 ###Model means graph of density####
 emm <- emmeans(mdf.m6, pairwise ~ Density, adjust = "tukey", type = "response")
 data4 <- multcomp::cld(emm$emmeans, alpha = 0.05, Letters = letters)
 
-ggplot(data = data4, aes(x = Density, y = response)) +
+ggplot(data = data4, aes(x = Density, y = response, color = Density)) +
   ylim(c(0, 20)) +
   geom_point(size=2) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Density", y = "Model Predicted *Phragmites* Biomass (g)") +
+  labs(x="Density", y = "Model Predicted <br> *P. australis* Biomass (g)",
+       title = "(c)") +
   geom_text(aes(label = .group,  y = response),
-            nudge_x = .2) +
-  theme(axis.title.y = ggtext::element_markdown())
+            nudge_x = .2, color = "black") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = element_text(size = 9),
+        legend.position = "none") +
+  scale_color_manual(values = color2)
 
 #Individual species models to run to help with interpretation####
 #Need to update the species name for each species of interest and run individually for each

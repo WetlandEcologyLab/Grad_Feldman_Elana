@@ -45,20 +45,21 @@ emm1 <- emmeans(mdf.m1, pairwise~Density, CIs = T, type = 'response', adjust = '
 data1 <- multcomp::cld(emm1, alpha = 0.1, Letters = letters)
 
 ((a <- ggplot(data = data1, aes(x = Density, y = response, color = Density)) +
-  geom_point(size=2) +
-  geom_errorbar(aes(ymin = (response - SE),
-                    ymax = (response+SE)),
-                width=0, size=0.5) +
-  labs(x="Native Seeding Density", y = "Model Predicted <br> Proportional Native Cover",
-       title = '(a)') +
-  ylim(.7, 1) +
-  geom_text(aes(label = .group,  y = response),
-            nudge_x = 0.2, color = "black") +
-  scale_color_manual(values = c("darkblue", "red3")) +
-  theme(legend.position = "none",
-        axis.title.y = ggtext::element_markdown(),
-        plot.title = element_text(size = 9)) +
-  coord_cartesian(ylim = c(0, 1))
+    geom_point(size=2) +
+    geom_errorbar(aes(ymin = (response - SE),
+                      ymax = (response+SE)),
+                  width=0, size=0.5) +
+    labs(x="Native Seeding Density", y = "Model Predicted <br> Proportional Native Cover",
+         title = '(a)') +
+    ylim(.7, 1) +
+    geom_text(aes(label = .group,  y = response),
+              nudge_x = 0.2, color = "black") +
+    scale_color_manual(values = c("darkblue", "red3")) +
+    theme(legend.position = "none",
+          axis.title.y = ggtext::element_markdown(size = 10),
+          axis.title.x = element_text(size = 10),
+          plot.title = element_text(size = 9)) +
+    coord_cartesian(ylim = c(0, 1))
 ))
 
 #Phrag Cover~Density * Seed Mix####
@@ -101,8 +102,8 @@ data2 <- multcomp::cld(emm2, alpha = 0.1, Letters = letters)
     geom_errorbar(aes(ymin = (response - SE),
                       ymax = (response+SE)),
                   width=0, size=0.5) +
-    labs(x="Native Seeding Density", y = "Model Predicted Proportional *P.australis* Cover",
-         title = "(a)") +
+    labs(x="Native Seeding Density", y = "Model Predicted <br> Proportional *P.australis* Cover",
+         title = "(c)") +
     geom_text(aes(label = .group,  y = response),
               nudge_x = 0.2, color = "black") +
     ylim(0, .1) +
@@ -163,7 +164,8 @@ data3 <- multcomp::cld(emm3, alpha = 0.1, Letters = letters)
               nudge_x = 0.2, color = "black")+
     scale_color_manual(values = c("darkblue", "red3"))+
     theme(legend.position = "none",
-          axis.title.y = ggtext::element_markdown(),
+          axis.title.y = ggtext::element_markdown(size = 10),
+          axis.title.x = element_text(size = 10),
           plot.title = element_text(size = 9))+
     coord_cartesian(ylim = c(0, 80))
 ))
@@ -203,8 +205,8 @@ data5 <- multcomp::cld(emm5, alpha = 0.1, Letters = letters)
     geom_errorbar(aes(ymin = (emmean - SE),
                       ymax = (emmean+SE)),
                   width=0, size=0.5) +
-    labs(x="Native Seeding Density", y = "Model Predicted *P. australis* Biomass (g)",
-         title = '(b)') +
+    labs(x="Native Seeding Density", y = "Model Predicted <br> *P. australis* Biomass (g)",
+         title = '(d)') +
     ylim(0, 10) +
     geom_text(aes(label = .group,  y = emmean),
               nudge_x = 0.2, color = "black") +

@@ -9,10 +9,10 @@ load("main_dfs.RData")
 #Graph set up####
 #refactor the species so that PHAU is first in the cover graphs and rest are alphabetical
 greenhouse$Species <- factor(greenhouse$Species,
-                             levels = c('PHAU',"BICE", 'BOMA', 'DISP', 'EPCI', 'EUMA',
+                             levels = c("BICE", 'BOMA', 'DISP', 'EPCI', 'EUMA',
                                         'EUOC', 'HENU', 'JUAR', 'JUGE', 'JUTO',
                                         'MUAS', 'PUNU', 'RUMA', 'SCAC', 'SCAM',
-                                        'SCPU', 'SOCA', 'SYCI'))
+                                        'SCPU', 'SOCA', 'SYCI', 'PHAU'))
 
 #change the NAs in Density to Control since they are all the control tubs
 greenhouse$Density <- as.character(greenhouse$Density)
@@ -25,7 +25,7 @@ biomass$Density[is.na(biomass$Density)] <- "Control"
 biomass$Density <- factor(biomass$Density, levels = c("Control", "Low", "High"),
                           labels = c("Control","Low", "High"))
 
-#Native species graphs####
+#Cover over time graphs ####
 ## Native cover over time by species, phrag presence, and density ####
 
 cover_native <- greenhouse %>% 
@@ -44,13 +44,42 @@ cover_native <- greenhouse %>%
   theme(legend.position = 'bottom',
         axis.text.x = element_text(angle = 45, hjust = 0.9),
         legend.title =ggtext::element_markdown(size = 10),
-        legend.text = ggtext::element_markdown(size = 9)) +
-  labs(x = "Date", y = "Proportional Native Cover", color = "Density", shape = "*P.australis* Presence") +
+        legend.text = ggtext::element_markdown(size = 9),
+        plot.title = ggtext::element_markdown(size = 9)) +
+  labs(x = "Date", y = "Proportional Native Cover", 
+       color = "Density", shape = "*P.australis* Presence",
+       title = "(a)") +
   scale_color_manual(values = c("darkblue", "red3")) + #change the legend labels
   scale_shape(labels = c("Present", "Absent"))
 
 cover_native
 
+## Phrag cover over time by density ####
+cover_phrag <- greenhouse %>%
+  ggplot(aes(x = Date_Cleaned, y = Cover.Phrag, color= Density)) +
+  #using the means of the blocks
+  stat_summary(aes(group = Density),
+               fun = mean, geom = "point") +
+  #add a line to connect the dates
+  stat_summary(aes(group = Density),
+               fun = mean, geom = "line") +
+  #error bars added
+  stat_summary(aes(group = Density, width = 0),
+               fun.data = mean_se, geom = "errorbar") +
+  facet_wrap(~Species) +
+  theme(legend.position = 'bottom',
+        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
+  labs(x = "Date", y = "Proportional *P. australis* Cover", 
+       color = "Native Seeding Density",
+       title = "(b)") +
+  scale_color_manual(values = c("#7D7D7D","darkblue", "red3")) +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(size = 9))+
+  coord_cartesian(ylim = c(0, 0.4))
+
+cover_phrag
+
+#Biomass graphs ####
 ## Native biomass by species, density, and phrag presence####
 #manually reoder biomass graphs so that species are in order from smallest to largest
 biomass %>% 
@@ -84,30 +113,6 @@ biomass_native <- biomass %>%
         legend.position = "bottom") 
 
 biomass_native
-
-#Phragmites graphs####
-
-## Phrag cover over time by density ####
-cover_phrag <- greenhouse %>%
-  ggplot(aes(x = Date_Cleaned, y = Cover.Phrag, color= Density)) +
-  #using the means of the blocks
-  stat_summary(aes(group = Density),
-               fun = mean, geom = "point") +
-  #add a line to connect the dates
-  stat_summary(aes(group = Density),
-               fun = mean, geom = "line") +
-  #error bars added
-  stat_summary(aes(group = Density, width = 0),
-               fun.data = mean_se, geom = "errorbar") +
-  facet_wrap(~Species) +
-  theme(legend.position = 'bottom',
-        axis.text.x = element_text(angle = 45, hjust = 0.9)) +
-  labs(x = "Date", y = "*P.australis* Proportional Cover", color = "Native Seeding Density") +
-  scale_color_manual(values = c("#7D7D7D","darkblue", "red3")) +
-  theme(axis.title.y = ggtext::element_markdown())+
-  coord_cartesian(ylim = c(0, 0.4))
-
-cover_phrag
 
 #Reduction Graphs####
 
