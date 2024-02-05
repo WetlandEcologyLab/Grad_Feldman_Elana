@@ -779,7 +779,8 @@ data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
   ggtitle("BICE") +
   theme(axis.title.x = ggtext::element_markdown(),
         plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
         legend.position = "none") +
   scale_color_manual(values = c("darkblue", "red3"))+
   ylim(0, 120)
@@ -809,7 +810,10 @@ data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
     ggtitle("DISP") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -840,7 +844,10 @@ str_3 <- gsub(" ", "", data3$.group)
   ggtitle("EPCI") +
   theme(axis.title.x = ggtext::element_markdown(),
         plot.title = element_text(size = 9),
-        axis.text.x = element_text(angle = 25, hjust = 0.9),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
         legend.position = "none") +
   scale_color_manual(values = c("darkblue", "red3"))+
   ylim(0, 120)
@@ -873,7 +880,10 @@ str_4 <- gsub(" ", "", data4$.group)
     ggtitle("EUOC") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -905,7 +915,8 @@ data5
     ggtitle("EUMA") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -937,7 +948,10 @@ data6
     ggtitle("HENU") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -969,7 +983,10 @@ data7
     ggtitle("JUAR") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -1001,7 +1018,10 @@ data8
     ggtitle("MUAS") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -1034,7 +1054,8 @@ str_9 <- gsub(" ", "", data9$.group)
     ggtitle("PUNU") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -1066,7 +1087,10 @@ data10
     ggtitle("RUMA") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -1098,7 +1122,10 @@ data11
     ggtitle("SCAC") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -1130,7 +1157,10 @@ data12
     ggtitle("SCPU") +
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
-          axis.text.x = element_text(angle = 25, hjust = 0.9),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
           legend.position = "none") +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
@@ -1164,7 +1194,7 @@ dat_list <- c("a", " ab", " ab", "b")
     theme(axis.title.x = ggtext::element_markdown(),
           plot.title = element_text(size = 9),
           axis.text.x = element_text(angle = 25, hjust = 0.9),
-          legend.position = "left") +
+          legend.position = "left")  +
     scale_color_manual(values = c("darkblue", "red3"))+
     ylim(0, 120)
 ))
@@ -1172,5 +1202,8 @@ dat_list <- c("a", " ab", " ab", "b")
 BICE_b + DISP_b + EPCI_b + EUOC_b + EUMA_b + HENU_b + 
   JUAR_b + MUAS_b + PUNU_b + RUMA_b + SCAC_b + SCPU_b + SOCA_b +
   guide_area() +
-  plot_layout(guides = "collect")
+  plot_layout(guides = "collect") & theme(plot.margin = margin(t = 0,
+                                                              r = 0,
+                                                              b = 0, 
+                                                              l = 0))
 
