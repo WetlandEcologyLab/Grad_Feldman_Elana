@@ -410,7 +410,7 @@ cover_dat %>%
   facet_grid(~Mix) +   
   scale_color_manual(values = c("#7D7D7D", "darkblue", "red3"))
 
-# Raw biomass data over time ####
+# Raw biomass data####
 ##Native biomass####
 biomass_dat %>%
   group_by(Mix, Density, Phrag_Presence, Replicate) %>% 
@@ -567,5 +567,63 @@ final.dat$Mix <- factor(final.dat$Mix,
     ylim(0, 2)
 ))
 
-# Combine graphs ####
-a+b
+# Final Phrag Cover and Biomass ####
+##Cover####
+#NAs for density and phrag_presence are throwing off the graph so I changed them
+cover_dat$Density <- as.character(cover_dat$Density) #can't change while a factor
+cover_dat$Phrag_Presence <- as.character(cover_dat$Phrag_Presence)
+cover_dat$Density[is.na(cover_dat$Density)] <- "Control" #changed name
+cover_dat$Phrag_Presence[is.na(cover_dat$Phrag_Presence)] <- "Control"
+cover_dat$Density <- as.factor(cover_dat$Density) #made a factor again
+cover_dat$Phrag_Presence <- as.factor(cover_dat$Phrag_Presence)
+
+a <- cover_dat %>% 
+  filter(Phrag_Presence != "WO",
+         Date == "2023-03-01") %>% 
+  mutate(Mix = factor(Mix,
+                      levels = c("Bulrush", "Forb", "Grass",  "Equal", "PHAU")),
+         Density = factor(Density,
+                      levels = c("Control", "L", "H"),
+                      labels = c("Control", "Low", "High"))) %>% 
+  ggplot(aes(x = Mix, y = Phrag, color = Density)) +
+  stat_summary(aes(group = interaction(Mix, Density)),
+               fun = mean, geom = "point") +
+  stat_summary(aes(group = interaction(Mix, Density)),
+               fun.data = mean_se, geom = "errorbar", width = 0) +
+  labs(x = "Seed Mix", y = "Proportional *P. australis* Cover", title = "(a)")+
+  scale_color_manual(values = c("#7D7D7D", "darkblue", "red3"))+
+  scale_x_discrete(labels = c("Grass" = "Grass",
+                              'Bulrush' = "Bulrush",
+                              'Forb' = 'Forb',
+                              'Equal'= "Equal",
+                              'PHAU' = 'Control')) +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = element_text(size = 9)) +
+  coord_cartesian(ylim = c(0, 0.25))
+
+##Biomass####
+#changing the NA values to C so they don't throw off graph
+biomass_dat$Density <- as.character(biomass_dat$Density) #cant change while a factor
+biomass_dat$Density[is.na(biomass_dat$Density)] <- "C" #rename
+biomass_dat$Density <- factor(biomass_dat$Density, #make a factor and change labels
+                              levels = c("C", "L", "H"),
+                              labels = c("Control", "Low", "High"))
+
+b <- biomass_dat %>% 
+  mutate(Mix = factor(Mix,
+                      levels = c("Bulrush", "Forb", "Grass",  "Equal", "PHAU"))) %>% 
+  ggplot(aes(x = Mix, y = PHAU, color = Density)) +
+  stat_summary(aes(group = interaction(Mix, Density)),
+               fun = mean, geom = "point") +
+  stat_summary(aes(group = interaction(Mix, Density)),
+               fun.data = mean_se, geom = "errorbar", width = 0) +
+  labs(x = "Seed Mix", y = "*P. australis* Biomass (g)", title = "(b)")+
+  scale_color_manual(values = c("#7D7D7D", "darkblue", "red3"))+
+  scale_x_discrete(labels = c("Grass" = "Grass",
+                              'Bulrush' = "Bulrush",
+                              'Forb' = 'Forb',
+                              'Equal'= "Equal",
+                              'PHAU' = 'Control')) +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = element_text(size = 9)) +
+  coord_cartesian(ylim = c(0, 16))
