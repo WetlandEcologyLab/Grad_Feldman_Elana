@@ -341,16 +341,20 @@ data2a <- multcomp::cld(emm2a, alpha = 0.1, Letters = letters)
 
 #re-factor everything to help with graphing
 data2a$gd <- factor(data2a$gd,
-                    levels = c("10:C","5:H", "5:L", "4:H", "4:L", 
-                               "3:H", "3:L", "2:H", "2:L", 
-                               "1:H", "1:L"),
-                    labels = c("Control","Annual Forb High", "Annual Forb Low", 
-                               "Bulrush High", "Bulrush Low",
-                               "Grass High", "Grass Low",
-                               "Rush High", "Rush Low", 
-                               "Perennial Forb High", "Perennial Forb Low"))
+                    levels = c("10:C","5:L", "5:H", "4:L", "4:H", 
+                               "3:L", "3:H", "2:L", "2:H", 
+                               "1:L", "1:H"),
+                    labels = c("Control","Annual Forb Low", "Annual Forb High", 
+                               "Bulrush Low", "Bulrush High",
+                               "Grass Low", "Grass High",
+                               "Rush Low", "Rush High", 
+                               "Perennial Forb Low", "Perennial Forb High"))
 
-b <- ggplot(data = data2a, aes(x = gd, y = response)) +
+data2a$density <- c("Control", "Low", "High", "High", 
+                    "Low", "Low", "High", "High", "Low",
+                    "Low", "High")
+
+b <- ggplot(data = data2a, aes(x = gd, y = response, color = density)) +
   geom_point(size=2) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
@@ -362,8 +366,12 @@ b <- ggplot(data = data2a, aes(x = gd, y = response)) +
             hjust = 0.05, vjust = .1) +
   theme(axis.title.y = ggtext::element_markdown(),
         axis.text.x = element_text(angle = 45, hjust = 0.9),
-        plot.title = element_text(size = 9)) +
-  coord_cartesian(ylim = c(0, 1))
+        plot.title = element_text(size = 9),
+        legend.position = "none") +
+  coord_cartesian(ylim = c(0, 1)) +
+  scale_color_manual(values = c("Control" = "black",
+                                "Low" = "darkblue", 
+                                "High" = "red3"))
 
 a + b +plot_layout(width = c(1, 2))
 
