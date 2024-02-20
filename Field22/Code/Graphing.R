@@ -185,7 +185,7 @@ fb2$SPP[fb2$SPP == "Cheno"] <- "CHEN" #change name to species code
 #refactor to help with graphing
 fb2$Group <- factor(fb2$Group, levels = c(10, 5, 4, 3, 2, 1),
                     labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
-                               "Perennial forb"))
+                               "Perennial Forb"))
 
 
 fb2$Density <- factor(fb2$Density, levels = c("C", "H", "L"),
@@ -216,7 +216,8 @@ fb_stack <- (fb2 %>%
                                'SYCI'))+ #use the manual colors I specified above
   labs(x = "", y = "Relative Abundance", 
        fill = "Species", title = "(a) Farmington Bay 2022") +
-  theme(plot.title = element_text(size = 9)))
+  theme(plot.title = element_text(size = 9),
+        legend.position = "none"))
 
 ##Utah Lake 2022####
 
@@ -244,7 +245,7 @@ ul2 <- ul%>%
 #refactor to help with graphing
 ul2$Group <- factor(ul2$Group, levels = c(10, 5, 4, 3, 2, 1),
                     labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
-                               "Perennial forb"))
+                               "Perennial Forb"))
 ul2$Density <- factor(ul2$Density, levels = c("C", "H", "L"),
                       labels = c("Control", "High", "Low"))
 
@@ -279,7 +280,8 @@ ul_stack <- ul2 %>%
                                'SYCI'))+ #manually add colors specified above
   labs(x = "", y = "Relative Abundance", 
        fill = "Species", title = "(b) Utah Lake 2022") +
-  theme(plot.title = element_text(size = 9))
+  theme(plot.title = element_text(size = 9),
+        legend.position = "none")
 
 
 
@@ -304,7 +306,7 @@ fb232 <- fb23 %>%
 #refactor to help with graphing
 fb232$Group <- factor(fb232$Group, levels = c(10, 5, 4, 3, 2, 1),
                       labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
-                                 "Perennial forb"))
+                                 "Perennial Forb"))
 fb232$Density <- factor(fb232$Density, levels = c("C","H", "L"),
                         labels = c('Control',"High", "Low"))
 
@@ -327,11 +329,14 @@ fb23_stack <- fb232 %>%
   labs(x = "Native Seeding Density", y  = "Relative Abundance", 
        title = "(c) Farmington Bay 2023",
        fill = "Species") +
-  theme(plot.title = element_text(size = 9))
+  theme(plot.title = element_text(size = 9),
+        legend.position = "none")
+
+fb_stack / ul_stack / fb23_stack + plot_layout(guides = "collect")
 
 ##Make a legend for all the graphs ####
 #Make an arbitrary graph using all the names and colors
-names <- c("BICE", 'BOMA', 'CHEN', 'CYER',
+Species <- c("BICE", 'BOMA', 'CHEN', 'CYER',
             'DISP', 'EUMA', 'EUOC', 'LEFA',
             'RACY', 'RUMA', 'SAAM', 'SARU',
             'SCAC', 'SCAM', 'SCPU', 'SYCI')
@@ -342,9 +347,9 @@ cp6 <- c("#A6CEE3", "#1F78B4" ,'plum1', 'springgreen',"#B2DF8A", "#33A02C", "#FB
          'paleturquoise',  "#FDBF6F" ,'khaki1',  'orchid4',"#FF7F00", "#CAB2D6", 'olivedrab3', "#6A3D9A") #colors to use in the graph
 
 legend_graph <- legend_data %>% 
-  ggplot(aes(x = names, y = values, color = names)) +
-  geom_point() +
-  scale_color_manual(values = cp6,
+  ggplot(aes(fill = Species, y = values, x = Species)) +
+  geom_bar(position = "fill", stat = "identity") +
+  scale_fill_manual(values = cp6,
                     labels = c("BICE",
                                "BOMA",
                                'CHEN',
@@ -361,9 +366,8 @@ legend_graph <- legend_data %>%
                                'SCAM',
                                'SCPU',
                                'SYCI'))
-#take the legend and attach it to the other graphs
-final_legend <- get_legend(legend_graph)
-fb_stack / ul_stack / fb23_stack + plot_layout(guides = "collect")
+#save this graph, cut out the legend, and add it to the other graph in Canva
+
 
 
 # Graph of Shannon Diversity Index####
