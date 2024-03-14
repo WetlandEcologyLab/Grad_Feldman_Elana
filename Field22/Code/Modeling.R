@@ -57,7 +57,7 @@ emmeans(mdf.m1, pairwise~Group, type = "response", adjust = 'tukey') #not signif
 
 ###FB Native Cover Dunnett's Test ####
 mdf$gd <- factor(mdf$Group:mdf$Density) #compares every combination of treatment and control
-mdf.m3 <- glmmTMB(Native.Cover ~ gd 
+mdf.m3 <- glmmTMB(Native.Cover ~ gd
                   + (1|Block),
                   data = mdf,
                   family = beta_family, 
@@ -302,13 +302,13 @@ data1a$Group <- factor(data1a$Group,
                        labels = c("Annual Forb", "Bulrush", "Grass",
                                   "Rush", "Perennial Forb"))
 
-a <- ggplot(data = data1a, aes(x = Group, y = response)) +
+b <- ggplot(data = data1a, aes(x = Group, y = response)) +
   geom_point(size=2) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5) +
   labs(x="Seed Mix", y = "Model Predicted <br> Proportional Bulrush Cover",
-       title = "(a)") +
+       title = "(b)") +
   geom_text(aes(label = .group,  y = response),
             color = "black",
             hjust = 0.05) +
@@ -354,13 +354,13 @@ data2a$density <- c("Control", "Low", "High", "High",
                     "Low", "Low", "High", "High", "Low",
                     "Low", "High")
 
-b <- ggplot(data = data2a, aes(x = gd, y = response, color = density)) +
+a <- ggplot(data = data2a, aes(x = gd, y = response, color = density)) +
   geom_point(size=2) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Seed Mix", y = "",
-       title = "(b)") +
+  labs(x="Seed Mix", y = "Model Predicted <br> Proportional Bulrush Cover",
+       title = "(a)") +
   geom_text(aes(label = .group,  y = response),
             color = "black",
             hjust = 0.05, vjust = .1) +
@@ -369,11 +369,11 @@ b <- ggplot(data = data2a, aes(x = gd, y = response, color = density)) +
         plot.title = element_text(size = 9),
         legend.position = "none") +
   coord_cartesian(ylim = c(0, 1)) +
-  scale_color_manual(values = c("Control" = "black",
+  scale_color_manual(values = c("Control" = "#7D7D7D",
                                 "Low" = "darkblue", 
                                 "High" = "red3"))
 
-a + b +plot_layout(width = c(1, 2))
+a + b +plot_layout(width = c(2, 1))
 
 ### Grasses ####
 #select only the bulrushes and the last sampling date
@@ -845,7 +845,7 @@ simulateResiduals(mdf.m2, plot = T)
 plotResiduals(mdf.m2, form= fb23_af$gd) 
 #Cannot get to fit - Do not use
 
-### Bulrushes ####
+## Bulrushes ####
 #select only bulrushes and the last date of sampling
 fb23_b <- fb23 %>% 
   filter(Date == "2023-09-11") %>% 

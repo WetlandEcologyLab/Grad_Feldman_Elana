@@ -49,13 +49,13 @@ data1 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 str_1 <- data1$.group
 str_2 <- gsub(" ", "", str_1)
 
-ggplot(data = data1, aes(x = Phrag_Presence, y = response,
+a <- ggplot(data = data1, aes(x = Phrag_Presence, y = response,
                          color = Phrag_Presence)) +
   geom_point(size=2) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
                 width=0, size=0.5) +
-  labs(x="Presence of *Phragmites*", y = "Model Predicted Proportional Native Cover",
+  labs(x="Presence of *P. australis*", y = "Model Predicted Proportional Native Cover",
        title = "(a)") +
   geom_text(aes(label = str_2,  y = response),
             nudge_x = 0.1, color = "black") +
@@ -72,7 +72,7 @@ data2 <- multcomp::cld(emm$emmeans, alpha = 0.1, Letters = letters)
 str_3 <- data2$.group
 str_4 <- gsub(" ", "", str_3)
 
-ggplot(data = data2, aes(x = reorder(Species,response), y = response, color = Density)) +
+b <- ggplot(data = data2, aes(x = reorder(Species,response), y = response, color = Density)) +
   geom_point(size=2) +
   geom_errorbar(aes(ymin = (response - SE),
                     ymax = (response+SE)),
@@ -88,6 +88,8 @@ ggplot(data = data2, aes(x = reorder(Species,response), y = response, color = De
         axis.title.y = ggtext::element_markdown(),
         plot.title = element_text(size = 9)) +
   scale_color_manual(values = color2)
+
+a + b + plot_layout(width = c(1, 2))
 
 ##Native biomass~Phrag Presence * Density * Species####
 mdf <- biomass %>%

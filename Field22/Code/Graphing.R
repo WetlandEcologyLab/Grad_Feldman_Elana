@@ -12,8 +12,8 @@ library(gridExtra)
 ##Farmington Bay 2022####
 graph_data <-fb %>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, Cheno, Typha, 
-         BOMA, DISP, EUMA, SYCI, LEFA, SCAC, BICE, BIFR, EUOC, MUAS, SCAM, RUMA,
-         RUST, Unk_Bulrush, SARU, Tamarisk) %>%  #remove unnecessary columns
+                BOMA, DISP, EUMA, SYCI, LEFA, SCAC, BICE, BIFR, EUOC, MUAS, SCAM, RUMA,
+                RUST, Unk_Bulrush, SARU, Tamarisk) %>%  #remove unnecessary columns
   pivot_longer(
     cols = 6:24, 
     names_to = "SPP",
@@ -33,10 +33,10 @@ graph_data <-fb %>%
 
 #refactor to help with the graphing
 graph_data$Group <- factor(graph_data$Group, levels = c(10, 5, 4, 3, 2, 1),
-                    labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
-                               "Perennial forb"))
+                           labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
+                                      "Perennial forb"))
 graph_data$Density <- factor(graph_data$Density, levels = c('C',"H", "L"),
-                      labels = c("Control","High", "Low"))
+                             labels = c("Control","High", "Low"))
 
 ((fb_plot <- graph_data %>%
     ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
@@ -61,8 +61,8 @@ graph_data$Density <- factor(graph_data$Density, levels = c('C',"H", "L"),
 ##Utah Lake 2022 ####
 graph_data2 <- ul%>%
   dplyr::select(Block, Plot, Group, Density, Date, PHAU, BOMA, BICE, CYER, RUMA,
-         Cheno, SCAC, SCPU, SCAM, DISP, RACY, ASIN, ALPR, CYDA, Unk_Bulrush, BY, SYCI,
-         EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) %>% #remove unnecessary columns
+                Cheno, SCAC, SCPU, SCAM, DISP, RACY, ASIN, ALPR, CYDA, Unk_Bulrush, BY, SYCI,
+                EUOC, TYPHA, Tamarisk, POPE, POFR, SAAM, BASC, LASE) %>% #remove unnecessary columns
   pivot_longer(
     cols = 6:30, 
     names_to = "SPP",
@@ -83,10 +83,10 @@ graph_data2 <- ul%>%
 
 #refactor everything to help with graphing
 graph_data2$Group <- factor(graph_data2$Group, levels = c(10, 5, 4, 3, 2, 1),
-                           labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
-                                      "Perennial forb"))
+                            labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
+                                       "Perennial forb"))
 graph_data2$Density <- factor(graph_data2$Density, levels = c('C',"H", "L"),
-                             labels = c("Control","High", "Low"))
+                              labels = c("Control","High", "Low"))
 
 ((ul_plot <- graph_data2 %>%
     ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
@@ -96,7 +96,7 @@ graph_data2$Density <- factor(graph_data2$Density, levels = c('C',"H", "L"),
                  fun = mean, geom = "line") +
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
-    labs(x = "Date", y = "Proportional Cover", title = "(b) Utah Lake 2022") + 
+    labs(x = "Date", y = "Proportional Cover", title = "(c) Utah Lake 2022") + 
     scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9), #angle the x axis text
           plot.title = element_text(size = 9),
@@ -129,10 +129,10 @@ graph_data23 <-fb23 %>%
 
 #refactor to help with graphing
 graph_data23$Group <- factor(graph_data23$Group, levels = c(10, 5, 4, 3, 2, 1),
-                            labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
-                                       "Perennial forb"))
+                             labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
+                                        "Perennial forb"))
 graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"H", "L"),
-                              labels = c("Control","High", "Low"))
+                               labels = c("Control","High", "Low"))
 
 
 ((fb23_plot <- graph_data23 %>%
@@ -143,7 +143,7 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"H", "L"),
                  fun = mean, geom = "line") +
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
-    labs(x = "Date", y = "Proportional Cover", title = "(c) Farmington Bay 2023") + 
+    labs(x = "Date", y = "Proportional Cover", title = "(b) Farmington Bay 2023") + 
     scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
@@ -153,7 +153,7 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"H", "L"),
     scale_x_date(date_labels = "%b %d") #change date to month/day
 ))
 
-fb_plot / ul_plot /fb23_plot + plot_layout(guides = "collect")
+fb_plot /fb23_plot / ul_plot + plot_layout(guides = "collect")
 
 #Stacked species barchart####
 
@@ -195,29 +195,29 @@ cp <- c("#A6CEE3", "#1F78B4" ,'plum1', "#B2DF8A", "#33A02C", "#FB9A99" ,'lightcy
         "#FDBF6F" ,'orchid4',"#FF7F00", "#CAB2D6","#6A3D9A") #colors to use in the graph
 
 fb_stack <- (fb2 %>% 
-  dplyr::filter(Status == "Seeded" | 
-                  (Status == "Native" & Plot == "C"),
-                Percent_Cover >0) %>% #select species that are relevant
-  ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
-  geom_bar(position = "fill", stat = "identity") +
-  facet_grid(~Group, scale = "free") + #only show x categories relevant to the facet
-  scale_fill_manual(values = cp,
-                    labels = c('BICE',
-                               'BOMA',
-                               'CHEN',
-                               'DISP',
-                               'EUMA',
-                               'EUOC',
-                               'LEFA',
-                               'RUMA',
-                               'SARU',
-                               'SCAC',
-                               'SCAM',
-                               'SYCI'))+ #use the manual colors I specified above
-  labs(x = "", y = "Relative Abundance", 
-       fill = "Species", title = "(a) Farmington Bay 2022") +
-  theme(plot.title = element_text(size = 9),
-        legend.position = "none"))
+               dplyr::filter(Status == "Seeded" | 
+                               (Status == "Native" & Plot == "C"),
+                             Percent_Cover >0) %>% #select species that are relevant
+               ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
+               geom_bar(position = "fill", stat = "identity") +
+               facet_grid(~Group, scale = "free", space = "free") + #only show x categories relevant to the facet
+               scale_fill_manual(values = cp,
+                                 labels = c('BICE',
+                                            'BOMA',
+                                            'CHEN',
+                                            'DISP',
+                                            'EUMA',
+                                            'EUOC',
+                                            'LEFA',
+                                            'RUMA',
+                                            'SARU',
+                                            'SCAC',
+                                            'SCAM',
+                                            'SYCI'))+ #use the manual colors I specified above
+               labs(x = "Native Seeding Density", y = "Relative Abundance", 
+                    fill = "Species", title = "(a) Farmington Bay 2022") +
+               theme(plot.title = element_text(size = 9),
+                     legend.position = "none"))
 
 ##Utah Lake 2022####
 
@@ -263,7 +263,7 @@ ul_stack <- ul2 %>%
                 Percent_Cover >0) %>% #select species that are relevant
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
-  facet_grid(~Group, scale = "free") +
+  facet_grid(~Group, scale = "free", space = "free") +
   scale_fill_manual(values = cp2,
                     labels = c("BICE",
                                "BOMA",
@@ -278,8 +278,8 @@ ul_stack <- ul2 %>%
                                'SCAM',
                                'SCPU',
                                'SYCI'))+ #manually add colors specified above
-  labs(x = "", y = "Relative Abundance", 
-       fill = "Species", title = "(b) Utah Lake 2022") +
+  labs(x = "Native Seeding Density", y = "Relative Abundance", 
+       fill = "Species", title = "(c) Utah Lake 2022") +
   theme(plot.title = element_text(size = 9),
         legend.position = "none")
 
@@ -303,6 +303,21 @@ fb232 <- fb23 %>%
     TRUE ~ "Native"
   )) #label species by status (native, invasive, seeded)
 
+#need to add some 0s back in so that we can plot perennial forbs as a blank
+fb232 <- fb232 %>% 
+  dplyr::filter(Status == "Seeded" | 
+                  (Status == "Native" & Plot == "C") |
+                  (SPP == "RUMA" & Plot =="1H") | #select some perennial forbs
+                  (SPP == "RUMA" & Plot =="1L"),
+                Percent_Cover >0) 
+
+fb232 <- fb232 %>% 
+  mutate(Percent_Cover = case_when(
+    SPP == "RUMA" & Plot == "1H" ~  0, #make sure the cover is 0 for all perennial forbs
+    SPP == "RUMA" & Plot == "1L" ~  0,
+    TRUE ~ Percent_Cover
+  ))
+
 #refactor to help with graphing
 fb232$Group <- factor(fb232$Group, levels = c(10, 5, 4, 3, 2, 1),
                       labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
@@ -313,13 +328,12 @@ fb232$Density <- factor(fb232$Density, levels = c("C","H", "L"),
 fb232$SPP[fb232$SPP == "Cheno"] <- "CHEN"#change name to species code
 cp3 <- c("#1F78B4" ,"#B2DF8A", "#FDBF6F" ,"#FF7F00", "#CAB2D6") #colors to use in graph
 
+
+
 fb23_stack <- fb232 %>% 
-  dplyr::filter(Status == "Seeded" | 
-                  (Status == "Native" & Plot == "C"),
-                Percent_Cover >0) %>% #select species that are relevant
   ggplot(aes(fill = SPP, y = Percent_Cover, x = Density)) +
   geom_bar(position = "fill", stat = "identity") +
-  facet_grid(~Group, scale = "free") +
+  facet_grid(~Group, scale = "free", space = "free") +
   scale_fill_manual(values = cp3,
                     labels = c("BOMA",
                                "DISP",
@@ -327,19 +341,20 @@ fb23_stack <- fb232 %>%
                                'SCAC',
                                'SCAM'))+ #manually use colors specified above
   labs(x = "Native Seeding Density", y  = "Relative Abundance", 
-       title = "(c) Farmington Bay 2023",
+       title = "(b) Farmington Bay 2023",
        fill = "Species") +
   theme(plot.title = element_text(size = 9),
         legend.position = "none")
 
-fb_stack / ul_stack / fb23_stack + plot_layout(guides = "collect")
+
+fb_stack/ fb23_stack/ ul_stack + plot_layout(guides = "collect")
 
 ##Make a legend for all the graphs ####
 #Make an arbitrary graph using all the names and colors
 Species <- c("BICE", 'BOMA', 'CHEN', 'CYER',
-            'DISP', 'EUMA', 'EUOC', 'LEFA',
-            'RACY', 'RUMA', 'SAAM', 'SARU',
-            'SCAC', 'SCAM', 'SCPU', 'SYCI')
+             'DISP', 'EUMA', 'EUOC', 'LEFA',
+             'RACY', 'RUMA', 'SAAM', 'SARU',
+             'SCAC', 'SCAM', 'SCPU', 'SYCI')
 values <- c(rep(1, 16))
 
 legend_data <- data.frame(names, values)
@@ -368,15 +383,13 @@ legend_graph <- legend_data %>%
                                'SYCI'))
 #save this graph, cut out the legend, and add it to the other graph in Canva
 
-
-
 # Graph of Shannon Diversity Index####
 ##Farmington Bay 2022####
 #only want the final cover
 fb_di <- fb %>% 
   filter(Date == "2022-09-16") %>% 
   dplyr::select(Block, Plot, Group, Density, PHAU:RUST, SARU, Tamarisk)
-  
+
 #make all percentages
 fb_di <- mutate_if(fb_di, is.numeric, ~.*100)
 
@@ -397,26 +410,26 @@ fb_di$shannon <- div
 #Plot
 #change order of phrag presence and also labels
 fb_di$Group <- factor(fb_di$Group, levels = c(10, 5, 4, 3, 2, 1),
-                                   labels = c('Control',"Annual Forb", "Bulrush", "Grass", "Rush",  
-                                              "Perennial Forb"))
+                      labels = c('Control',"Annual Forb", "Bulrush", "Grass", "Rush",  
+                                 "Perennial Forb"))
 fb_di$Density <- factor(fb_di$Density, levels = c("C","L", "H"),
                         labels = c("Control","Low", "High"))
 
 ((a <- fb_di %>% 
-  ggplot(aes(x = Group, y = shannon, color = Density)) +
-  stat_summary(aes(group = interaction(Density, Group)),
+    ggplot(aes(x = Group, y = shannon, color = Density)) +
+    stat_summary(aes(group = interaction(Density, Group)),
                  fun = mean, geom = "point", size = 2,
-               position = position_dodge(width = .5)) +
-  stat_summary(aes(group = interaction(Density, Group), width = 0),
+                 position = position_dodge(width = .5)) +
+    stat_summary(aes(group = interaction(Density, Group), width = 0),
                  fun.data = mean_se, geom = "errorbar",
-               position = position_dodge(width = .5)) +
-  labs(y = "Mean Shannon Diversity Index", x = "Seed Mix", title = "(a) Farmington Bay 2022") +
-  scale_color_manual(values = c('#7D7D7D',"darkblue", "red3")) + #change legend labels
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        axis.title = element_text(size = 9),
-        legend.position = "blank") +
-  ylim(0, 2.5)
+                 position = position_dodge(width = .5)) +
+    labs(y = "Mean Shannon Diversity Index", x = "Seed Mix", title = "(a) Farmington Bay 2022") +
+    scale_color_manual(values = c('#7D7D7D',"darkblue", "red3")) + #change legend labels
+    theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          axis.title = element_text(size = 9),
+          legend.position = "blank") +
+    ylim(0, 2.5)
 ))
 
 ##Utah Lake 2022####
@@ -451,22 +464,22 @@ ul_di$Density <- factor(ul_di$Density, levels = c("C","L", "H"),
                         labels = c("Control","Low", "High"))
 
 ((b <- ul_di %>% 
-  ggplot(aes(x = Group, y = shannon, color = Density)) +
-  stat_summary(aes(group = interaction(Density, Group)),
-               fun = mean, geom = "point", size = 2,
-               position = position_dodge(width = .5)) +
-  stat_summary(aes(group = interaction(Density, Group), width = 0),
-               fun.data = mean_se, geom = "errorbar",
-               position = position_dodge(width = .5)) +
-  labs(y = "", x = "Seed Mix", title = "(b) Utah Lake 2022") +
+    ggplot(aes(x = Group, y = shannon, color = Density)) +
+    stat_summary(aes(group = interaction(Density, Group)),
+                 fun = mean, geom = "point", size = 2,
+                 position = position_dodge(width = .5)) +
+    stat_summary(aes(group = interaction(Density, Group), width = 0),
+                 fun.data = mean_se, geom = "errorbar",
+                 position = position_dodge(width = .5)) +
+    labs(y = "", x = "Seed Mix", title = "(b) Utah Lake 2022") +
     scale_color_manual(values = c('#7D7D7D',"darkblue", "red3")) + #change legend labels
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-        plot.title = element_text(size = 9),
-        axis.title = element_text(size = 9),
-        legend.position = "none") +
-  ylim(0, 2.5)
+    theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+          plot.title = element_text(size = 9),
+          axis.title = element_text(size = 9),
+          legend.position = "none") +
+    ylim(0, 2.5)
 ))
-  
+
 
 ## Farmington Bay 2023 ####
 #only want the final cover
@@ -494,25 +507,25 @@ fb23_di$shannon <- div
 #Plot
 #change order of phrag presence and also labels
 fb23_di$Group <- factor(fb23_di$Group, levels = c(10, 5, 4, 3, 2, 1),
-                      labels = c('Control',"Annual Forb", "Bulrush", "Grass", "Rush",  
-                                 "Perennial Forb"))
+                        labels = c('Control',"Annual Forb", "Bulrush", "Grass", "Rush",  
+                                   "Perennial Forb"))
 fb23_di$Density <- factor(fb23_di$Density, levels = c("C","L", "H"),
-                        labels = c("Control","Low", "High"))
+                          labels = c("Control","Low", "High"))
 c <- fb23_di %>% 
-    ggplot(aes(x = Group, y = shannon, color = Density)) +
-    stat_summary(aes(group = interaction(Density, Group)),
-                 fun = mean, geom = "point", size = 2,
-                 position = position_dodge(width = .5)) +
-    stat_summary(aes(group = interaction(Density, Group), width = 0),
-                 fun.data = mean_se, geom = "errorbar",
-                 position = position_dodge(width = .5)) +
-    labs(y = "", x = "Seed Mix", title= "(c) Farmington Bay 2023") +
+  ggplot(aes(x = Group, y = shannon, color = Density)) +
+  stat_summary(aes(group = interaction(Density, Group)),
+               fun = mean, geom = "point", size = 2,
+               position = position_dodge(width = .5)) +
+  stat_summary(aes(group = interaction(Density, Group), width = 0),
+               fun.data = mean_se, geom = "errorbar",
+               position = position_dodge(width = .5)) +
+  labs(y = "", x = "Seed Mix", title= "(c) Farmington Bay 2023") +
   scale_color_manual(values = c('#7D7D7D',"darkblue", "red3")) + #change legend labels
-    theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
-          plot.title = element_text(size = 9),
-          axis.title = element_text(size = 9),
-          legend.position = "right") +
-    ylim(0, 2.5)
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+        plot.title = element_text(size = 9),
+        axis.title = element_text(size = 9),
+        legend.position = "right") +
+  ylim(0, 2.5)
 
 a + b + c
 
@@ -609,3 +622,136 @@ b <- fb23 %>%
   coord_cartesian(ylim = c(0, .2))
 
 a / b + plot_layout(guides = "collect")
+
+# NMDS ####
+## FB 2022 #### 
+
+#select only the info I will need for the NMDS
+data_fb <- fb %>% 
+  filter(Date == max(Date)) %>% 
+  dplyr::select(Group, Density, PHAU:Tamarisk) 
+
+#now need remove all rows with only 0s or the NMDS cannot run
+data_fb <- data_fb[rowSums(data_fb[,3:23])>0,] #keep only the rows that add up to greater than 0 for the species columns
+
+#now select only the species cover values and make it a matrix for the NMDS
+mat_fb <- data_fb %>% 
+  dplyr::select(PHAU:Tamarisk) %>% 
+  as.matrix()
+
+# run the NMDS 
+set.seed(1) #keep track of the seed so it is reproducible 
+#tried a few different seeds but there were no notable differences
+NM_NMDS = metaMDS(mat_fb,k = 2, trymax = 250)
+
+stressplot(NM_NMDS) #.97
+NM_NMDS$stress #0.165
+NM_NMDS
+
+#extract NMDS scores (x, y coordinates) for sites
+nmds.scores <- as.data.frame(scores(NM_NMDS)$sites) 
+
+#add columns to data frame 
+nmds.scores$Density = data_fb$Density
+nmds.scores$Group = data_fb$Group
+
+##Now graph the ellipses
+##density
+plot(NM_NMDS)
+ordiellipse(NM_NMDS, groups = nmds.scores$Density, draw="polygon", col = "grey90")
+orditorp(NM_NMDS,display="species",col="red",air=0.01)
+
+#Group elipses
+ordiplot(NM_NMDS,type="n")
+plot(NM_NMDS)
+ordiellipse(NM_NMDS, groups = nmds.scores$Group, draw="polygon", col = "grey90")
+orditorp(NM_NMDS,display="species",col="red",air=0.01)
+
+
+
+## FB 2023 #### 
+
+#select only the info I will need for the NMDS
+data_fb23 <- fb23 %>% 
+  filter(Date == max(Date)) %>% 
+  dplyr::select(Group, Density, PHAU:RUST) 
+
+#now need remove all rows with only 0s or the NMDS cannot run
+data_fb23 <- data_fb23[rowSums(data_fb23[,3:10])>0,] #keep only the rows that add up to greater than 0 for the species columns
+
+#now select only the species cover values and make it a matrix for the NMDS
+mat_fb23 <- data_fb23 %>% 
+  dplyr::select(PHAU:RUST) %>% 
+  as.matrix()
+
+# run the NMDS 
+set.seed(1) #keep track of the seed so it is reproducible 
+NM_NMDS = metaMDS(mat_fb23,k = 2, trymax = 250)
+
+stressplot(NM_NMDS) #.97
+NM_NMDS$stress #0.155
+NM_NMDS
+
+#extract NMDS scores (x, y coordinates) for sites
+nmds.scores <- as.data.frame(scores(NM_NMDS)$sites) 
+
+#add columns to data frame 
+nmds.scores$Density = data_fb23$Density
+nmds.scores$Group = data_fb23$Group
+
+##Now calculate the ellipses for graphing 
+##density
+ordiplot(NM_NMDS,type="n")
+plot(NM_NMDS)
+ordiellipse(NM_NMDS, groups = nmds.scores$Density, draw="polygon", col = "grey90")
+orditorp(NM_NMDS,display="species",col="red",air=0.01)
+
+#Group elipses
+ordiplot(NM_NMDS,type="n")
+plot(NM_NMDS)
+ordiellipse(NM_NMDS, groups = nmds.scores$Group, draw="polygon", col = "grey90")
+orditorp(NM_NMDS,display="species",col="red",air=0.01)
+
+## UL 2022 #### 
+
+#select only the info I will need for the NMDS
+data_ul <- ul %>% 
+  filter(Date == max(Date)) %>% 
+  dplyr::select(Group, Density, Unk_Forb:LASE) 
+
+#now need remove all rows with only 0s or the NMDS cannot run
+data_ul <- data_ul[rowSums(data_ul[,3:23])>0,] #keep only the rows that add up to greater than 0 for the species columns
+
+#now select only the species cover values and make it a matrix for the NMDS
+mat_ul <- data_ul %>% 
+  dplyr::select(Unk_Forb:LASE) %>% 
+  as.matrix()
+
+# run the NMDS 
+set.seed(1) #keep track of the seed so it is reproducible 
+#tried a few different seeds but there were no notable differences
+NM_NMDS = metaMDS(mat_ul,k = 2, trymax = 250)
+
+stressplot(NM_NMDS) #.97
+NM_NMDS$stress #0.146
+NM_NMDS
+
+#extract NMDS scores (x, y coordinates) for sites
+nmds.scores <- as.data.frame(scores(NM_NMDS)$sites) 
+
+#add columns to data frame 
+nmds.scores$Density = data_ul$Density
+nmds.scores$Group = data_ul$Group
+
+##Now graph the ellipses
+##density
+plot(NM_NMDS)
+ordiellipse(NM_NMDS, groups = nmds.scores$Density, draw="polygon", col = "grey90")
+orditorp(NM_NMDS,display="species",col="red",air=0.01)
+
+#Group elipses
+ordiplot(NM_NMDS,type="n")
+plot(NM_NMDS)
+ordiellipse(NM_NMDS, groups = nmds.scores$Group, draw="polygon", col = "grey90")
+orditorp(NM_NMDS,display="species",col="red",air=0.01)
+
