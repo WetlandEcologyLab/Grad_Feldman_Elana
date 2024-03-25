@@ -35,8 +35,8 @@ graph_data <-fb %>%
 graph_data$Group <- factor(graph_data$Group, levels = c(10, 5, 4, 3, 2, 1),
                            labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
                                       "Perennial forb"))
-graph_data$Density <- factor(graph_data$Density, levels = c('C',"H", "L"),
-                             labels = c("Control","High", "Low"))
+graph_data$Density <- factor(graph_data$Density, levels = c('C',"L", "H"),
+                             labels = c("Control","Low", "High"))
 
 ((fb_plot <- graph_data %>%
     ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
@@ -47,7 +47,7 @@ graph_data$Density <- factor(graph_data$Density, levels = c('C',"H", "L"),
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
     labs(x = "Date", y = "Proportional Cover", title = "(a) Farmington Bay 2022") + 
-    scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
+    scale_color_manual(labels = c('Control', 'Low', 'High'), values = c('#7D7D7D',"darkblue", "red3")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9), #angle the x axis text
           plot.title = element_text(size = 9),
           strip.text.x = element_text(size = 6), #change size of facet wrap titles
@@ -85,8 +85,8 @@ graph_data2 <- ul%>%
 graph_data2$Group <- factor(graph_data2$Group, levels = c(10, 5, 4, 3, 2, 1),
                             labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
                                        "Perennial forb"))
-graph_data2$Density <- factor(graph_data2$Density, levels = c('C',"H", "L"),
-                              labels = c("Control","High", "Low"))
+graph_data2$Density <- factor(graph_data2$Density, levels = c('C',"L", "H"),
+                              labels = c("Control", "Low", "High"))
 
 ((ul_plot <- graph_data2 %>%
     ggplot(aes(x = Date, y = PC, color = Density, shape = Status)) + 
@@ -97,7 +97,7 @@ graph_data2$Density <- factor(graph_data2$Density, levels = c('C',"H", "L"),
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
     labs(x = "Date", y = "Proportional Cover", title = "(c) Utah Lake 2022") + 
-    scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
+    scale_color_manual(labels = c('Control', 'Low', 'High'), values = c('#7D7D7D',"darkblue", "red3")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9), #angle the x axis text
           plot.title = element_text(size = 9),
           strip.text.x = element_text(size = 6), #change size of the facet wrap titles
@@ -131,8 +131,8 @@ graph_data23 <-fb23 %>%
 graph_data23$Group <- factor(graph_data23$Group, levels = c(10, 5, 4, 3, 2, 1),
                              labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
                                         "Perennial forb"))
-graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"H", "L"),
-                               labels = c("Control","High", "Low"))
+graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"L", 'H'),
+                               labels = c("Control","Low", "High"))
 
 
 ((fb23_plot <- graph_data23 %>%
@@ -144,7 +144,7 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"H", "L"),
     stat_summary(aes(group = interaction(Group, Density, Status), width = 0), #calculate error bars
                  fun.data = mean_se, geom = "errorbar", size = .5) +
     labs(x = "Date", y = "Proportional Cover", title = "(b) Farmington Bay 2023") + 
-    scale_color_manual(labels = c('Control', 'High', 'Low'), values = c('#7D7D7D',"red3",  "darkblue")) +
+    scale_color_manual(labels = c('Control','Low','High'), values = c('#7D7D7D', "darkblue","red3")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
           plot.title = element_text(size = 9),
           axis.title = element_text(size = 9)) +
