@@ -188,8 +188,8 @@ fb2$Group <- factor(fb2$Group, levels = c(10, 5, 4, 3, 2, 1),
                                "Perennial Forb"))
 
 
-fb2$Density <- factor(fb2$Density, levels = c("C", "H", "L"),
-                      labels = c("Control","High", "Low"))
+fb2$Density <- factor(fb2$Density, levels = c("C", "L", "H"),
+                      labels = c("Control","Low", "High"))
 
 cp <- c("#A6CEE3", "#1F78B4" ,'plum1', "#B2DF8A", "#33A02C", "#FB9A99" ,'lightcyan', 
         "#FDBF6F" ,'orchid4',"#FF7F00", "#CAB2D6","#6A3D9A") #colors to use in the graph
@@ -246,8 +246,8 @@ ul2 <- ul%>%
 ul2$Group <- factor(ul2$Group, levels = c(10, 5, 4, 3, 2, 1),
                     labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
                                "Perennial Forb"))
-ul2$Density <- factor(ul2$Density, levels = c("C", "H", "L"),
-                      labels = c("Control", "High", "Low"))
+ul2$Density <- factor(ul2$Density, levels = c("C", "L", "H"),
+                      labels = c("Control", "Low", "High"))
 
 #change names of Cheno to be a species code
 ul2$SPP[ul2$SPP == "Cheno"] <- "CHEN"
@@ -322,8 +322,8 @@ fb232 <- fb232 %>%
 fb232$Group <- factor(fb232$Group, levels = c(10, 5, 4, 3, 2, 1),
                       labels = c("Control", "Annual Forb", "Bulrush", "Grass", "Rush",
                                  "Perennial Forb"))
-fb232$Density <- factor(fb232$Density, levels = c("C","H", "L"),
-                        labels = c('Control',"High", "Low"))
+fb232$Density <- factor(fb232$Density, levels = c("C","L", "H"),
+                        labels = c('Control',"Low", "High"))
 
 fb232$SPP[fb232$SPP == "Cheno"] <- "CHEN"#change name to species code
 cp3 <- c("#1F78B4" ,"#B2DF8A", "#FDBF6F" ,"#FF7F00", "#CAB2D6") #colors to use in graph
@@ -540,7 +540,7 @@ a <- wells_fb %>%
   geom_line() +
   geom_hline(yintercept = 0)+
   labs(x = "Date", y = "Water Depth (cm)", title = "(a) Farmington Bay 2022") +
-  ylim(-100, 30) +
+  ylim(-100, 50) +
   theme(plot.title = element_text(size = 9)) +
   scale_color_manual(values = cp) + #use specified colors
   scale_x_date(limits = as.Date(c("2022-06-01", "2022-10-01"))) #use date limits so axes line up
@@ -552,7 +552,7 @@ c <- wells_ul %>%
   geom_line()+
   geom_hline(yintercept = 0)+
   labs(x = "Date", y = "Water Depth (cm)", title = "(c) Utah Lake 2022")+
-  ylim(-100, 30)+
+  ylim(-100, 50)+
   theme(plot.title = element_text(size = 9)) +
   scale_color_manual(values = cp) + #use specified colors
   scale_x_date(limits = as.Date(c("2022-06-01", "2022-10-01"))) #use date limits so axes line up
@@ -564,7 +564,7 @@ b <- wells_2023 %>%
   geom_line()+
   geom_hline(yintercept = 0)+
   labs(x = "Date", y = "Water Depth (cm)", title = "(b) Farmington Bay 2023")+
-  ylim(-100, 30)+
+  ylim(-100, 50)+
   theme(plot.title = element_text(size = 9)) +
   scale_color_manual(values = cp)+ #use specified colors
   scale_x_date(limits = as.Date(c("2023-06-01", "2023-10-01"))) #use date limits so axes line up
