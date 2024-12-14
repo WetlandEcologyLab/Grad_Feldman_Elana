@@ -1,0 +1,31 @@
+Block,Date,Water Depth (in),Notes,Water Depth (cm),Height of Well (cm),Holding Capacity (cm),Water height (cm)
+1,7/13/23,6.8,All depths above water. Did not collect soil because too wet on 7/13/23,17.272,46.5,183.4,17.272
+2,7/13/23,9.6,,24.384,53.7,184.6,24.384
+3,7/13/23,4.8,,12.192,58.4,184.3,12.192
+4,7/13/23,5.1,,12.954,55.7,185,12.954
+5,7/13/23,4.5,,11.43,47.4,183.8,11.43
+6,7/13/23,9.3,,23.622,51.9,184.7,23.622
+1,7/28/23,6.2,All measurements in inches on 7/28/23. Above water. Still too wet to take soil samples on 7/28/23,15.748,46.5,183.4,15.748
+2,7/28/23,8.6,,21.844,53.7,184.6,21.844
+3,7/28/23,3.2,,8.128,58.4,184.3,8.128
+4,7/28/23,3.8,,9.652,55.7,185,9.652
+5,7/28/23,3.3,,8.382,47.4,183.8,8.382
+6,7/28/23,9.5,Missing well 6 cover on 7/28/23,24.13,51.9,184.7,24.13
+1,8/10/23,6.25,All measurements on 8/10/23 are in inches. Too wet to collect soil,15.875,46.5,183.4,15.875
+2,8/10/23,4,,10.16,53.7,184.6,10.16
+3,8/10/23,4.5,,11.43,58.4,184.3,11.43
+4,8/10/23,3.5,,8.89,55.7,185,8.89
+5,8/10/23,3.8,,9.652,47.4,183.8,9.652
+6,8/10/23,8.1,,20.574,51.9,184.7,20.574
+1,8/29/23,3.4,above ground,8.636,46.5,183.4,3.4
+2,8/29/23,52.2,below ground,132.588,53.7,184.6,1.688
+3,8/29/23,50.8,below ground,129.032,58.4,184.3,3.132
+4,8/29/23,50.2,below ground,127.508,55.7,185,-1.792
+5,8/29/23,55.2,below ground,140.208,47.4,183.8,3.808
+6,8/29/23,6.5,aboveground ,16.51,51.9,184.7,6.5
+1,9/11/23,,below ground - I think accidentally written in cm,124.2,46.5,183.4,-12.7
+2,9/11/23,,below ground - I think accidentally written in cm,118.4,53.7,184.6,-12.5
+3,9/11/23,,below ground - I think accidentally written in cm,122,58.4,184.3,-3.9
+4,9/11/23,,below ground - I think accidentally written in cm,116.8,55.7,185,-12.5
+5,9/11/23,,below ground - I think accidentally written in cm,126.5,47.4,183.8,-9.9
+6,9/11/23,,below ground - I think accidentally written in cm,121.4,51.9,184.7,-11.4

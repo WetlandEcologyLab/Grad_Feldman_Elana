@@ -156,7 +156,7 @@ graph_data23$Density <- factor(graph_data23$Density, levels = c('C',"L", 'H'),
 
 fb_plot /fb23_plot / ul_plot + plot_layout(guides = "collect")
 
-#Stacked species barchart - relative abundance####
+#Stacked species barchart####
 
 ##Farmington Bay 2022####
 fb2 <-fb %>%
@@ -386,7 +386,7 @@ legend_graph <- legend_data %>%
 #ggsave("legend.jpeg", dpi = 700)
 #save this graph, cut out the legend, and add it to the other graph in Canva
 
-#Stacked species barchart - total abundance####
+#Stacked species barchart####
 
 ##Farmington Bay 2022####
 fb2 <-fb %>%
@@ -706,7 +706,7 @@ pat <- c('stripe',
 ))
 
 all <- fb_stack/ fb23_stack/ ul_stack + plot_layout(guides = "collect")
-#ggsave("stacked_barchart.jpeg", width = 6, height = 8, unit = "in", dpi = 600)
+ggsave("stacked_barchart.jpeg", width = 6, height = 8, unit = "in", dpi = 600)
 
 ## Legend ####
 #make a graph of seeded species to use the legend
@@ -730,7 +730,7 @@ cp6 <- c('#009E73','darkseagreen4','chartreuse3','green4','darkolivegreen3',
     theme(legend.text = ggtext::element_markdown())
 ))
 
-#ggsave("Slegend.jpeg", dpi = 700)
+ggsave("Slegend.jpeg", dpi = 700)
 #save this graph, cut out the legend, and add it to the other graph in Canva
 
 #make a graph of native species to use the legend
@@ -756,7 +756,7 @@ cp6 <- c('cadetblue4', 'dodgerblue4', 'lightskyblue2', 'darkblue',
     theme(legend.text = ggtext::element_markdown())
 ))
 
-#ggsave("Nlegend.jpeg", dpi = 700)
+ggsave("Nlegend.jpeg", dpi = 700)
 #save this graph, cut out the legend, and add it to the other graph in Canva
 
 #make a graph of invasive species to use the legend
@@ -782,7 +782,7 @@ cp6 <- c('tomato', 'sienna1', 'tan2', 'coral2',
     theme(legend.text = ggtext::element_markdown())
 ))
 
-#ggsave("Ilegend.jpeg", dpi = 700)
+ggsave("Ilegend.jpeg", dpi = 700)
 #save this graph, cut out the legend, and add it to the other graph in Canva
 
 #status legend
@@ -808,7 +808,7 @@ pat <- c("stripe", 'none')
     theme(legend.text = ggtext::element_markdown())
 ))
 
-#ggsave("STlegend.jpeg", dpi = 700)
+ggsave("STlegend.jpeg", dpi = 700)
 #save this graph, cut out the legend, and add it to the other graph in Canva
 
 # Graph of Shannon Diversity Index####
